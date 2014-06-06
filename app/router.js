@@ -23,26 +23,10 @@
  */
 
 (function() {
-	var simple = require("../components/simple/routes.js"),
-		middlewarize = require("../libs/APICreator.js"),
-		Users = require("../components/users/index.js"),
-		RestfulAuth = require("../components/restfulauth/index.js");
+	var simple = require("../components/simple/routes.js");
 
 	module.exports = {
 		load: function(app, hype, modules, dbs) {
-			var users = Users.init(dbs["sampleUsers"]),
-				restfulauth = RestfulAuth.init(users);
-
-			users.api = middlewarize.createAPI(users);
-
-			// app.post("/api/auth", [restfulauth], dummy.ok);
-			app.post("/createUser", users.api.create);
-			app.get("/createUser", users.api.create);
-			app.get("/readUser", users.api.read);
-			app.get("/updateUser", users.api.update);
-			app.get("/deleteUser", users.api.del);
-			app.get("/listUsers", users.api.list);
-			app.get("/hello", simple.helloWorld);
 
 			// Determine enabled modules
 			var activeModules = [];
@@ -55,9 +39,10 @@
 
 			// Load the active modules
 			for (var mod in activeModules) {
+				// We'll eventually need to address extending modules here and how they'll get loaded
 				var data = activeModules[mod];
 				var loadedMod = require('./code/' + data.package + '/' + mod + '/config.js');
-				loadedMod.load();
+				loadedMod.load(app, simple);
 			}
 		}
 	};

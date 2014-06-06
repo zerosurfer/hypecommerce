@@ -24,8 +24,9 @@
 
 (function() {
 	module.exports = {
-		load: function() {
+		load: function(app, router) {
 			console.log('Core loaded');
+			app.get("/hello", router.helloWorld);
 		}
 	};
 }());
