@@ -23,8 +23,6 @@
  */
 
 (function() {
-	var simple = require("../components/simple/routes.js");
-
 	module.exports = {
 		load: function(app, hype, modules, dbs) {
 
@@ -39,10 +37,15 @@
 
 			// Load the active modules
 			for (var mod in activeModules) {
+				
 				// We'll eventually need to address extending modules here and how they'll get loaded
+				
 				var data = activeModules[mod];
+
+				// Check for dependencies before loading, if anything fails we should stop bootstrapping
+
 				var loadedMod = require('./code/' + data.package + '/' + mod + '/config.js');
-				loadedMod.load(app, simple);
+				loadedMod.load(app);
 			}
 		}
 	};

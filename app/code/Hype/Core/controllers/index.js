@@ -23,30 +23,13 @@
  * @license		http://www.hypecommerce.com/license
  */
 
-(function() {
-	// Define the frontname
-	var frontname = "core";
-
-	// Define controllers
-	var controllers = {
-		index: require("./controllers/index.js")
-	}
-
+(function(){
 	module.exports = {
-		load: function(app, hype) {
-			console.log('Core loaded');
-
-			// Autoload the controller actions
-			for (var controller in controllers) {
-				for (var action in controllers[controller])
-				{
-					// Setup a fallback controller route
-					if (action === "index") {
-						app.get("/" + frontname + "/" + controller, controllers[controller][action]);
-					}
-					app.get("/" + frontname + "/" + controller + "/" + action, controllers[controller][action]);
-				}
-			}
+		index: function(req, res, next){
+			var body = "Hello World";
+			res.setHeader("Content-Type", "text/plain");
+			res.setHeader("Content-Length", body.length);
+			res.end(body);
 		}
 	};
 }());
