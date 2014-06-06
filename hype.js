@@ -23,12 +23,12 @@
  */
 
 // Define variables
-var config	= require("./app/config.json"),
-	modules	= require('./app/modules.json'),
-	express = require("express"),
-	routes = require("./routes.js"),
-	dbs = require("./libs/connectDbs.js"),
-	app = express();
+var config	= require("./app/config.json"),		// Default configuration
+	modules	= require('./app/modules.json'),	// Module configuration
+	express	= require("express"),				// Express framework
+	routes	= require("./app/router.js"),		// Main router
+	dba		= require("./libs/connectDbs.js"),	// Default database adapter
+	app		= express();						// Express application
 
 // Grab the environment
 var env = config.hype.environment;
@@ -65,14 +65,14 @@ app.configure("development", function() {
 });
 
 // Connect to the database
-dbs.connect(config.dbs, function(errs, clients){
+dba.connect(config.dbs, function(errs, clients){
 	var db;
-	if(errs){
-		for(db in errs){
+	if(errs) {
+		for(db in errs) {
 			console.log("Error: db[" + db + "] " + errs[db]);
 		}
-	}else{
-		routes.load(app, clients);
+	} else {
+		routes.load(app, hype, modules, clients);
 		app.listen(hype.port);
 		console.log("App listening on port: " + hype.port);
 	}

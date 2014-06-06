@@ -1,116 +1,116 @@
 {
-	"core": {
+	"Core": {
 		"version": "1.0.0.0",
-		"enabled": "true",
-		"package": "hype"
+		"enabled": true,
+		"package": "Hype"
 	},
-	"cms": {
+	"Cms": {
 		"version": "1.0.0.0",
-		"enabled": "true",
-		"package": "hype",
+		"enabled": false,
+		"package": "Hype",
 		"require": {
 			"core": ">=1.0.0.0"
 		}
 	},
-	"cache": {
+	"Cache": {
 		"version": "1.0.0.0",
-		"enabled": "true",
-		"package": "hype",
+		"enabled": false,
+		"package": "Hype",
 		"require": {
 			"core": ">=1.0.0.0"
 		}
 	},
-	"database": {
+	"Database": {
 		"version": "1.0.0.0",
-		"enabled": "true",
-		"package": "hype",
+		"enabled": false,
+		"package": "Hype",
 		"require": {
 			"core": ">=1.0.0.0"
 		}
 	},
-	"cronjob": {
+	"Cronjob": {
 		"version": "1.0.0.0",
-		"enabled": "true",
-		"package": "hype",
+		"enabled": false,
+		"package": "Hype",
 		"require": {
 			"core": ">=1.0.0.0"
 		}
 	},
-	"checkout": {
+	"Checkout": {
 		"version": "1.0.0.0",
-		"enabled": "true",
-		"package": "hype",
+		"enabled": false,
+		"package": "Hype",
 		"require": {
 			"core": ">=1.0.0.0",
 			"catalog": ">=1.0.0.0"
 		}
 	},
-	"wishlist": {
+	"Wishlist": {
 		"version": "1.0.0.0",
-		"enabled": "true",
-		"package": "hype",
+		"enabled": false,
+		"package": "Hype",
 		"require": {
 			"core": ">=1.0.0.0",
 			"checkout": ">=1.0.0.0"
 		}
 	},
-	"compare": {
+	"Compare": {
 		"version": "1.0.0.0",
-		"enabled": "true",
-		"package": "hype",
+		"enabled": false,
+		"package": "Hype",
 		"require": {
 			"core": ">=1.0.0.0",
 			"catalog": ">=1.0.0.0"
 		}
 	},
-	"customer": {
+	"Customer": {
 		"version": "1.0.0.0",
-		"enabled": "true",
-		"package": "hype",
+		"enabled": false,
+		"package": "Hype",
 		"require": {
 			"core": ">=1.0.0.0"
 		}
 	},
-	"catalog": {
+	"Catalog": {
 		"version": "1.0.0.0",
-		"enabled": "true",
-		"package": "hype",
+		"enabled": false,
+		"package": "Hype",
 		"require": {
 			"core": ">=1.0.0.0"
 		}
 	},
-	"email": {
+	"Email": {
 		"version": "1.0.0.0",
-		"enabled": "true",
-		"package": "hype",
+		"enabled": false,
+		"package": "Hype",
 		"require": {
 			"core": ">=1.0.0.0"
 		}
 	},
-	"promo": {
+	"Promo": {
 		"version": "1.0.0.0",
-		"enabled": "true",
-		"package": "hype",
+		"enabled": false,
+		"package": "Hype",
 		"require": {
 			"core": ">=1.0.0.0",
 			"catalog": ">=1.0.0.0",
 			"checkout": ">=1.0.0.0"
 		}
 	},
-	"search": {
+	"Search": {
 		"version": "1.0.0.0",
-		"enabled": "true",
-		"package": "hype",
+		"enabled": false,
+		"package": "Hype",
 		"require": {
 			"core": ">=1.0.0.0",
 			"catalog": ">=1.0.0.0",
 			"cms": ">=1.0.0.0"
 		}
 	},
-	"paypal": {
+	"Paypal": {
 		"version": "1.0.0.0",
-		"enabled": "true",
-		"package": "hype",
+		"enabled": false,
+		"package": "Hype",
 		"require": {
 			"core": ">=1.0.0.0",
 			"catalog": ">=1.0.0.0",
