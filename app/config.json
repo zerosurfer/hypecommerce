@@ -1,0 +1,65 @@
+{
+	"hype": {
+		"version": "1.0.0.0",
+		"install": "Fri, 06 Jun 2014 12:30:23 +0000",
+		"secret": "8e7be24bb81205f20befd8e65e21a596",
+		"environment": "development"
+	},
+	"server": {
+		"development": {
+			"url": "http://127.0.0.1/",
+			"port": 5000,
+			"db": {
+				"type": "mock",
+				"url": "file:./sampleUsers.db",
+				"connection": {
+					"host": "localhost",
+					"username": "root",
+					"password": "root",
+					"dbname": "hype_development"
+				}
+			},
+			"session": {
+				"storage": "redis"
+			}
+		},
+
+		"staging": {
+			"url": "http://staging.hypecommerce.com/",
+			"port": 80,
+			"db": {
+				"type": "mongo",
+				"connection": {
+					"host": "127.0.0.1",
+					"port": 27017,
+					"dbname": "hype_staging"
+				}
+			},
+			"session": {
+				"storage": "redis"
+			}
+		},
+
+		"production": {
+			"url": "http://www.hypecommerce.com/",
+			"port": 80,
+			"db": {
+				"type": "mongo",
+				"connection": {
+					"host": "127.0.0.1",
+					"port": 27017,
+					"dbname": "hype_production"
+				}
+			},
+			"session": {
+				"storage": "redis"
+			}
+		}
+	},
+	"dbs": {
+		"sampleUsers": {
+			"type": "mock",
+			"url": "file:./sampleUsers.db"
+		}
+	}
+}

@@ -1,0 +1,120 @@
+{
+	"core": {
+		"version": "1.0.0.0",
+		"enabled": "true",
+		"package": "hype"
+	},
+	"cms": {
+		"version": "1.0.0.0",
+		"enabled": "true",
+		"package": "hype",
+		"require": {
+			"core": ">=1.0.0.0"
+		}
+	},
+	"cache": {
+		"version": "1.0.0.0",
+		"enabled": "true",
+		"package": "hype",
+		"require": {
+			"core": ">=1.0.0.0"
+		}
+	},
+	"database": {
+		"version": "1.0.0.0",
+		"enabled": "true",
+		"package": "hype",
+		"require": {
+			"core": ">=1.0.0.0"
+		}
+	},
+	"cronjob": {
+		"version": "1.0.0.0",
+		"enabled": "true",
+		"package": "hype",
+		"require": {
+			"core": ">=1.0.0.0"
+		}
+	},
+	"checkout": {
+		"version": "1.0.0.0",
+		"enabled": "true",
+		"package": "hype",
+		"require": {
+			"core": ">=1.0.0.0",
+			"catalog": ">=1.0.0.0"
+		}
+	},
+	"wishlist": {
+		"version": "1.0.0.0",
+		"enabled": "true",
+		"package": "hype",
+		"require": {
+			"core": ">=1.0.0.0",
+			"checkout": ">=1.0.0.0"
+		}
+	},
+	"compare": {
+		"version": "1.0.0.0",
+		"enabled": "true",
+		"package": "hype",
+		"require": {
+			"core": ">=1.0.0.0",
+			"catalog": ">=1.0.0.0"
+		}
+	},
+	"customer": {
+		"version": "1.0.0.0",
+		"enabled": "true",
+		"package": "hype",
+		"require": {
+			"core": ">=1.0.0.0"
+		}
+	},
+	"catalog": {
+		"version": "1.0.0.0",
+		"enabled": "true",
+		"package": "hype",
+		"require": {
+			"core": ">=1.0.0.0"
+		}
+	},
+	"email": {
+		"version": "1.0.0.0",
+		"enabled": "true",
+		"package": "hype",
+		"require": {
+			"core": ">=1.0.0.0"
+		}
+	},
+	"promo": {
+		"version": "1.0.0.0",
+		"enabled": "true",
+		"package": "hype",
+		"require": {
+			"core": ">=1.0.0.0",
+			"catalog": ">=1.0.0.0",
+			"checkout": ">=1.0.0.0"
+		}
+	},
+	"search": {
+		"version": "1.0.0.0",
+		"enabled": "true",
+		"package": "hype",
+		"require": {
+			"core": ">=1.0.0.0",
+			"catalog": ">=1.0.0.0",
+			"cms": ">=1.0.0.0"
+		}
+	},
+	"paypal": {
+		"version": "1.0.0.0",
+		"enabled": "true",
+		"package": "hype",
+		"require": {
+			"core": ">=1.0.0.0",
+			"catalog": ">=1.0.0.0",
+			"checkout": ">=1.0.0.0"
+		}
+	}
+}
