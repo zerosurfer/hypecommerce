@@ -6,9 +6,7 @@ define([
 			initialize: function(){
 				this.app = this.options.app;
 			},
-			template: function(){
-				return window.JST["login.html"];
-			},
+			template: 'login',
 			events:{
 				"click button.btn.login": "login"
 			},
@@ -30,7 +28,7 @@ define([
 						that.ui.message.html(err);
 					},
 					function(){
-						that.ui.message.html("YUPI you are logged in!");	
+						that.ui.message.html("YUPI you are logged in!");
 					});
 			}
 		});

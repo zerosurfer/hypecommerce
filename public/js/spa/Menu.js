@@ -6,9 +6,7 @@ define([
 			initialize: function(){
 				this.app = this.options.app;
 			},
-			template: function(){
-				return window.JST["menu.html"];
-			},
+			template: 'menu',
 			events:{
 				"click li": "goto"
 			},
