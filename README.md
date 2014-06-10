@@ -3,6 +3,7 @@ A hyper-fast, scalable, multi-store ecommerce platform for rapid growth
 
 ## Developers
 * Thomas Lackemann <tlackemann@gmail.com>
+* Kurtis Kemple
 
 ## Installation
 ```
