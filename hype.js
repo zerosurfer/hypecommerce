@@ -33,6 +33,9 @@ var config	= require("./app/config.json"),		// Default configuration
 // Grab the environment
 var env = config.hype.environment;
 
+// Grab the theme
+var theme = config.hype.theme;
+
 // Set our server
 var hype = config.server[env];
 
@@ -52,7 +55,7 @@ app.configure(function(){
 
 	app.use(app.router);
 
-	app.use(express["static"]('./public'));
+	app.use(express["static"]('./public/theme/' + theme));
 
 });
 

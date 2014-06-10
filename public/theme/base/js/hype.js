@@ -22,14 +22,21 @@
  * @license     http://www.hypecommerce.com/license
  */
 
-define(["hype/App"], function(App){
+define([
+    "hype/App"
+    ], function(App){
 
-    /*
-     * allows for templates to be called in a cleaner fashion without the need for loading through require or a global templates object
+    /**
+     * Allows for templates to be called in a cleaner fashion without the need for loading through
+     * require or a global templates object
+     * 
      * example:
      * var NewView = Marionette.ItemView.extend({
-     *     template: 'some/path/to/template' - real path would be templates/some/path/to/template.html
+     *     template: 'some/path/to/template' - real path templates/some/path/to/template.html
      * });
+     *
+     * @param   string  templateId; Name of the template in the templates directory
+     * @return  string
      */
     Marionette.TemplateCache.prototype.loadTemplate = function(templateId) {
         var template = '';
@@ -46,16 +53,20 @@ define(["hype/App"], function(App){
         return template;
     };
 
+    // Start the app
 	var app = new App();
 
+    // Add regions
 	app.addRegions({
 		"mainRegion": "#application"
 	});
 
+    // Add initializaters
 	app.addInitializer(function(){
 		this.init();
 	});
 
+    // Run it
 	app.start();
 
 	return app;

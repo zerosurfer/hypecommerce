@@ -1,5 +1,5 @@
 define([
-
+	
 	],
 	function(templates){
 		var Layout = Backbone.Marionette.Layout.extend({
