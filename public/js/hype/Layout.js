@@ -1,5 +1,5 @@
 define([
-	"spa/templates"
+
 	],
 	function(templates){
 		var Layout = Backbone.Marionette.Layout.extend({

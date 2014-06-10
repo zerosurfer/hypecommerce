@@ -1,5 +1,5 @@
 define([
-	"spa/templates"
+
 	],
 	function(templates){
 		var Login = Backbone.Marionette.ItemView.extend({

@@ -41,6 +41,9 @@
 				for (var action in controllers[controller])
 				{
 					// Setup a fallback controller route
+					if (controller === "index" && action === "index") {
+						app.get("/" + frontname, controllers[controller][action]);
+					}
 					if (action === "index") {
 						app.get("/" + frontname + "/" + controller, controllers[controller][action]);
 					}
