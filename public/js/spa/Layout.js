@@ -3,9 +3,7 @@ define([
 	],
 	function(templates){
 		var Layout = Backbone.Marionette.Layout.extend({
-		  template: function(){
-			return window.JST["layout.html"];
-		  },
+		  template: 'layout',
 		  regions: {
 		    menu: "#menu",
 		    content: "#content"
