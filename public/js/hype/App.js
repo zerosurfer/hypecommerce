@@ -28,7 +28,7 @@ define([
 	"hype/Hello",
 	"hype/Login"
 	], 
-	function(Layout, Menu, Hello, Login){
+	function(Layout, Menu, Hello, Login) {
 	var App = Backbone.Marionette.Application.extend({
 		init: function(){
 			this.layout = new Layout();
