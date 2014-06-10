@@ -16,40 +16,21 @@
  * {@link http://www.hypecommerce.com/} for more information.
  *
  * @package		Hype
- * @category	Core
- * @version		1.0.0.0
+ * @version		0.0.1.0
  * @author		Hype Commerce Team <team@hypecommerce.com>
  * @copyright	Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypecommerce.com/)
  * @license		http://www.hypecommerce.com/license
  */
 
-(function() {
-	// Define the frontname
-	var frontname = "core";
+requirejs.config({
+	// Dependencies
+	deps: ["hype"],
 
-	// Define controllers
-	var controllers = {
-		index: require("./controllers/index.js")
+	paths: {
+		// What goes here?
+	},
+
+	shim: {
+		// What goes here?
 	}
-
-	module.exports = {
-		load: function(app, hype) {
-			console.log('Core loaded');
-
-			// Autoload the controller actions
-			for (var controller in controllers) {
-				for (var action in controllers[controller])
-				{
-					// Setup a fallback controller route
-					if (controller === "index" && action === "index") {
-						app.get("/" + frontname, controllers[controller][action]);
-					}
-					if (action === "index") {
-						app.get("/" + frontname + "/" + controller, controllers[controller][action]);
-					}
-					app.get("/" + frontname + "/" + controller + "/" + action, controllers[controller][action]);
-				}
-			}
-		}
-	};
-}());
+});

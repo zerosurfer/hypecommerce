@@ -1,5 +1,5 @@
 define([
-	"spa/templates"
+
 	],
 	function(templates){
 		var Menu = Backbone.Marionette.ItemView.extend({

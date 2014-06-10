@@ -116,5 +116,13 @@
 			"catalog": ">=1.0.0.0",
 			"checkout": ">=1.0.0.0"
 		}
+	},
+	"UrlRewrite": {
+		"version": "1.0.0.0",
+		"enabled": false,
+		"package": "Hype",
+		"require": {
+			"core": ">=1.0.0.0"
+		}
 	}
 }
