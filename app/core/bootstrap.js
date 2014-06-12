@@ -26,6 +26,7 @@
 var	fs      = require('fs'),
     url     = require('url'),
     when    = require('when'),
+//    db		= require('./db'),
 
 // Define variables
     config;
@@ -36,9 +37,18 @@ exports.loadConfiguration = function() {
 
 	fs.exists("app/core/config.js", function checkConfiguration(fileExists) {
 		if (fileExists) {
-			// We should do some preloading here
+
+			// Require the config
 			config = require('./config');
-			console.log(config);
+
+			// Set all the configuration values for node/hype
+
+			// Load and connect the the appropriate database
+
+			// Load all the necessary modules (plugins)
+
+			// @todo Merge and cache all the independent config.js files for enabled modules 
+
 			loaded.resolve();
 		} else {
 			// @todo GUI Installer

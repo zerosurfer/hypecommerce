@@ -31,6 +31,7 @@ var express	= require('express'),		// Express framework
 
 // Define libraries
 	when	= require('when'),
+	path	= require('path'),
 
 // Load Hype
 	hype	= new Hype();
@@ -40,6 +41,7 @@ when(hype.init()).then(function () {
 
 	app.configure(function(){
 		var theme = 'ractive';
+
 		app.use(express.favicon());
 		app.use(express.logger("dev"));
 
@@ -48,11 +50,17 @@ when(hype.init()).then(function () {
 		app.use(express.methodOverride());
 
 		app.use(app.router);
+		
+		var themePath = path.resolve('app/themes/' + theme);
+		console.log(themePath);
 
-		app.use(express["static"]('./themes/' + theme));
+		app.use(express.static(themePath));
 
+		app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
 	});
 
-	app.listen(5000);
+	app.listen(5000, function() {
+		console.log( 'Express server listening on port %d in %s mode', 5000, app.settings.env );
+	});
 
 });

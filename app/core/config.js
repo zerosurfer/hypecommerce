@@ -71,12 +71,6 @@ config = {
 				storage: "redis"
 			}
 		}
-	},
-	dbs: {
-		sampleUsers: {
-			type: "mock",
-			url: "file:./sampleUsers.db"
-		}
 	}
 }
 
