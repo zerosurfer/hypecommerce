@@ -25,42 +25,12 @@
 // Define classes
 var Hype	= require('./app');			// Hype
 
-// Define express
-var express	= require('express'),		// Express framework
-	app		= express(),				// Express application
-
-// Define libraries
-	when	= require('when'),
-	path	= require('path'),
-
 // Load Hype
 	hype	= new Hype();
 
 // Begin the server after we boot up hype
-when(hype.init()).then(function () {
-
-	app.configure(function(){
-		var theme = 'ractive';
-
-		app.use(express.favicon());
-		app.use(express.logger("dev"));
-
-		app.use(express.bodyParser());
-		app.use(express.cookieParser());
-		app.use(express.methodOverride());
-
-		app.use(app.router);
-		
-		var themePath = path.resolve('app/themes/' + theme);
-		console.log(themePath);
-
-		app.use(express.static(themePath));
-
-		app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
-	});
-
-	app.listen(5000, function() {
-		console.log( 'Express server listening on port %d in %s mode', 5000, app.settings.env );
-	});
-
+when(hype.init()).then(function() {
+	console.log ("Ready for action");
+}).otherwise(function() {
+	console.log("Failed to initialze Hype");
 });

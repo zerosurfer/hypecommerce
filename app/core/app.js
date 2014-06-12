@@ -22,19 +22,33 @@
  * @license		http://www.hypecommerce.com/license
  */
 
+// Load necessary modules/files
+var	config	= require('./config'),
+
+// Define express
+	express	= require('express'),		// Express framework
+	app		= express(),				// Express application
+
 // Define libraries
-var when	= require('when'),
+	when	= require('when'),
+	path	= require('path'),
 
 // Define flags
 	inst	= false,			// Has Hype been instantiated
 
-// Define class
+// Define classes
 	Hype;
 
 Hype = function() {
 	if (!inst) {
 		// Start the instance
 		inst = this;
+
+		// Holds current environment
+		inst.env = 'development';
+
+		// Holds the configuration
+		inst.configuration = {};
 		
 		// Holds the available modules
         inst.enabledModules = {};
@@ -42,9 +56,81 @@ Hype = function() {
 	return inst;
 };
 
+/**
+ * Initiate Hype
+ * Provides logic for the application, sets up the configuration, starts the express server,
+ * connects to the db, and runs
+ */
 Hype.prototype.init = function() {
-	console.log("Started Hype!");
-	return when.resolve();
+	var loaded = when.defer();
+	var self = this;
+
+	console.log("Preparing to start Hype");
+	loaded.resolve();
+
+	return when(this.configure())
+		.then(this.connect())
+		.then(this.start());
 };
+
+/**
+ * Set all the configuration values for node/hype
+ */
+Hype.prototype.configure = function() {
+	var loaded = when.defer();
+	console.log("Setting up configuration");
+
+	// Set the environment
+	this.env = config.hype.environment;
+
+	// Load the applicable configuration
+	this.configuration = config.server[this.env];
+
+	return loaded.resolve();
+}
+
+Hype.prototype.connect = function() {
+	var loaded = when.defer();
+	console.log("Connecting to the db");
+
+	console.log(this.configuration);
+
+	return loaded.resolve();
+}
+
+
+Hype.prototype.start = function() {
+	var self = this;
+	var loaded = when.defer();
+	console.log('Starting...');
+
+	app.configure(function(){
+		// Much hardcoded
+		var theme = 'ractive';
+
+		app.use(express.favicon());
+		app.use(express.logger("dev"));
+
+		app.use(express.bodyParser());
+		app.use(express.cookieParser());
+		app.use(express.methodOverride());
+
+		app.use(app.router);
+		
+		var themePath = path.resolve('app/themes/' + theme);
+		console.log(themePath);
+
+		app.use(express.static(themePath));
+
+		app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
+	});
+	
+	app.listen(this.configuration.port, function() {
+		console.log( 'Express server listening on port %d in %s mode', self.configuration.port, app.settings.env );
+	});
+
+
+	return loaded.resolve();
+}
 
 module.exports = Hype;

@@ -39,13 +39,7 @@ exports.loadConfiguration = function() {
 		if (fileExists) {
 
 			// Require the config
-			config = require('./config');
-
-			// Set all the configuration values for node/hype
-
-			// Load and connect the the appropriate database
-
-			// Load all the necessary modules (plugins)
+			// config = require('./config');
 
 			// @todo Merge and cache all the independent config.js files for enabled modules 
 
