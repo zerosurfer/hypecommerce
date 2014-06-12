@@ -22,16 +22,13 @@
  * @license		http://www.hypecommerce.com/license
  */
 
-// Define classes
-var Hype	= require('./app'),			// Hype
-	when	= require('when'),
+// Load necessary modules/files
+var	mongoose = require('mongoose');
 
-// Load Hype
-	hype	= new Hype();
+exports.connect = function(host, username, password, dbname) {
+	console.log("Connecting to MongoDB on %s/%s", host, dbname);
+	mongoose.connect('mongodb://' + host + '/' + dbname);
+};
 
-// Begin the server after we boot up hype
-when(hype.init()).then(function() {
-	console.log ("Ready for action");
-}).otherwise(function() {
-	console.log("Failed to initialze Hype");
-});
+exports.schemas = [];
+exports.models = [];

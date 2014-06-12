@@ -23,18 +23,18 @@
  */
 
 // Load necessary modules/files
-var	config	= require('./config'),
+var	config = require('./config'),
 
 // Define express
-	express	= require('express'),		// Express framework
-	app		= express(),				// Express application
+	express = require('express'), // Express framework
+	app = express(), // Express application
 
 // Define libraries
-	when	= require('when'),
-	path	= require('path'),
+	when = require('when'),
+	path = require('path'),
 
 // Define flags
-	inst	= false,			// Has Hype been instantiated
+	inst		= false,			// Has Hype been instantiated
 
 // Define classes
 	Hype;
@@ -44,8 +44,14 @@ Hype = function() {
 		// Start the instance
 		inst = this;
 
+		// Holds the db adapter
+		inst.dba = null;
+
 		// Holds current environment
-		inst.env = 'development';
+		inst.env = null;
+
+		// Holds the default theme
+		inst.theme = null;
 
 		// Holds the configuration
 		inst.configuration = {};
@@ -83,8 +89,14 @@ Hype.prototype.configure = function() {
 	// Set the environment
 	this.env = config.hype.environment;
 
+	// Set the theme (temporarily)
+	this.theme = config.hype.theme;
+
 	// Load the applicable configuration
 	this.configuration = config.server[this.env];
+
+	// Load all the enabled plugins
+	
 
 	return loaded.resolve();
 }
@@ -93,7 +105,29 @@ Hype.prototype.connect = function() {
 	var loaded = when.defer();
 	console.log("Connecting to the db");
 
-	console.log(this.configuration);
+	// Depending on the configuration, we can load a different db adapter
+	switch(this.configuration.db.type) {
+		// MongoDB
+		case 'mongo' :
+			this.dba = require('./db/mongo');
+			this.dba.connect(
+				this.configuration.db.connection.host + (this.configuration.db.connection.port ? 
+					":" + this.configuration.db.connection.port : ''),
+				this.configuration.db.connection.username,
+				this.configuration.db.connection.password,
+				this.configuration.db.connection.dbname
+			);
+			break;
+		// @todo MySQL adapter
+		case 'mysql' :
+
+			break;
+		// @todo Localstorage adapter
+		// Please never use this in a production environment
+		case 'localstorage' :
+
+			break;
+	}
 
 	return loaded.resolve();
 }
@@ -117,16 +151,17 @@ Hype.prototype.start = function() {
 
 		app.use(app.router);
 		
-		var themePath = path.resolve('app/themes/' + theme);
+		var themePath = path.resolve('app/themes/' + self.theme);
 		console.log(themePath);
 
 		app.use(express.static(themePath));
 
 		app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
 	});
-	
+
 	app.listen(this.configuration.port, function() {
-		console.log( 'Express server listening on port %d in %s mode', self.configuration.port, app.settings.env );
+		console.log( 'Express server listening on port %d in %s mode', self.configuration.port,
+			app.settings.env );
 	});
 
 

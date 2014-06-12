@@ -19,19 +19,19 @@ config = {
 		install: "Fri, 06 Jun 2014 12:30:23 +0000",		// May delete this line
 		secret: "8e7be24bb81205f20befd8e65e21a596",		// Encryption string
 		environment: "development",						// Runtime environment
-		theme: "base"									// Default theme
+		theme: "ractive"								// Default theme
 	},
 	server: {
 		development: {
 			url: "http://127.0.0.1/",
 			port: 5000,
 			db: {
-				type: "mock",
-				url: "file:./sampleUsers.db",
+				type: "mongo",
 				connection: {
-					host: "localhost",
-					username: "root",
-					password: "root",
+					host: "127.0.0.1",
+					port: 27017,
+					username: "",
+					password: "",
 					dbname: "hype_development"
 				}
 			},
