@@ -22,9 +22,13 @@
  * @license		http://www.hypecommerce.com/license
  */
 
+// Load libraries
 var	fs      = require('fs'),
     url     = require('url'),
-    when    = require('when');
+    when    = require('when'),
+
+// Define variables
+    config;
 
 exports.loadConfiguration = function() {
 	// Promise we'll finish
@@ -33,6 +37,8 @@ exports.loadConfiguration = function() {
 	fs.exists("app/core/config.js", function checkConfiguration(fileExists) {
 		if (fileExists) {
 			// We should do some preloading here
+			config = require('./config');
+			console.log(config);
 			loaded.resolve();
 		} else {
 			// @todo GUI Installer

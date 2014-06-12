@@ -79,3 +79,5 @@ config = {
 		}
 	}
 }
+
+module.exports = config;
