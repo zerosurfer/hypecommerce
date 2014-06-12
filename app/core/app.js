@@ -22,25 +22,29 @@
  * @license		http://www.hypecommerce.com/license
  */
 
-var	fs      = require('fs'),
-    url     = require('url'),
-    when    = require('when');
+// Define libraries
+var when	= require('when'),
 
-exports.loadConfiguration = function() {
-	// Promise we'll finish
-	var loaded = when.defer();
+// Define flags
+	inst	= false,			// Has Hype been instantiated
 
-	fs.exists("app/core/config.js", function checkConfiguration(fileExists) {
-		if (fileExists) {
-			// We should do some preloading here
-			loaded.resolve();
-		} else {
-			// @todo GUI Installer
-			// In the meantime, wah wah wah
-			loaded.reject();
-		}
-	});
+// Define class
+	Hype;
 
-    // Fufill the promise
-    return loaded.promise;
+Hype = function() {
+	if (!inst) {
+		// Start the instance
+		inst = this;
+		
+		// Holds the available modules
+        inst.enabledModules = {};
+	}
+	return inst;
 };
+
+Hype.prototype.init = function() {
+	console.log("Started Hype!");
+	return when.resolve();
+};
+
+module.exports = Hype;

@@ -21,3 +21,38 @@
  * @copyright	Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypecommerce.com/)
  * @license		http://www.hypecommerce.com/license
  */
+
+// Define classes
+var Hype	= require('./app');			// Hype
+
+// Define express
+var express	= require('express'),		// Express framework
+	app		= express(),				// Express application
+
+// Define libraries
+	when	= require('when'),
+
+// Load Hype
+	hype	= new Hype();
+
+// Begin the server after we boot up hype
+when(hype.init()).then(function () {
+
+	app.configure(function(){
+		var theme = 'ractive';
+		app.use(express.favicon());
+		app.use(express.logger("dev"));
+
+		app.use(express.bodyParser());
+		app.use(express.cookieParser());
+		app.use(express.methodOverride());
+
+		app.use(app.router);
+
+		app.use(express["static"]('./themes/' + theme));
+
+	});
+
+	app.listen(5000);
+
+});

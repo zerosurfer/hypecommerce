@@ -22,10 +22,12 @@
  * @license		http://www.hypecommerce.com/license
  */
 
+// Boostrap
 var bootstrap = require("./core/bootstrap");
 
+// Load configuration and start the server
 bootstrap.loadConfiguration().then(function() {
-	console.log('done');
+	require("./core/server");
 }).otherwise(function() {
 	console.log("An unexpected error has occurred while bootstrapping Hype");
 });
