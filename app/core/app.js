@@ -132,7 +132,6 @@ Hype.prototype.connect = function() {
 	return loaded.resolve();
 }
 
-
 Hype.prototype.start = function() {
 	var self = this;
 	var loaded = when.defer();
@@ -166,6 +165,10 @@ Hype.prototype.start = function() {
 
 
 	return loaded.resolve();
-}
+};
+
+Hype.prototype.addModule = function(module) {
+	this.enabledModules.push(module);
+};
 
 module.exports = Hype;

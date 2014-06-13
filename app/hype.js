@@ -27,7 +27,7 @@ var bootstrap = require("./core/bootstrap");
 
 // Load configuration and start the server
 bootstrap.loadConfiguration().then(function() {
-	require("./core/server");
+	bootstrap.init();
 }).otherwise(function() {
 	console.log("An unexpected error has occurred while bootstrapping Hype");
 });
