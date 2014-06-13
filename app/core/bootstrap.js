@@ -26,6 +26,7 @@
 var	fs      = require('fs'),
     url     = require('url'),
     when    = require('when'),
+	path	= require('path'),
 //    db		= require('./db'),
 
 // Define variables
@@ -42,6 +43,20 @@ exports.loadConfiguration = function() {
 			// config = require('./config');
 
 			// @todo Merge and cache all the independent config.js files for enabled modules 
+			fs.readdir(path.resolve('app/plugins'), function(err, folders) {
+				for (var i in folders) {
+					// Need a promise in here, then we continue the loop
+					// This part may take a while to load
+					// We need to load modules, configure routers, load models, insert schema
+					// I feel like the app should be instanstiated during this point?
+					
+					fs.exists(path.resolve('app/plugins/' + folders[i]) + '/config.js',
+						function readConfig(file) {
+							if (file === true)
+								console.log('Loaded module ' + folders[i]); // returns core?
+						});
+				}
+			});
 
 			loaded.resolve();
 		} else {
