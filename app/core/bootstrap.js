@@ -47,30 +47,29 @@ exports.init = function() {
 exports.loadConfiguration = function() {
 	// Set a promise
 	var loaded = when.defer();
+	var self = this;
+	var modulePath = path.resolve('app/plugins');
 
-	fs.exists("app/core/config.js", function checkConfiguration(fileExists) {
-		if (fileExists) {
+	this.loadModule = function(module) {
+		var moduleLoaded = when.defer();
+		console.log("Loading " + module + "...");
+		
+		hype.addModule(require(modulePath + "/" + module + "/config.js"));
 
-			// Require the config
-			config = require('./config');
+		moduleLoaded.resolve();
 
-			// @todo Merge and cache all the independent config.js files for enabled modules 
-			fs.readdir(path.resolve('app/plugins'), function(err, folders) {
-				for (var i in folders) {
-					// We need to load modules, configure routers, load models, insert schema
-					fs.exists(path.resolve('app/plugins/' + folders[i]) + '/config.js',
-						function readConfig(file) {
-							if (file === true)
-								console.log('Loaded module ' + folders[i]); // returns core?
-						});
+		return moduleLoaded.promise;
+	}
 
-				}
-				loaded.resolve();
-			});
-		} else {
-			// @todo GUI Installer
-			// In the meantime, wah wah wah
-			loaded.reject();
+	var moduleDir = fs.readdir(modulePath, function(err, modules) {
+		for (var i = 0; i < modules.length; i++) {
+			var moduleName = modules[i];
+			when(self.loadModule(moduleName)).then(function() {
+				console.log("Done");
+				return loaded.resolve();
+			}).otherwise(function(err) {
+				console.log("No " + err);
+			});	
 		}
 	});
 

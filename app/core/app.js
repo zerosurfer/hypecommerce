@@ -57,7 +57,7 @@ Hype = function() {
 		inst.configuration = {};
 		
 		// Holds the available modules
-        inst.enabledModules = {};
+        inst.enabledModules = [];
 	}
 	return inst;
 };
@@ -151,7 +151,6 @@ Hype.prototype.start = function() {
 		app.use(app.router);
 		
 		var themePath = path.resolve('app/themes/' + self.theme);
-		console.log(themePath);
 
 		app.use(express.static(themePath));
 
@@ -168,7 +167,12 @@ Hype.prototype.start = function() {
 };
 
 Hype.prototype.addModule = function(module) {
+	console.log("Added " + module.module + " to Hype");
 	this.enabledModules.push(module);
 };
+
+Hype.prototype.getModules = function() {
+	return this.enabledModules;
+}
 
 module.exports = Hype;

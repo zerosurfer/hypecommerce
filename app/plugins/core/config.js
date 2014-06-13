@@ -1,26 +1,17 @@
 // Require
-var Cms;
+var Core;
 
-Cms = {
-	module: 'Cms',
+Core = {
+	module: 'Core',
 	enabled: true,
 	depends: {
-		'core': '>=1.0.0.0'
 	},
 
 	// Schemas
 	models: {
-		Page: {
-			title: String,
-			content: String,
-			identifier: String,
-			createdAt: Date,
-			updatedAt: Date
-		},
-		Block: {
-			title: String,
-			content: String,
-			code: String,
+		Settings: {
+			path: String,
+			value: String,
 			createdAt: Date,
 			updatedAt: Date
 		}
@@ -29,7 +20,7 @@ Cms = {
 	// Server routes
 	routes: {
 		// Route name + method must be unique, if conflicts are found the route won't be included in the final set
-		'cms/:id' : {
+		'/' : {
 			method: 'get',
 			callback: function(request, response) {
 				console.log(request);
@@ -39,4 +30,4 @@ Cms = {
 	}
 };
 
-module.exports = Cms;
+module.exports = Core;

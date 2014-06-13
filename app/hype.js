@@ -23,10 +23,11 @@
  */
 
 // Boostrap
+var when = require('when');
 var bootstrap = require("./core/bootstrap");
 
 // Load configuration and start the server
-bootstrap.loadConfiguration().then(function() {
+when(bootstrap.loadConfiguration()).then(function() {
 	bootstrap.init();
 }).otherwise(function() {
 	console.log("An unexpected error has occurred while bootstrapping Hype");
