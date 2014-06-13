@@ -49,30 +49,43 @@ exports.loadConfiguration = function() {
 	var loaded = when.defer();
 	var self = this;
 	var modulePath = path.resolve('app/plugins');
+	var moduleCount = 0;
 
 	this.loadModule = function(module) {
 		var moduleLoaded = when.defer();
 		console.log("Loading " + module + "...");
 		
-		hype.addModule(require(modulePath + "/" + module + "/config.js"));
-
-		moduleLoaded.resolve();
+		// Should actually check for the config.js file and throw an error if not found
+		when(hype.addModule(require(modulePath + "/" + module + "/config.js"))).then(function() {
+			return moduleLoaded.resolve();
+		});
 
 		return moduleLoaded.promise;
 	}
 
-	var moduleDir = fs.readdir(modulePath, function(err, modules) {
-		for (var i = 0; i < modules.length; i++) {
-			var moduleName = modules[i];
-			when(self.loadModule(moduleName)).then(function() {
-				console.log("Done");
-				return loaded.resolve();
-			}).otherwise(function(err) {
-				console.log("No " + err);
-			});	
-		}
-	});
+	this.loadModules = function() {
+		var modulesLoaded = when.defer();
+		var moduleDir = fs.readdir(modulePath, function(err, modules) {
+			for (var i = 0, j = 0 ; i < modules.length; i++) {
+				var moduleName = modules[i];
+				when(self.loadModule(moduleName)).then(function() {
+					console.log("Done");
+					if (j + 1 == modules.length)
+						return modulesLoaded.resolve();
+					else
+						++j;
+				}).otherwise(function(err) {
+					console.log("No " + err);
+				});	
+			}
+		});
 
-    // Fufill the promise
-    return loaded.promise;
+		return modulesLoaded.promise;
+	}
+
+	return when.join(
+		this.loadModules()
+	).then(function() {
+		console.log("Finished bootstrap!");
+	})
 };

@@ -167,8 +167,11 @@ Hype.prototype.start = function() {
 };
 
 Hype.prototype.addModule = function(module) {
+	var loaded = when.defer();
 	console.log("Added " + module.module + " to Hype");
+	setTimeout(function() { console.log("waiting..."); loaded.resolve(); }, 1000);
 	this.enabledModules.push(module);
+	return loaded.promise;
 };
 
 Hype.prototype.getModules = function() {
