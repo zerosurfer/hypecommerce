@@ -2,7 +2,7 @@
 var Core;
 
 Core = {
-	module: 'Core',
+	name: 'Core',
 	enabled: true,
 	depends: {
 	},

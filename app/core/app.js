@@ -74,9 +74,12 @@ Hype.prototype.init = function() {
 	console.log("Preparing to start Hype");
 	loaded.resolve();
 
-	return when(this.configure())
-		.then(this.connect())
-		.then(this.start());
+
+	return when.join(
+		this.configure(),
+		this.connect(),
+		this.start()
+	);
 };
 
 /**
@@ -135,7 +138,7 @@ Hype.prototype.connect = function() {
 Hype.prototype.start = function() {
 	var self = this;
 	var loaded = when.defer();
-	console.log('Starting...');
+	console.log('Starting application');
 
 	app.configure(function(){
 		// Much hardcoded
@@ -168,7 +171,7 @@ Hype.prototype.start = function() {
 
 Hype.prototype.addModule = function(module) {
 	var loaded = when.defer();
-	console.log("Added " + module.module + " to Hype");
+	console.log("Added " + module.name + " to Hype");
 	setTimeout(function() { console.log("waiting..."); loaded.resolve(); }, 1000);
 	this.enabledModules.push(module);
 	return loaded.promise;

@@ -2,7 +2,7 @@
 var Cms;
 
 Cms = {
-	module: 'Cms',
+	name: 'Cms',
 	enabled: true,
 	depends: {
 		'core': '>=1.0.0.0'
