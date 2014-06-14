@@ -24,19 +24,11 @@
 
 // Load necessary modules/files
 var	config = require('./config'),
-
-// Define express
 	express = require('express'), // Express framework
 	app = express(), // Express application
-
-// Define libraries
 	when = require('when'),
 	path = require('path'),
-
-// Define flags
-	inst		= false,			// Has Hype been instantiated
-
-// Define classes
+	inst = false,
 	Hype;
 
 Hype = function() {
@@ -56,8 +48,10 @@ Hype = function() {
 		// Holds the configuration
 		inst.configuration = {};
 
+		// Holds routes
 		inst.routes = {};
 
+		// Holds models for mongoose
 		inst.models = [];
 		
 		// Holds the available modules
@@ -240,9 +234,15 @@ Hype.prototype.addModule = function(module) {
 	// Don't load modules twice, if they exist, we're going to take the first instance we find	
 	if (this.enabledModules[module.name] !== undefined) {
 		console.log("Module " + module.name + " already exists, skipping")
-	} else {
+	// Check enabled
+	} else if (module.enabled == true) {
+
+		// Check dependencies
+		
+
 		console.log("Module " + module.name + " was added to Hype");
 		this.enabledModules[module.name] = module;
+		
 	}
 
 	return loaded.promise;

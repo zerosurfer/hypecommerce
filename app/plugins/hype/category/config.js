@@ -3,7 +3,7 @@ var Category;
 
 Category = {
 	name: 'Category',
-	enabled: true,
+	enabled: false,
 	depends: {
 		'core': '>=1.0.0.0'
 	},

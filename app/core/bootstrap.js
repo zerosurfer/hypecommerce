@@ -60,9 +60,11 @@ exports.loadConfiguration = function() {
 
 	this.loadModule = function(module) {
 		var moduleLoaded = when.defer();
-		console.log("Loading " + module + "...");
 		
 		// Should actually check for the config.js file and throw an error if not found
+		// Kind of crappy, we need to load the file first before checking if it's disabled
+		// It's practically loaded at this point, we're just preventing it from becoming
+		// bootstrapped into runtime
 		when(hype.addModule(require(modulePath + "/" + module + "/config.js"))).then(function() {
 			return moduleLoaded.resolve();
 		});
@@ -79,13 +81,12 @@ exports.loadConfiguration = function() {
 			len = modules.length
 			for (i; i < modules.length; i++) {
 				moduleName = modules[i];
-				// No hidden files
+				// No hidden files or disabled modules
 				if (moduleName.indexOf('.') === 0) {
 					len--;
 					continue;
 				}
 				when(self.loadModule(moduleName)).then(function() {
-					console.log("Done");
 					if (j + 1 == len)
 						return modulesLoaded.resolve();
 					else

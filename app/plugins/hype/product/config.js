@@ -3,7 +3,7 @@ var Product;
 
 Product = {
 	name: 'Product',
-	enabled: true,
+	enabled: false,
 	depends: {
 		'core': '>=1.0.0.0'
 	},
@@ -21,6 +21,14 @@ Product = {
 			type: String, // virtual, simple, grouped, configurable
 			attributes: ['Attribute'], // Attributes the product has
 			displayAttributes: ['Attribute'], // Attributes displayed on the view page
+			quantity: Number,
+			trackQuantity: Boolean,
+			warnQuantity: Number, // Warn @ 10 products left
+			images: ['Media'],
+			taxable: Boolean,
+			weight: Number,
+			msrp: Number,
+			options: ['Product'], // Blue shirt, Red shirt, Yellow shirt
 			createdAt: Date,
 			updatedAt: Date
 		},

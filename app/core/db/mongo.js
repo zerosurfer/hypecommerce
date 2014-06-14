@@ -49,7 +49,7 @@ exports.addModel = function (model, schema) {
 
 			// If it's an object (array) then replace whatever is inside with the right model/schema
 			} else if (typeof v === 'object') {
-				
+
 			}
 		}
 	}

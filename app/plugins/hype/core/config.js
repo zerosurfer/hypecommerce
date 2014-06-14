@@ -26,9 +26,9 @@ Core = {
 		},
 		View: {
 			name: String, // English
-			code: String, // en_US
-			url: String, // http://www.hypecommerce.com/
-			language: String, // en_US
+			code: String, // en_US | de_DE
+			url: String, // http://www.hypecommerce.com/ | http://www.hypecommerce.de/
+			language: String, // en_US | de_DE
 			currency: 'Currency', // Currency.character = $
 			primary: Boolean, // true
 			created: { type: Date, default: Date.now },
@@ -40,7 +40,15 @@ Core = {
 			decimals: Number,
 			created: { type: Date, default: Date.now },
 			updated: { type: Date, default: Date.now }
-		}
+		},
+		// Media can be an image, mp4, wav, etc.
+		Media: {
+			filename: String,
+			filepath: String,
+			type: String, // mp4, wav, jpg, etc.
+			created: { type: Date, default: Date.now },
+			updated: { type: Date, default: Date.now }
+		},
 	},
 
 	// Frontend configuration
