@@ -57,6 +57,8 @@ Hype = function() {
 		inst.configuration = {};
 
 		inst.routes = {};
+
+		inst.models = [];
 		
 		// Holds the available modules
         inst.enabledModules = [];
@@ -95,6 +97,11 @@ Hype.prototype.preload = function() {
 			
 			console.log("Setting up router " + route + " for " + moduleName);
 			this.routes[route] = currentModule.frontend.routes[route];
+
+		}
+		// load models
+		for (var model in currentModule.models) {
+			this.models[model] = currentModule.models[model];
 
 		}
 		//console.log(currentModule.frontend);
@@ -165,6 +172,11 @@ Hype.prototype.start = function() {
 		routeCallback;
 
 	console.log('Starting application');
+
+	// Load the schemas
+	for (var m in this.models) {
+		this.dba.addModel(m, this.models[m]);
+	}
 
 	app.configure(function(){
 		// Much hardcoded

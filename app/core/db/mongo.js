@@ -30,5 +30,39 @@ exports.connect = function(host, username, password, dbname) {
 	mongoose.connect('mongodb://' + host + '/' + dbname);
 };
 
+exports.addModel = function (model, schema) {
+	// Need to resolve dependencies before this point
+
+	// Add the schema to a tmpCollection
+	this.tmpCollection[model] = schema;
+
+	// Loop through the tmpCollection, we'll add previous schemas to the schema
+	var s, c, a, v;
+	for(c in this.tmpCollection) {
+		s = this.tmpCollection[c]; // schema
+
+		// a = attributeName, v = attributeValue
+		for(a in s) {
+			v = s[a];
+			// If it's a string, we'll need to replace the string with the right model/schema
+			if (typeof v === 'string') {
+
+			// If it's an object (array) then replace whatever is inside with the right model/schema
+			} else if (typeof v === 'object') {
+				
+			}
+		}
+	}
+
+	// var mSchema = new mongoose.Schema(schema);
+	// var tmpModel = mongoose.model(model, mSchema);
+
+	// this.schemas[model] = mSchema;
+	// this.models[model] = tmpModel;
+}
+
+
+
+exports.tmpCollection = [];
 exports.schemas = [];
 exports.models = [];
