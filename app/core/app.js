@@ -55,6 +55,8 @@ Hype = function() {
 
 		// Holds the configuration
 		inst.configuration = {};
+
+		inst.routes = {};
 		
 		// Holds the available modules
         inst.enabledModules = [];
@@ -78,8 +80,27 @@ Hype.prototype.init = function() {
 	return when.join(
 		this.configure(),
 		this.connect(),
+		this.preload(),
 		this.start()
 	);
+};
+
+Hype.prototype.preload = function() {
+	var loaded = when.defer();
+	console.log("Setting up the routers");
+
+	for(var moduleName in this.enabledModules) {
+		currentModule = this.enabledModules[moduleName];
+		for (var route in currentModule.frontend.routes) {
+			
+			console.log("Setting up router " + route + " for " + moduleName);
+			this.routes[route] = currentModule.frontend.routes[route];
+
+		}
+		//console.log(currentModule.frontend);
+	}
+
+	return loaded.promise;
 };
 
 /**
@@ -136,8 +157,13 @@ Hype.prototype.connect = function() {
 }
 
 Hype.prototype.start = function() {
-	var self = this;
-	var loaded = when.defer();
+	var self = this,
+		loaded = when.defer(),
+		r,
+		route,
+		routeMethod,
+		routeCallback;
+
 	console.log('Starting application');
 
 	app.configure(function(){
@@ -152,8 +178,35 @@ Hype.prototype.start = function() {
 		app.use(express.methodOverride());
 
 		app.use(app.router);
-		
+
 		var themePath = path.resolve('app/themes/' + self.theme);
+
+		// Add the routes
+		for(r in self.routes) {
+			route = self.routes[r];
+			routeMethod = route.method;
+			routeCallback = route.callback;
+			switch(routeMethod) {
+				case 'get' :
+				case 'GET' :
+					app.get(r, routeCallback);
+					break;
+				case 'post' :
+				case 'POST' :
+				case 'delete' :
+				case 'DELETE' :
+					app.post(r, function(req, res) {
+						res.send(200, 'post hi world');
+					});
+					break;
+				case 'put' :
+				case 'PUT' :
+					app.put(r, function(req, res) {
+						res.send(200, 'put hi world');
+					});
+					break;
+			}
+		}
 
 		app.use(express.static(themePath));
 
@@ -171,9 +224,17 @@ Hype.prototype.start = function() {
 
 Hype.prototype.addModule = function(module) {
 	var loaded = when.defer();
-	console.log("Added " + module.name + " to Hype");
-	setTimeout(function() { console.log("waiting..."); loaded.resolve(); }, 1000);
-	this.enabledModules.push(module);
+	// Test timing
+	//setTimeout(function() { console.log("waiting..."); loaded.resolve(); }, 4000);
+	loaded.resolve(); 
+	// Don't load modules twice, if they exist, we're going to take the first instance we find	
+	if (this.enabledModules[module.name] !== undefined) {
+		console.log("Module " + module.name + " already exists, skipping")
+	} else {
+		console.log("Module " + module.name + " was added to Hype");
+		this.enabledModules[module.name] = module;
+	}
+
 	return loaded.promise;
 };
 

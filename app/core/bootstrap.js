@@ -48,7 +48,7 @@ exports.loadConfiguration = function() {
 	// Set a promise
 	var loaded = when.defer();
 	var self = this;
-	
+
 	// The plan here is to make modules overwriteable
 	// "hype", "local" folders - if the bootstrap finds the module in local first, it will use that
 	// one. This would require copying down an entire module, which might be okay since all modules
@@ -56,7 +56,7 @@ exports.loadConfiguration = function() {
 	// application, not the entire thing as a whole. If the user wants to upgrade their local
 	// module, it's on their own terms to make it compatible
 	var modulePath = path.resolve('app/plugins/hype');
-	var moduleCount = 0;
+	// var localModulePath = path.resolve('app/plugins/hype');
 
 	this.loadModule = function(module) {
 		var moduleLoaded = when.defer();
@@ -71,10 +71,14 @@ exports.loadConfiguration = function() {
 	}
 
 	this.loadModules = function() {
-		var modulesLoaded = when.defer();
-		var moduleDir = fs.readdir(modulePath, function(err, modules) {
-			for (var i = 0, j = 0, len = modules.length ; i < modules.length; i++) {
-				var moduleName = modules[i];
+		var modulesLoaded = when.defer(),
+			i = j = len = 0,
+			moduleName = undefined;
+
+		fs.readdir(modulePath, function(err, modules) {
+			len = modules.length
+			for (i; i < modules.length; i++) {
+				moduleName = modules[i];
 				// No hidden files
 				if (moduleName.indexOf('.') === 0) {
 					len--;
