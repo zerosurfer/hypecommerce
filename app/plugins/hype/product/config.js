@@ -5,6 +5,7 @@ Product = {
 	name: 'Product',
 	enabled: true,
 	depends: {
+		'core': '>=1.0.0.0'
 	},
 
 	// Schemas
@@ -12,21 +13,28 @@ Product = {
 		Product: {
 			name: String,
 			path: 'Url',
+			store: 'Store',
 			sku: String,
 			inventory: Number,
 			description: String,
 			shortDescription: String,
-
 			type: String, // virtual, simple, grouped, configurable
-			attributes: ['Attribute'],
-			displayAttributes: ['Attribute'],
+			attributes: ['Attribute'], // Attributes the product has
+			displayAttributes: ['Attribute'], // Attributes displayed on the view page
 			createdAt: Date,
 			updatedAt: Date
 		},
 		Attribute: {
-			name: String,
-			code: String,
+			name: String, // Meta Description
+			code: String, // meta_description
 			type: String, // multiselect, text, textarea, image
+			createdAt: Date,
+			updatedAt: Date
+		},
+
+		AttributeGroup: {
+			name: String, // Default
+			attributes: ['Attribute'], // Meta Description, Meta Tags
 			createdAt: Date,
 			updatedAt: Date
 		}

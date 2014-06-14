@@ -193,17 +193,15 @@ Hype.prototype.start = function() {
 					break;
 				case 'post' :
 				case 'POST' :
+					app.post(r, routeCallback);
+					break;
 				case 'delete' :
 				case 'DELETE' :
-					app.post(r, function(req, res) {
-						res.send(200, 'post hi world');
-					});
+					app.delete(r, routeCallback);
 					break;
 				case 'put' :
 				case 'PUT' :
-					app.put(r, function(req, res) {
-						res.send(200, 'put hi world');
-					});
+					app.put(r, routeCallback);
 					break;
 			}
 		}

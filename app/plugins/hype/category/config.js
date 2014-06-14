@@ -5,6 +5,7 @@ Category = {
 	name: 'Category',
 	enabled: true,
 	depends: {
+		'core': '>=1.0.0.0'
 	},
 
 	// Schemas
@@ -13,8 +14,9 @@ Category = {
 			name: String,
 			path: 'Url',
 			parent: 'Category',
+			store: 'Store',
 			canFilter: Boolean,
-			filters: 'Attribute',
+			filters: ['Attribute'],
 			metaDescription: String,
 			metaTags: String,
 			createdAt: Date,

@@ -6,31 +6,31 @@ Core = {
 	version: '1.0.0.0',
 	enabled: true,
 	depends: {
-		'category': '>=1.0.0.0'
 	},
 
 	// Schemas
 	models: {
 		Setting: {
-			path: String,
-			value: String,
+			path: String, // module/group/setting
+			value: String, // some value
 			created: { type: Date, default: Date.now },
 			updated: { type: Date, default: Date.now }
 		},
+		// A category will be assigned to a store
 		Store: {
-			name: String,
-			code: String,
-			category: 'Category', // this is a string that we will map to the loaded module schema
+			name: String, // My Store
+			code: String, // default
+			views: ['View'], // [en_US, en_UK, de_DE, fr_FR, es_ES]
 			created: { type: Date, default: Date.now },
 			updated: { type: Date, default: Date.now }
 		},
 		View: {
-			name: String,
-			code: String,
-			url: String,
-			language: String,
-			currency: 'Currency',
-			primary: Boolean,
+			name: String, // English
+			code: String, // en_US
+			url: String, // http://www.hypecommerce.com/
+			language: String, // en_US
+			currency: 'Currency', // Currency.character = $
+			primary: Boolean, // true
 			created: { type: Date, default: Date.now },
 			updated: { type: Date, default: Date.now }
 		},
