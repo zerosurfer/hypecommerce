@@ -3,7 +3,7 @@ var Product;
 
 Product = {
 	name: 'Product',
-	enabled: false,
+	enabled: true,
 	depends: {
 		'core': '>=1.0.0.0'
 	},
@@ -39,7 +39,6 @@ Product = {
 			createdAt: Date,
 			updatedAt: Date
 		},
-
 		AttributeGroup: {
 			name: String, // Default
 			attributes: ['Attribute'], // Meta Description, Meta Tags
@@ -48,12 +47,12 @@ Product = {
 		}
 	},
 
-	// Server routes
-	frontend: {
+	// Api configuration
+	api: {
 		routes: {
 			// Route name + method must be unique, if conflicts are found the route won't be included in the final set
-			'/product/:id' : {
-				method: 'get',
+			'/product/edit/:id' : {
+				method: 'put',
 				callback: function(request, response) {
 					response.send(200, 'getting product');
 				}

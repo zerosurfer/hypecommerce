@@ -45,6 +45,9 @@ Hype = function() {
 		// Holds the default theme
 		inst.theme = null;
 
+		// Holds the default theme
+		inst.themePath = null;
+
 		// Holds the configuration
 		inst.configuration = {};
 
@@ -98,6 +101,9 @@ Hype.prototype.preload = function() {
 			this.models[model] = currentModule.models[model];
 
 		}
+
+		// set themePaths for all modules
+		currentModule.themePath = path.resolve('app/themes/' + this.theme);
 		//console.log(currentModule.frontend);
 	}
 
@@ -117,11 +123,13 @@ Hype.prototype.configure = function() {
 	// Set the theme (temporarily)
 	this.theme = config.hype.theme;
 
+	//
+	this.themePath = path.resolve('app/themes/' + this.theme);
+
 	// Load the applicable configuration
 	this.configuration = config.server[this.env];
 
 	// Load all the enabled plugins
-	
 
 	return loaded.resolve();
 }
@@ -173,19 +181,20 @@ Hype.prototype.start = function() {
 	}
 
 	app.configure(function(){
-		// Much hardcoded
-		var theme = 'ractive';
+		
+		// app.engine('ejs');
+		// app.set('view engine', 'ejs');
 
 		app.use(express.favicon());
 		app.use(express.logger("dev"));
+
+		//app.set('views', this.themePath);
 
 		app.use(express.bodyParser());
 		app.use(express.cookieParser());
 		app.use(express.methodOverride());
 
 		app.use(app.router);
-
-		var themePath = path.resolve('app/themes/' + self.theme);
 
 		// Add the routes
 		for(r in self.routes) {
@@ -212,8 +221,6 @@ Hype.prototype.start = function() {
 			}
 		}
 
-		app.use(express.static(themePath));
-
 		app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
 	});
 
@@ -238,8 +245,6 @@ Hype.prototype.addModule = function(module) {
 	} else if (module.enabled == true) {
 
 		// Check dependencies
-		
-
 		console.log("Module " + module.name + " was added to Hype");
 		this.enabledModules[module.name] = module;
 		

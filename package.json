@@ -26,7 +26,8 @@
     "pg": "~0.14.1",
     "mongodb": "~1.2.14",
     "mongoose": "~3.8",
-    "when": "*"
+    "when": "*",
+    "ejs": "*"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

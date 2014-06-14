@@ -4,7 +4,7 @@ var Cms;
 Cms = {
 	name: 'Cms',
 	version: '1.0.0.0',
-	enabled: false,
+	enabled: true,
 	depends: {
 		'core': '>=1.0.0.0'
 	},
@@ -27,8 +27,8 @@ Cms = {
 		}
 	},
 
-	// Frontend configuration
-	frontend: {
+	// Api configuration
+	api: {
 		routes: {
 			// Route name + method must be unique, if conflicts are found the route won't be included in the final set
 			'/cms/:id' : {

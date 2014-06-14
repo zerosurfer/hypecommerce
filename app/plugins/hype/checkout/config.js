@@ -1,8 +1,8 @@
 // Require
-var Category;
+var Checkout;
 
-Category = {
-	name: 'Category',
+Checkout = {
+	name: 'Checkout',
 	enabled: false,
 	depends: {
 		'core': '>=1.0.0.0'
@@ -10,10 +10,10 @@ Category = {
 
 	// Schemas
 	models: {
-		Category: {
+		Checkout: {
 			name: String,
 			path: 'Url',
-			parent: 'Category',
+			parent: 'Checkout',
 			store: 'Store',
 			canFilter: Boolean,
 			filters: ['Attribute'],
@@ -24,12 +24,12 @@ Category = {
 		},
 	},
 
-	// Server routes
+	// Api configuration
 	api: {
 		routes: {
 			// Route name + method must be unique, if conflicts are found the route won't be included in the final set
-			'/category/:id' : {
-				method: 'get',
+			'/cart/add/:id' : {
+				method: 'post',
 				callback: function(request, response) {
 					response.send(200, 'getting category');
 				}
@@ -38,4 +38,4 @@ Category = {
 	}
 };
 
-module.exports = Category;
+module.exports = Checkout;

@@ -1,5 +1,6 @@
 // Require
-var Core;
+var Core,
+	path = require('path');
 
 Core = {
 	name: 'Core',
@@ -45,19 +46,21 @@ Core = {
 		Media: {
 			filename: String,
 			filepath: String,
+			description: String,
 			type: String, // mp4, wav, jpg, etc.
 			created: { type: Date, default: Date.now },
 			updated: { type: Date, default: Date.now }
 		},
 	},
 
-	// Frontend configuration
-	frontend: {
+	// Api configuration
+	api: {
 		routes: {
 			// Route name + method must be unique, if conflicts are found the route won't be included in the final set
 			'/' : {
 				method: 'get',
 				callback: function(request, response) {
+					// response.render('index.html');
 					response.send(200, 'hi world');
 					
 				}
@@ -68,6 +71,12 @@ Core = {
 					response.send(200, 'hi test');
 				}
 			}
+		}
+	},
+	// Admin configuration
+	admin: {
+		routes: {
+
 		}
 	}
 };
