@@ -1,0 +1,81 @@
+/**
+ * Hype Commerce
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Hype Commerce Creative Commons License that is bundled with
+ * this package in the file LICENSE.txt. It is also available through the world-wide-web at this
+ * URL {@link http://www.hypecommerce.com/license}. If you did not receive a copy of the license
+ * and are unable to obtain it through the world-wide-web, please send an email to
+ * {@link mailto:license@hypecommerce.com} so we can send you a copy immediately.
+ *
+ */
+
+var config;
+
+config = {
+	hype: {
+		version: "{version}",
+		install: "{install}",
+		secret: "{secret}",
+		environment: "{environment}",
+		theme: "{theme}"
+	},
+	server: {
+		development: {
+			url: "{server_development_url}",
+			port: {server_development_port},
+			db: {
+				type: "{server_development_db_type}",
+				connection: {
+					host: "{server_development_db_connection_host}",
+					username: "{server_development_db_connection_user}",
+					password: "{server_development_db_connection_pass}",
+					port: {server_development_db_connection_port},
+					dbname: "{server_development_db_connection_dbname}"
+				}
+			},
+			session: {
+				storage: "{server_development_session_storage}"
+			}
+		},
+
+		staging: {
+			url: "{server_staging_url}",
+			port: {server_staging_port},
+			db: {
+				type: "{server_staging_db_type}",
+				connection: {
+					host: "{server_staging_db_connection_host}",
+					username: "{server_staging_db_connection_user}",
+					password: "{server_staging_db_connection_pass}",
+					port: {server_staging_db_connection_port},
+					dbname: "{server_staging_db_connection_dbname}"
+				}
+			},
+			session: {
+				storage: "{server_staging_session_storage}"
+			}
+		},
+
+		production: {
+			url: "{server_production_url}",
+			port: {server_production_port},
+			db: {
+				type: "{server_production_db_type}",
+				connection: {
+					host: "{server_production_db_connection_host}",
+					username: "{server_production_db_connection_user}",
+					password: "{server_production_db_connection_pass}",
+					port: {server_production_db_connection_port},
+					dbname: "{server_production_db_connection_dbname}"
+				}
+			},
+			session: {
+				storage: "{server_production_session_storage}"
+			}
+		}
+	}
+}
+
+module.exports = config;
