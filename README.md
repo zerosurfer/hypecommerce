@@ -8,7 +8,7 @@ A hyper-fast, scalable, multi-store ecommerce platform for rapid growth
 ## Installation
 ```
 npm install
-node hype
+node app/hype
 ```
 
 ## Requirements
