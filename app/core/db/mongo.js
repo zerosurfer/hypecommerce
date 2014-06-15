@@ -23,36 +23,35 @@
  */
 
 // Load necessary modules/files
-var	mongoose = require('mongoose');
+var	mongoose = require('mongoose'),
+	inst = false,
+	MongoDba;
 
-exports.connect = function(host, username, password, dbname) {
+MongoDba = function() {
+	if (!inst) {
+		// Start the instance
+		inst = this;
+
+		// Holds the connection
+		inst.connector = null;
+
+		// Holds models
+		inst.modelCollection = [];
+
+		// Holds Schemas
+		inst.schemaCollection = [];
+	}
+	return inst;
+}
+
+MongoDba.prototype.connect = function(host, username, password, dbname) {
 	console.log("Connecting to MongoDB on %s/%s", host, dbname);
-	mongoose.connect('mongodb://' + host + '/' + dbname);
+	this.connector = mongoose.connect('mongodb://' + host + '/' + dbname);
 };
 
-exports.addModel = function (model, schema) {
-	// Need to resolve dependencies before this point
+MongoDba.prototype.addModel = function (model, schema) {
 
-	// Add the schema to a tmpCollection
-	this.tmpCollection[model] = schema;
 
-	// Loop through the tmpCollection, we'll add previous schemas to the schema
-	var s, c, a, v;
-	for(c in this.tmpCollection) {
-		s = this.tmpCollection[c]; // schema
-
-		// a = attributeName, v = attributeValue
-		for(a in s) {
-			v = s[a];
-			// If it's a string, we'll need to replace the string with the right model/schema
-			if (typeof v === 'string') {
-
-			// If it's an object (array) then replace whatever is inside with the right model/schema
-			} else if (typeof v === 'object') {
-
-			}
-		}
-	}
 
 	// var mSchema = new mongoose.Schema(schema);
 	// var tmpModel = mongoose.model(model, mSchema);
@@ -61,8 +60,5 @@ exports.addModel = function (model, schema) {
 	// this.models[model] = tmpModel;
 }
 
+module.exports = MongoDba;
 
-
-exports.tmpCollection = [];
-exports.schemas = [];
-exports.models = [];

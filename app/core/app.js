@@ -138,7 +138,8 @@ Hype.prototype.connect = function() {
 	switch(this.configuration.db.type) {
 		// MongoDB
 		case 'mongo' :
-			this.dba = require('./db/mongo');
+			var MongoDba = require('./db/mongo');
+			this.dba = new MongoDba();
 			this.dba.connect(
 				this.configuration.db.connection.host + (this.configuration.db.connection.port ? 
 					":" + this.configuration.db.connection.port : ''),

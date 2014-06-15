@@ -49,14 +49,33 @@ exports.loadConfiguration = function() {
 	var loaded = when.defer();
 	var self = this;
 
-	// The plan here is to make modules overwriteable
-	// "hype", "local" folders - if the bootstrap finds the module in local first, it will use that
-	// one. This would require copying down an entire module, which might be okay since all modules
-	// will be versioned with documentation so that upgrades only affect a small portion of the
-	// application, not the entire thing as a whole. If the user wants to upgrade their local
-	// module, it's on their own terms to make it compatible
+	/**
+	 * Extending modules
+	 *
+	 * We load all hype modules first, then "rewrite" them using the local config.js files 
+	 *
+	 * Example:
+	 * Load hype/core/config.js - set all configuration necessary
+	 * Load local/mymodule/config.js which contains something like:
+	 *  
+	 *  core: { 
+	 *    api: {
+	 *	    routes: {
+	 *	      '/test' : {
+	 *		    method: 'get',
+	 *		      callback: function(request, response) {
+	 *			    response.send(200, 'hi test');
+	 *			  }
+	 *		  }
+	 *	    }
+	 *    }
+	 *  )
+	 *
+	 * This would overwrite the api route and do it's own thing - this is going to get rough with multiple extends, no?
+	 * We'll need to find a sane way to deal with this
+	 */
 	var modulePath = path.resolve('app/plugins/hype');
-	// var localModulePath = path.resolve('app/plugins/hype');
+	var localModulePath = path.resolve('app/plugins/local');
 
 	this.loadModule = function(module) {
 		var moduleLoaded = when.defer();

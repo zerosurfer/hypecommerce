@@ -4,7 +4,7 @@ var Cms;
 Cms = {
 	name: 'Cms',
 	version: '1.0.0.0',
-	enabled: true,
+	enabled: false,
 	depends: {
 		'core': '>=1.0.0.0'
 	},
