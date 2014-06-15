@@ -56,15 +56,6 @@ Core = {
 	// Api configuration
 	api: {
 		routes: {
-			// Route name + method must be unique, if conflicts are found the route won't be included in the final set
-			'/' : {
-				method: 'get',
-				callback: function(request, response) {
-					// response.render('index.html');
-					response.send(200, 'hi world');
-					
-				}
-			},
 			'/test' : {
 				method: 'get',
 				callback: function(request, response) {

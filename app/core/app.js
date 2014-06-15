@@ -177,22 +177,20 @@ Hype.prototype.start = function() {
 	}
 
 	app.configure(function(){
-		
-		// app.engine('ejs');
-		// app.set('view engine', 'ejs');
-
-		app.use(express.favicon());
-		app.use(express.logger("dev"));
-
-		//app.set('views', this.themePath);
-
 		app.use(express.bodyParser());
 		app.use(express.cookieParser());
 		app.use(express.methodOverride());
 
-		app.use(app.router);
 
-		// Add the routes
+		app.use(express.favicon());
+		app.use(express.logger("dev"));
+		app.engine('html', require('ejs').renderFile);
+		app.set('views', self.themePath);
+		app.get('/', function (req, res) {
+			res.render(self.themePath + '/index.html');
+		});
+
+		// Add the api routes
 		for(r in self.routes) {
 			route = self.routes[r];
 			routeMethod = route.method;
