@@ -90,10 +90,10 @@ Hype.prototype.preload = function() {
 
 	for(var moduleName in this.enabledModules) {
 		currentModule = this.enabledModules[moduleName];
-		for (var route in currentModule.frontend.routes) {
+		for (var route in currentModule.api.routes) {
 			
 			console.log("Setting up router " + route + " for " + moduleName);
-			this.routes[route] = currentModule.frontend.routes[route];
+			this.routes[route] = currentModule.api.routes[route];
 
 		}
 		// load models
@@ -101,10 +101,6 @@ Hype.prototype.preload = function() {
 			this.models[model] = currentModule.models[model];
 
 		}
-
-		// set themePaths for all modules
-		currentModule.themePath = path.resolve('app/themes/' + this.theme);
-		//console.log(currentModule.frontend);
 	}
 
 	return loaded.promise;
