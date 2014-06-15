@@ -63,13 +63,45 @@ Core = {
 			},
 
 			// This will need to be moved to admin, but for testing let's find out
+			'/setting': {
+				method: 'get',
+				callback: function(request, response) {
+
+					// We need a way to get the dba in here
+					// Where BookModel = SettingModel
+					// return BookModel.find( function( err, books ) {
+					// 	if( !err ) {
+					// 		return response.send( books ); 
+					// 	} else {
+					// 		return console.log( err ); }
+					// 	});
+
+				}
+			},
+
 			'/setting/create': {
 				method: 'post',
 				callback: function(request, response) {
 					response.send(200, 'hi there');
-					console.log(response.locals.dba.getModels());
 
-					// We need a way to get the dba in here
+					var SettingModel = response.locals.dba.getModel('Setting');
+					var setting = new SettingModel({
+						path: 'module/hype/core/install',
+						value: '1',
+						created: Date.now(),
+						updated: Date.now()
+					});
+					setting.save(function( err ) {
+						if( !err ) {
+							return console.log( 'created' );
+						} else {
+							return console.log( err );
+						}
+					});
+
+					return response.send( setting );
+
+
 					// Where BookModel = SettingModel
 					// return BookModel.find( function( err, books ) {
 					// 	if( !err ) {

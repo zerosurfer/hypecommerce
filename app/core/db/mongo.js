@@ -55,14 +55,19 @@ MongoDba.prototype.addModel = function (model, schema) {
 		this.modelCollection[model] = schema;
 
 		var mSchema = new mongoose.Schema(schema);
-		var tmpModel = mongoose.model(model, mSchema);
+		var mModel = mongoose.model(model, mSchema);
 
 		this.schemaCollection[model] = mSchema;
+		this.modelCollection[model] = mModel;
 	}
 }
 
-MongoDba.prototype.getModels = function() {
-	return this.schemaCollection;
+MongoDba.prototype.getModel = function(model) {
+	return this.modelCollection[model];
+}
+
+MongoDba.prototype.getSchema = function(model) {
+	return this.schemaCollection[model];
 }
 
 module.exports = MongoDba;
