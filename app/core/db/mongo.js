@@ -50,14 +50,19 @@ MongoDba.prototype.connect = function(host, username, password, dbname) {
 };
 
 MongoDba.prototype.addModel = function (model, schema) {
+	if (model == 'Setting') {
+		console.log("Adding " + model + " to MongoDba");
+		this.modelCollection[model] = schema;
 
+		var mSchema = new mongoose.Schema(schema);
+		var tmpModel = mongoose.model(model, mSchema);
 
+		this.schemaCollection[model] = mSchema;
+	}
+}
 
-	// var mSchema = new mongoose.Schema(schema);
-	// var tmpModel = mongoose.model(model, mSchema);
-
-	// this.schemas[model] = mSchema;
-	// this.models[model] = tmpModel;
+MongoDba.prototype.getModels = function() {
+	return this.schemaCollection;
 }
 
 module.exports = MongoDba;

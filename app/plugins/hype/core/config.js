@@ -1,6 +1,5 @@
 // Require
-var Core,
-	path = require('path');
+var Core;
 
 Core = {
 	name: 'Core',
@@ -60,6 +59,25 @@ Core = {
 				method: 'get',
 				callback: function(request, response) {
 					response.send(200, 'hi test');
+				}
+			},
+
+			// This will need to be moved to admin, but for testing let's find out
+			'/setting/create': {
+				method: 'post',
+				callback: function(request, response) {
+					response.send(200, 'hi there');
+					console.log(response.locals.dba.getModels());
+
+					// We need a way to get the dba in here
+					// Where BookModel = SettingModel
+					// return BookModel.find( function( err, books ) {
+					// 	if( !err ) {
+					// 		return response.send( books ); 
+					// 	} else {
+					// 		return console.log( err ); }
+					// 	});
+
 				}
 			}
 		}

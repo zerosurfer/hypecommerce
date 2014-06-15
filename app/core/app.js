@@ -78,8 +78,8 @@ Hype.prototype.init = function() {
 
 	return when.join(
 		this.configure(),
-		this.connect(),
 		this.preload(),
+		this.connect(),
 		this.start()
 	);
 };
@@ -159,6 +159,11 @@ Hype.prototype.connect = function() {
 			break;
 	}
 
+	// Load the schemas
+	for (var m in this.models) {
+		this.dba.addModel(m, this.models[m]);
+	}
+
 	return loaded.resolve();
 }
 
@@ -172,16 +177,17 @@ Hype.prototype.start = function() {
 
 	console.log('Starting application');
 
-	// Load the schemas
-	for (var m in this.models) {
-		this.dba.addModel(m, this.models[m]);
-	}
-
 	app.configure(function(){
 		app.use(express.bodyParser());
 		app.use(express.cookieParser());
 		app.use(express.methodOverride());
 
+		app.use(function (req, res, next) {
+			res.locals = {
+				dba: self.dba
+			};
+			next();
+		});
 
 		app.use(express.favicon());
 		app.use(express.logger("dev"));
