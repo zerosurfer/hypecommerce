@@ -3,7 +3,7 @@ var Product;
 
 Product = {
 	name: 'Product',
-	enabled: false,
+	enabled: true,
 	depends: {
 		'core': '>=1.0.0.0'
 	},

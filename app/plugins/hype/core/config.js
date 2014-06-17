@@ -13,6 +13,8 @@ Core = {
 		Setting: {
 			path: String, // module/group/setting
 			value: String, // some value
+			store: 'Store',
+			//view: 'View',
 			created: { type: Date, default: Date.now },
 			updated: { type: Date, default: Date.now }
 		},
@@ -20,7 +22,7 @@ Core = {
 		Store: {
 			name: String, // My Store
 			code: String, // default
-			views: ['View'], // [en_US, en_UK, de_DE, fr_FR, es_ES]
+			//views: ['View'], // [en_US, en_UK, de_DE, fr_FR, es_ES]
 			created: { type: Date, default: Date.now },
 			updated: { type: Date, default: Date.now }
 		},
@@ -38,6 +40,12 @@ Core = {
 			name: String,
 			character: String, // currency char, like B for Bitcoin or $ for Dollar
 			decimals: Number,
+			created: { type: Date, default: Date.now },
+			updated: { type: Date, default: Date.now }
+		},
+		Language: {
+			name: String, // English, German, Pirate
+			code: String, // en_US, de_DE (where to look for .json translation files)
 			created: { type: Date, default: Date.now },
 			updated: { type: Date, default: Date.now }
 		},
@@ -82,34 +90,24 @@ Core = {
 			'/setting/create': {
 				method: 'post',
 				callback: function(request, response) {
-					response.send(200, 'hi there');
+					
+					var dba = response.locals.dba;
 
-					var SettingModel = response.locals.dba.getModel('Setting');
-					var setting = new SettingModel({
-						path: 'module/hype/core/install',
-						value: '1',
-						created: Date.now(),
-						updated: Date.now()
-					});
-					setting.save(function( err ) {
-						if( !err ) {
-							return console.log( 'created' );
-						} else {
-							return console.log( err );
-						}
-					});
-
-					return response.send( setting );
-
-
-					// Where BookModel = SettingModel
-					// return BookModel.find( function( err, books ) {
+					var SettingModel = dba.getModel('setting');
+					// var setting = new SettingModel({
+					// 	path: 'module/hype/core/install',
+					// 	value: '1'
+					// });
+					// setting.save(function( err ) {
 					// 	if( !err ) {
-					// 		return response.send( books ); 
+					// 		return console.log( 'created' );
 					// 	} else {
-					// 		return console.log( err ); }
-					// 	});
+					// 		return console.log( err );
+					// 	}
+					// });
 
+					// return response.send( setting );
+					return response.send(200, 'done');
 				}
 			}
 		}

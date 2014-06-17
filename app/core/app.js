@@ -159,7 +159,7 @@ Hype.prototype.connect = function() {
 			break;
 	}
 
-	// Load the schemas
+	// Load the model schema
 	for (var m in this.models) {
 		this.dba.addModel(m, this.models[m]);
 	}
@@ -182,6 +182,8 @@ Hype.prototype.start = function() {
 		app.use(express.cookieParser());
 		app.use(express.methodOverride());
 
+		// Set locals to use on the config.js files
+		// dba -> Default db connector
 		app.use(function (req, res, next) {
 			res.locals = {
 				dba: self.dba
@@ -204,19 +206,15 @@ Hype.prototype.start = function() {
 			routeCallback = route.callback;
 			switch(routeMethod) {
 				case 'get' :
-				case 'GET' :
 					app.get(r, routeCallback);
 					break;
 				case 'post' :
-				case 'POST' :
 					app.post(r, routeCallback);
 					break;
 				case 'delete' :
-				case 'DELETE' :
 					app.delete(r, routeCallback);
 					break;
 				case 'put' :
-				case 'PUT' :
 					app.put(r, routeCallback);
 					break;
 			}

@@ -24,6 +24,7 @@
 
 // Load necessary modules/files
 var	mongoose = require('mongoose'),
+	when = require('when'),
 	inst = false,
 	MongoDba;
 
@@ -38,6 +39,9 @@ MongoDba = function() {
 		// Holds models
 		inst.modelCollection = [];
 
+		// Holds singletons
+		inst.singletonCollection = [];
+
 		// Holds Schemas
 		inst.schemaCollection = [];
 	}
@@ -50,25 +54,55 @@ MongoDba.prototype.connect = function(host, username, password, dbname) {
 };
 
 MongoDba.prototype.addModel = function (model, schema) {
-	if (model == 'Setting') {
-		console.log("Adding " + model + " to MongoDba");
-		this.modelCollection[model] = schema;
+	var loaded = when.defer();
 
-		var mSchema = new mongoose.Schema(schema);
-		var mModel = mongoose.model(model, mSchema);
+	// @todo, implement proper model checking when calling "getModel"
+	// THIS NEEDS TO CHANGE, lowercasing all checks for now
+	var key = model.toLowerCase();
 
-		this.schemaCollection[model] = mSchema;
-		this.modelCollection[model] = mModel;
-	}
+	console.log("Adding " + model + " to Mongo");
+
+	// Temporarily set in the config
+	this.schemaCollection[key] = schema;
+	this.modelCollection[key] = model;
+
+	// At this point we have everything we need from the model
+	loaded.resolve();
+
+	return loaded.promise;
 }
 
 MongoDba.prototype.getModel = function(model) {
-	return this.modelCollection[model];
+	if (this.singletonCollection[model] === undefined) {
+		this.singletonCollection[model] = this.loadModel(model);
+	}
+	return this.singletonCollection[model];
+};
+
+MongoDba.prototype.loadModel = function(model) {
+	var attr,
+		i;
+	for (i in this.schemaCollection[model]) {
+		
+		attr = this.schemaCollection[model][i];
+
+		if (typeof attr === 'string') {
+			if (this.schemaCollection[attr] !== undefined) {
+				this.schemaCollection[model][i] = this.schemaCollection[attr];
+			} else {
+				this.schemaCollection[model][i] = this.loadModel(attr);
+			}
+		}
+
+	}
+
+	var mSchema = new mongoose.Schema(this.schemaCollection[model]);
+	return mModel = mongoose.model(model, mSchema);
 }
 
 MongoDba.prototype.getSchema = function(model) {
 	return this.schemaCollection[model];
-}
+};
 
 module.exports = MongoDba;
 
