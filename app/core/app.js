@@ -165,13 +165,19 @@ Hype.prototype.connect = function() {
 			if (model.deps) {
 
 				for(var needed in model.deps) {
+					if (typeof model.deps[needed] === 'string') {
+						if (!self.dba.hasModel(model.deps[needed])) {
+							loadModel(model.deps[needed], self.models[model.deps[needed]]);
+						}
 
-					if (!self.dba.models[model.deps[needed]]) {
+						self.models[name].schema[needed] = self.dba.getRawModel(model.deps[needed]);
+					} else {
+						for(var n in model.deps[needed]) {
+							loadModel(model.deps[needed][n], self.models[model.deps[needed][n]]);
+						}
 
-						loadModel(model.deps[needed], self.models[model.deps[needed]]);
+						self.models[name].schema[needed] = [self.dba.getRawModel(model.deps[needed])];
 					}
-
-					self.models[name].schema[needed] = self.dba.models[model.deps[needed]];
 				}
 
 				self.dba.addModel(name, self.models[name].schema);

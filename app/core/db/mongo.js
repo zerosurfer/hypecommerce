@@ -70,33 +70,17 @@ MongoDba.prototype.addModel = function (model, schema) {
 	return loaded.promise;
 }
 
+MongoDba.prototype.hasModel = function(model) {
+	return (this.modelCollection[model] !== undefined) ? true : false;
+}
+
 MongoDba.prototype.getModel = function(model) {
-	if (this.singletonCollection[model] === undefined) {
-		this.singletonCollection[model] = this.loadModel(model);
-	}
-	return this.singletonCollection[model];
+	return this.modelCollection[model];
 };
 
-MongoDba.prototype.loadModel = function(model) {
-	var attr,
-		i;
-	for (i in this.schemaCollection[model]) {
-		
-		attr = this.schemaCollection[model][i];
-
-		if (typeof attr === 'string') {
-			if (this.schemaCollection[attr] !== undefined) {
-				this.schemaCollection[model][i] = this.schemaCollection[attr];
-			} else {
-				this.schemaCollection[model][i] = this.loadModel(attr);
-			}
-		}
-
-	}
-
-	var mSchema = new mongoose.Schema(this.schemaCollection[model]);
-	return mModel = mongoose.model(model, mSchema);
-}
+MongoDba.prototype.getRawModel = function(model) {
+	return this.models[model];
+};
 
 MongoDba.prototype.getSchema = function(model) {
 	return this.schemaCollection[model];

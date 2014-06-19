@@ -36,7 +36,7 @@ Core = {
 				updated: { type: Date, default: Date.now }
 			},
 			deps: {
-
+				views: ['View']
 			}
 		},
 		View: {
@@ -114,20 +114,6 @@ Core = {
 				method: 'post',
 				callback: function(request, response) {
 					
-					var dba = response.locals.dba;
-
-					var SettingModel = dba.getModel('setting');
-					// var setting = new SettingModel({
-					// 	path: 'module/hype/core/install',
-					// 	value: '1'
-					// });
-					// setting.save(function( err ) {
-					// 	if( !err ) {
-					// 		return console.log( 'created' );
-					// 	} else {
-					// 		return console.log( err );
-					// 	}
-					// });
 
 					// return response.send( setting );
 					return response.send(200, 'done');
