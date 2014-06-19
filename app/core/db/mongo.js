@@ -44,6 +44,8 @@ MongoDba = function() {
 
 		// Holds Schemas
 		inst.schemaCollection = [];
+
+		inst.models = [];
 	}
 	return inst;
 }
@@ -55,17 +57,13 @@ MongoDba.prototype.connect = function(host, username, password, dbname) {
 
 MongoDba.prototype.addModel = function (model, schema) {
 	var loaded = when.defer();
-
-	// @todo, implement proper model checking when calling "getModel"
-	// THIS NEEDS TO CHANGE, lowercasing all checks for now
-	var key = model.toLowerCase();
-
+	this.models[model] = schema;
 	console.log("Adding " + model + " to Mongo");
 
-	// Temporarily set in the config
-	this.schemaCollection[key] = schema;
-	this.modelCollection[key] = model;
-
+	var mSchema = new mongoose.Schema(schema);
+	var mModel = mongoose.model(model, mSchema);
+	this.schemaCollection[model] = mSchema;
+	this.modelCollection[model] = mModel;
 	// At this point we have everything we need from the model
 	loaded.resolve();
 
@@ -104,5 +102,5 @@ MongoDba.prototype.getSchema = function(model) {
 	return this.schemaCollection[model];
 };
 
-module.exports = MongoDba;
+module.exports = new MongoDba();
 

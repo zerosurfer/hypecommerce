@@ -131,6 +131,7 @@ Hype.prototype.configure = function() {
 }
 
 Hype.prototype.connect = function() {
+	var self = this;
 	var loaded = when.defer();
 	console.log("Connecting to the db");
 
@@ -138,8 +139,7 @@ Hype.prototype.connect = function() {
 	switch(this.configuration.db.type) {
 		// MongoDB
 		case 'mongo' :
-			var MongoDba = require('./db/mongo');
-			this.dba = new MongoDba();
+			this.dba = require('./db/mongo');
 			this.dba.connect(
 				this.configuration.db.connection.host + (this.configuration.db.connection.port ? 
 					":" + this.configuration.db.connection.port : ''),
@@ -159,9 +159,31 @@ Hype.prototype.connect = function() {
 			break;
 	}
 
+	// Recursively load the modules into mongoose
+	var loadModel = function(name, model) {
+		if (!self.dba.models[name]) {
+			if (model.deps) {
+
+				for(var needed in model.deps) {
+
+					if (!self.dba.models[model.deps[needed]]) {
+
+						loadModel(model.deps[needed], self.models[model.deps[needed]]);
+					}
+
+					self.models[name].schema[needed] = self.dba.models[model.deps[needed]];
+				}
+
+				self.dba.addModel(name, self.models[name].schema);
+			} else {
+				self.dba.addModel(name, self.models[name].schema);
+			}
+		}
+	}
+
 	// Load the model schema
 	for (var m in this.models) {
-		this.dba.addModel(m, this.models[m]);
+		loadModel(m, this.models[m]);
 	}
 
 	return loaded.resolve();
