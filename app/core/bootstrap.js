@@ -32,11 +32,7 @@ var	fs      = require('fs'),
 
 exports.init = function() {
 	// Start it up
-	when(hype.init()).then(function() {
-		console.log ("Ready for action");
-	}).otherwise(function() {
-		console.log("Failed to initialze Hype");
-	});
+	hype.init();
 };
 
 exports.loadConfiguration = function() {
@@ -73,8 +69,8 @@ exports.loadConfiguration = function() {
 	var localModulePath = path.resolve('app/plugins/local');
 
 	this.loadModule = function(module) {
-		var moduleLoaded = when.defer();
-		console.log('Waiting for module...');
+		//var moduleLoaded = when.defer();
+		console.log('Loading module ' + module);
 
 		// Should actually check for the index.js file and throw an error if not found
 		// Kind of crappy, we need to load the file first before checking if it's disabled
@@ -82,16 +78,17 @@ exports.loadConfiguration = function() {
 		// bootstrapped into runtime
 		fs.exists(modulePath + "/" + module + "/index.js", function(exists) {
 			if (exists) {
-				when(hype.addModule(require(modulePath + "/" + module + "/index.js"))).then(function() {
-					moduleLoaded.resolve();
-				});
+				hype.addModule(require(modulePath + "/" + module + "/index.js"), modulePath + "/" + module);
+					
+					//moduleLoaded.resolve();
+					
 			} else {
 				console.log("Could not find index.js for module " + module);
-				moduleLoaded.resolve();
+				//moduleLoaded.resolve();
 			}
 		})
-		return moduleLoaded.promise;
-	}
+		//return moduleLoaded.promise;
+	},
 
 	this.loadModules = function() {
 		var modulesLoaded = when.defer(),
@@ -99,31 +96,32 @@ exports.loadConfiguration = function() {
 			moduleName = undefined;
 
 		fs.readdir(modulePath, function(err, modules) {
+
+							console.log("Reading dir " + modulePath);
 			len = modules.length;
 			for (i; i < modules.length; i++) {
 				moduleName = modules[i];
 				// No hidden files or disabled modules
-				if (moduleName.indexOf('.') === 0) {
+				if (moduleName.indexOf('.') !== 0) {
+					when(self.loadModule(moduleName)).then(function() {
+						if (j + 1 == len)
+							modulesLoaded.resolve();
+						else
+							++j;
+					}).otherwise(function(err) {
+						console.log("No " + err);
+					});	
+				} else {
 					len--;
 					continue;
 				}
-				when(self.loadModule(moduleName)).then(function() {
-					if (j + 1 == len)
-						return modulesLoaded.resolve();
-					else
-						++j;
-				}).otherwise(function(err) {
-					console.log("No " + err);
-				});	
 			}
 		});
 
 		return modulesLoaded.promise;
 	}
 
-	return when.join(
-		this.loadModules()
-	).then(function() {
+	return when(this.loadModules()).then(function() {
 		console.log("Finished bootstrap!");
 	})
 };

@@ -61,6 +61,9 @@ Hype = function() {
 		// Holds the available modules
         inst.enabledModules = [];
 
+        // Holds the available model files
+        inst.enabledModels = [];
+
         inst.installed = false;
 
         inst.wizard = false;
@@ -342,22 +345,81 @@ Hype.prototype.start = function() {
 	return loaded.resolve();
 };
 
-Hype.prototype.addModule = function(module) {
+Hype.prototype.addModule = function(module, path) {
+	var self = this;
 	var loaded = when.defer();
+
 	// Test timing
 	//setTimeout(function() { console.log("waiting..."); loaded.resolve(); }, 4000);
-	loaded.resolve(); 
-	// Don't load modules twice, if they exist, we're going to take the first instance we find	
-	if (this.enabledModules[module.name] !== undefined) {
-		console.log("Module " + module.name + " already exists, skipping")
-	// Check enabled
-	} else if (module.enabled == true) {
 
-		// Check dependencies
-		console.log("Module " + module.name + " was added to Hype");
-		this.enabledModules[module.name] = module;
-		
-	}
+	when(this.loadModels(module.name, path)).then(function() {
+		console.log('done');
+		// Don't load modules twice, if they exist, we're going to take the first instance we find	
+		if (self.enabledModules[module.name] !== undefined) {
+			console.log("Module " + module.name + " already exists, skipping")
+		// Check enabled
+		} else if (module.enabled == true) {
+
+			// Check dependencies
+			console.log("Module " + module.name + " was added to Hype");
+			self.enabledModules[module.name] = module;
+			
+		}
+	})
+
+	loaded.resolve(); 
+
+	return loaded.promise;
+};
+
+Hype.prototype.loadModels = function(module, path) {
+	var	modelPath = path + "/models",
+		loaded = when.defer();
+			i = j = len = 0,
+			self = this;
+
+	console.log('Waiting for models for ' + module);
+
+	// Should actually check for the index.js file and throw an error if not found
+	// Kind of crappy, we need to load the file first before checking if it's disabled
+	// It's practically loaded at this point, we're just preventing it from becoming
+	// bootstrapped into runtime
+	fs.exists(modelPath, function(exists) {
+		if (exists) {
+			fs.readdir(modelPath, function(err, models) {
+				len = models.length;
+				console.log('Reading ' + modelPath);
+				if (models) {
+					console.log("Models loading for " + module);
+					len = models.length;
+					for (i; i < models.length; i++) {
+						modelName = models[i];
+						console.log("Loading " + modelName);
+						self.addModel(modelName, require(modelPath + "/" + modelName));
+						console.log('hi');
+						loaded.resolve();
+					}
+				}
+			});
+			
+		}
+	});
+
+	return loaded.promise;
+}
+
+
+Hype.prototype.addModel = function(name, model) {
+	var loaded = when.defer();
+
+	// Test timing
+	//setTimeout(function() { console.log("waiting..."); loaded.resolve(); }, 4000);
+
+	loaded.resolve(); 
+	
+	console.log("Model " + name + " was added to Hype");
+	this.enabledModels[name] = model;
+
 
 	return loaded.promise;
 };

@@ -7,6 +7,23 @@
 var	Setting;
 
 Setting = function(db) {
+	this.name = 'Setting',
+	
+	this.options = {
+
+	},
+
+	this.schema = {
+		path: String, // module/group/setting
+		value: String, // some value
+		created: { type: Date, default: Date.now },
+		updated: { type: Date, default: Date.now }
+	},
+	this.deps = {
+		store: 'Store',
+		view: 'View',
+	}
+
 	this.settingFunc = function() {
 		console.log("Settings function");
 	}

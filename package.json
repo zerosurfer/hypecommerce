@@ -1,5 +1,5 @@
 {
-  "name": "Hype-Commerce",
+  "name": "HypeCommerce",
   "version": "0.0.1",
   "author": "Hyperion Team <hypecommerce@gmail.com>",
   "description": "A hyper-fast, scalable, multi-store ecommerce platform for rapid growth",
@@ -29,6 +29,7 @@
     "when": "*",
     "connect-redis":"*",
     "passport": "*",
+    "cluster": "*",
     "underscore": "*",
     "ejs": "*"
   },

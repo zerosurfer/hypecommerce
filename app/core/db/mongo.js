@@ -59,6 +59,7 @@ MongoDba.prototype.addModel = function (model, schema) {
 	var loaded = when.defer();
 	this.models[model] = schema;
 	console.log("Adding " + model + " to Mongo");
+	//console.log(schema);
 
 	var mSchema = new mongoose.Schema(schema);
 	var mModel = mongoose.model(model, mSchema);

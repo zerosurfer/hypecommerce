@@ -7,6 +7,7 @@ var Model;
 
 Model = function(db) {
 
+
 	this.testFunc = function() {
 		console.log("Hello function");
 	},
