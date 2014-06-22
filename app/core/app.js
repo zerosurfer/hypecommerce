@@ -72,6 +72,7 @@ Hype = function() {
 };
 
 // Load the core classes
+Hype.prototype.Log = require('./log');
 Hype.prototype.Model = require('./model'); // base model
 Hype.prototype.Helper = require('./helper'); // base helper
 Hype.prototype.Controller = require('./controller'); // base controller
@@ -88,6 +89,18 @@ Hype.prototype.Config = require('./config'); // configuration
 // Hype.prototype.Wizard = require('./wizard');
 
 /**
+ * Logging
+ *
+ * @param	string	message;	Message to log
+ * @param	string	priority;	DEBUG|INFO|WARN|ERROR
+ * @return	Hype
+ */
+Hype.prototype.log = function(message, priority) {
+	new this.Log(message,priority);
+	return this;
+}
+
+/**
  * Initiate Hype
  * Provides logic for the application, sets up the configuration, starts the express server,
  * connects to the db, and runs
@@ -96,7 +109,7 @@ Hype.prototype.init = function() {
 	var loaded = when.defer();
 	var self = this;
 
-	console.log("Hype init");
+	self.log("Hype init");
 
 	return when.join(
 		this.configure(),
@@ -104,9 +117,9 @@ Hype.prototype.init = function() {
 		this.connect(),
 		this.start()
 	).then(function() {
-		console.log("Hype is up and running,  Enjoy ;)");
+		self.log("Hype is up and running,  Enjoy ;)");
 	}).otherwise(function() {
-		console.log("failure");
+		self.log("failure");
 	});
 };
 
@@ -115,7 +128,8 @@ Hype.prototype.init = function() {
  */
 Hype.prototype.configure = function() {
 	var loaded = when.defer();
-	console.log("Setting up configuration");
+	var self = this;
+	self.log("Setting up configuration");
 
 	// Set the environment
 	this.env = this.Config.hype.environment;
@@ -141,7 +155,8 @@ Hype.prototype.configure = function() {
 
 Hype.prototype.preload = function() {
 	var loaded = when.defer();
-	console.log("Setting up the routers");
+	var self = this;
+	self.log("Setting up the routers");
 
 	for(var namespace in this.enabledModules) {
 		currentNamespace = this.enabledModules[namespace];
@@ -149,7 +164,7 @@ Hype.prototype.preload = function() {
 			var currentModule = currentNamespace[module];
 			for (var route in currentModule.api.routes) {
 				
-				console.log("Setting up router " + route + " for " + moduleName);
+				self.log("Setting up router " + route + " for " + moduleName);
 				this.routes[route] = currentModule.api.routes[route];
 
 			}
@@ -169,7 +184,7 @@ Hype.prototype.preload = function() {
 Hype.prototype.connect = function() {
 	var self = this;
 	var loaded = when.defer();
-	console.log("Connecting to the db");
+	self.log("Connecting to the db");
 
 	// Depending on the configuration, we can load a different db adapter
 	switch(this.configuration.db.type) {
@@ -222,7 +237,7 @@ Hype.prototype.connect = function() {
 
 						self.models[name].schema[needed] = self.dba.getRawModel(modelNeeded);
 					} else {
-						//console.log(modelNeeded);
+						//self.log(modelNeeded);
 						for(var n in modelNeeded) {
 							loadModel(modelNeeded[n].toLowerCase(), self.models[modelNeeded[n].toLowerCase()]);
 						}
@@ -256,7 +271,7 @@ Hype.prototype.start = function() {
 		routeMethod,
 		routeCallback;
 
-	console.log('Starting application');
+	self.log('Starting application');
 
 	app.configure(function(){
 		app.use(express.bodyParser());
@@ -331,7 +346,7 @@ Hype.prototype.start = function() {
 	});
 
 	app.listen(this.configuration.port, function() {
-		console.log( 'Express server listening on port %d in %s mode', self.configuration.port,
+		self.log( 'Express server listening on port %d in %s mode', self.configuration.port,
 			app.settings.env );
 			
 		loaded.resolve();
@@ -339,7 +354,7 @@ Hype.prototype.start = function() {
 
 	// Test inheritance
 	// var model = this.loadedModels['setting'];
-	// console.log(model.testFunc()); // inheritance!
+	// self.log(model.testFunc()); // inheritance!
 
 	return loaded.promise;
 };
@@ -348,7 +363,7 @@ Hype.prototype.addModule = function(fullModuleName, module) {
 	var self = this,
 		namespace = moduleName = undefined;
 
-	console.log("Adding " + fullModuleName + " to Hype");
+	self.log("Adding " + fullModuleName + " to Hype");
 
 	var split = fullModuleName.split('/');
 	namespace = split[0];
@@ -373,7 +388,7 @@ Hype.prototype.addModel = function(fullModuleName, modelName, model) {
 	namespace = split[0];
 	moduleName = split[1];
 
-	console.log("Adding model " + fullModuleName + "/" + modelName + " to Hype");
+	self.log("Adding model " + fullModuleName + "/" + modelName + " to Hype");
 
 	// Load the model onto global object namespace
 	self.enabledModules[namespace][moduleName].models[modelName] = model;

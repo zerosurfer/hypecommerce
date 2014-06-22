@@ -54,16 +54,17 @@ var	fs      = require('fs'),
     when    = require('when'),
 	path	= require('path'),
 	Hype	= require('./app'),
+	Log 	= require('./log');
 	hype	= new Hype();
 
 exports.init = function() {
 	// Start it up
-	console.log("Signals clear for launch");
+	new Log("Signals clear for launch");
 	hype.init();
 };
 
 exports.loadConfiguration = function() {
-	console.log("Loading the configuration files");
+	new Log("Loading the configuration files");
 	// Set a promise
 	var loaded = when.defer(),
 		self = this,
@@ -113,10 +114,10 @@ exports.loadConfiguration = function() {
 		var modelLoaded = when.defer();
 		fs.exists(modulePath + "/models", function(exists) {
 			if (exists) {
-				console.log("Need to read models in " + modulePath + "/models");
+				new Log("Need to read models in " + modulePath + "/models");
 
 				self.readAndLoadDirectory(modulePath + "/models", 'model', fullModuleName).then(function() {
-					console.log("Models were read");
+					new Log("Models were read");
 					setTimeout(function() {
 						modelLoaded.resolve();
 					}, 1000);
@@ -131,7 +132,7 @@ exports.loadConfiguration = function() {
 		var helperLoaded = when.defer();
 		fs.exists(modulePath + "/helpers", function(exists) {
 			if (exists) {
-				console.log("Need to read helpers in " + modulePath + "/helpers");
+				new Log("Need to read helpers in " + modulePath + "/helpers");
 			}
 			setTimeout(function() {
 				helperLoaded.resolve();
@@ -144,7 +145,7 @@ exports.loadConfiguration = function() {
 		var controllerLoaded = when.defer();
 		fs.exists(modulePath + "/controllers", function(exists) {
 			if (exists) {
-				console.log("Need to read controllers in " + modulePath + "/controllers");
+				new Log("Need to read controllers in " + modulePath + "/controllers");
 			}
 			setTimeout(function() {
 				controllerLoaded.resolve();
@@ -185,67 +186,11 @@ exports.loadConfiguration = function() {
 			, self.loadControllerFolder(fullModuleName, filteredModules[module]))
 			.then(function() {
 				loaded.resolve();
-				console.log("Done loading all the configuration files");
+				new Log("Done loading all the configuration files");
 			});
 		}		
 		
 	});
 
 	return loaded.promise;
-	// this.loadModule = function(module) {
-	// 	//var moduleLoaded = when.defer();
-	// 	console.log('Loading module ' + module);
-
-	// 	// Should actually check for the index.js file and throw an error if not found
-	// 	// Kind of crappy, we need to load the file first before checking if it's disabled
-	// 	// It's practically loaded at this point, we're just preventing it from becoming
-	// 	// bootstrapped into runtime
-	// 	fs.exists(coreModulePath + "/" + module + "/index.js", function(exists) {
-	// 		if (exists) {
-	// 			hype.addModule(require(coreModulePath + "/" + module + "/index.js"), coreModulePath + "/" + module);
-					
-	// 				//moduleLoaded.resolve();
-					
-	// 		} else {
-	// 			console.log("Could not find index.js for module " + module);
-	// 			//moduleLoaded.resolve();
-	// 		}
-	// 	})
-	// 	//return moduleLoaded.promise;
-	// },
-
-	// this.loadModules = function() {
-	// 	var modulesLoaded = when.defer(),
-	// 		i = j = len = 0,
-	// 		moduleName = undefined;
-
-	// 	fs.readdir(coreModulePath, function(err, modules) {
-
-	// 						console.log("Reading dir " + coreModulePath);
-	// 		len = modules.length;
-	// 		for (i; i < modules.length; i++) {
-	// 			moduleName = modules[i];
-	// 			// No hidden files or disabled modules
-	// 			if (moduleName.indexOf('.') !== 0) {
-	// 				when(self.loadModule(moduleName)).then(function() {
-	// 					if (j + 1 == len)
-	// 						modulesLoaded.resolve();
-	// 					else
-	// 						++j;
-	// 				}).otherwise(function(err) {
-	// 					console.log("No " + err);
-	// 				});	
-	// 			} else {
-	// 				len--;
-	// 				continue;
-	// 			}
-	// 		}
-	// 	});
-
-	// 	return modulesLoaded.promise;
-	// }
-
-	// return when(this.loadModules()).then(function() {
-	// 	console.log("Finished bootstrap!");
-	// })
 };
