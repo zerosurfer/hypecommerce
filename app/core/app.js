@@ -59,9 +59,19 @@ Hype = function() {
 		
 		// Holds the available modules
         inst.enabledModules = [];
+
+     	// Check if we need the wizard first
+     	// inst.Wizard = require('./wizard');
 	}
 	return inst;
 };
+
+// Load the core classes
+Hype.prototype.Model = require('./model');
+Hype.prototype.Helper = require('./helper');
+Hype.prototype.Controller = require('./controller');
+Hype.prototype.Install = require('./install');
+Hype.prototype.Server = require('./server');
 
 /**
  * Initiate Hype
@@ -119,7 +129,7 @@ Hype.prototype.configure = function() {
 	// Set the theme (temporarily)
 	this.theme = config.hype.theme;
 
-	//
+	// Set the theme path
 	this.themePath = path.resolve('app/themes/' + this.theme);
 
 	// Load the applicable configuration
@@ -147,6 +157,12 @@ Hype.prototype.connect = function() {
 				this.configuration.db.connection.password,
 				this.configuration.db.connection.dbname
 			);
+			break;
+		case 'couchdb' :
+
+			break;
+		case 'mariadb' :
+
 			break;
 		// @todo MySQL adapter
 		case 'mysql' :
@@ -198,6 +214,7 @@ Hype.prototype.connect = function() {
 Hype.prototype.start = function() {
 	var self = this,
 		loaded = when.defer(),
+		admin = require('./admin'),
 		r,
 		route,
 		routeMethod,
@@ -226,6 +243,10 @@ Hype.prototype.start = function() {
 		app.get('/', function (req, res) {
 			res.render(self.themePath + '/index.html');
 		});
+
+		// Add the admin routes
+		app.get('/' + self.configuration.admin, admin.index);
+		app.get('/' + self.configuration.admin + '/:controller/:action', admin.test);
 
 		// Add the api routes
 		for(r in self.routes) {
@@ -284,4 +305,4 @@ Hype.prototype.getModules = function() {
 	return this.enabledModules;
 }
 
-module.exports = Hype;
+module.exports = new Hype();

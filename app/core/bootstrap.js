@@ -27,13 +27,10 @@ var	fs      = require('fs'),
     url     = require('url'),
     when    = require('when'),
 	path	= require('path'),
-	Hype	= require('./app'),
+	hype	= require('./app'),
 
 // Define variables
-    config,
-
-// Load Hype
-	hype	= new Hype();
+    confi;
 
 exports.init = function() {
 	// Start it up
@@ -81,15 +78,20 @@ exports.loadConfiguration = function() {
 		var moduleLoaded = when.defer();
 		console.log('Waiting for module...');
 
-		// Should actually check for the config.js file and throw an error if not found
+		// Should actually check for the index.js file and throw an error if not found
 		// Kind of crappy, we need to load the file first before checking if it's disabled
 		// It's practically loaded at this point, we're just preventing it from becoming
 		// bootstrapped into runtime
-		when(hype.addModule(require(modulePath + "/" + module + "/config.js"))).then(function() {
-			setTimeout(function() { moduleLoaded.resolve(); }, 100);
-			//return moduleLoaded.resolve();
-		});
-
+		fs.exists(modulePath + "/" + module + "/index.js", function(exists) {
+			if (exists) {
+				when(hype.addModule(require(modulePath + "/" + module + "/index.js"))).then(function() {
+					moduleLoaded.resolve();
+				});
+			} else {
+				console.log("Could not find index.js for module " + module);
+				moduleLoaded.resolve();
+			}
+		})
 		return moduleLoaded.promise;
 	}
 

@@ -2,19 +2,11 @@
  * Base model for Hype
  *
  */
-module.exports = function(db) {
-	this.db = db;
+console.log('loading model class');
+var Model;
+
+Model = function() {
+
 }
-module.exports.prototype = {
-	extend: function(properties) {
-		var Child = module.exports;
-		Child.prototype = module.exports.prototype;
-		for(var key in properties) {
-			Child.prototype[key] = properties[key];
-		}
-		return Child;
-	},
-	setDB: function(db) {
-		this.db = db;
-	},
-}
+
+module.exports = Model;
