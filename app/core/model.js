@@ -2,22 +2,28 @@
  * Base model for Hype
  *
  */
-var Model;
+var Model
 
-Model = function(dba) {
+Model = function(Hype, dba) {
 
 	this.attrs = {},
 	this.originalAttrs = {},
 	this.dirty = false,
+	this.Hype = Hype,
+
+	this.getDba = function() {
+		return dba;
+	}
 
 	this.load = function(id) {
 		// get from the db
 		// this.attrs = model;
 		// this.originalAttrs = model;
+		return id;
 	}
 
 	this.save = function() {
-		if (this.dirty) {
+		if (this.checkDirty()) {
 			// .. save ..
 		}
 	},
@@ -25,6 +31,11 @@ Model = function(dba) {
 	this.remove = function() {
 		// Free up dependencies
 	},
+
+	this.checkDirty = function() {
+		// if attrs different from originalAttrs then true
+		return true;
+	}
 
 	this.testFunc = function() {
 		return "Hello function";

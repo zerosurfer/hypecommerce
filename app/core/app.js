@@ -61,9 +61,6 @@ Hype = function() {
 		// Holds the available modules
         inst.enabledModules = [];
 
-        // Holds the available model files
-        inst.loadedModels = [];
-
         inst.installed = false;
 
         inst.wizard = false;
@@ -71,9 +68,9 @@ Hype = function() {
 	return inst;
 };
 
-// Load the core classes
+// Load the core classes, could act as singletons
 Hype.prototype.Log = require('./log');
-Hype.prototype.Model = require('./model'); // base model
+Hype.prototype.BaseModel = require('./model'); // base model
 Hype.prototype.Helper = require('./helper'); // base helper
 Hype.prototype.Controller = require('./controller'); // base controller
 Hype.prototype.Install = require('./install'); // installation script logic
@@ -84,6 +81,7 @@ Hype.prototype.Auth = require('./auth'); // authentication logic (passport|other
 Hype.prototype.Db = require('./db'); // database logic (mongodb|other)
 Hype.prototype.Admin = require('./admin'); // admin logic
 Hype.prototype.Config = require('./config'); // configuration
+Hype.prototype.Model = {}; // holds models
 // Hype.prototype.Locale = require('./locale'); // translations, can look into the airbnb plugin/licensing for backbone
 
 // Hype.prototype.Wizard = require('./wizard');
@@ -200,8 +198,8 @@ Hype.prototype.connect = function() {
 			);
 
 			// Set the db on the base model
-			var BaseModel = this.Model;
-			this.Model = new BaseModel(this.dba);
+			var BaseModel = this.BaseModel;
+			this.BaseModel = new BaseModel(self, this.dba);
 
 			break;
 		case 'couchdb' :
@@ -226,35 +224,44 @@ Hype.prototype.connect = function() {
 		var modelNeeded = undefined;
 
 		if (!self.dba.models[name]) {
-			if (model.deps) {
-				for(var needed in model.deps) {
-					modelNeeded = model.deps[needed];
+
+			if (self.Model[name] === undefined) {
+				self.Model[name] = new model();
+			}
+
+			if (self.Model[name].deps) {
+				for(var needed in self.Model[name].deps) {
+					modelNeeded = self.Model[name].deps[needed];
 					if (typeof modelNeeded === 'string') {
 						modelNeeded = modelNeeded.toLowerCase();
 						if (!self.dba.hasModel(modelNeeded)) {
 							loadModel(modelNeeded, self.models[modelNeeded]);
 						}
 
-						self.models[name].schema[needed] = self.dba.getRawModel(modelNeeded);
+						self.Model[name].schema[needed] = self.dba.getRawModel(modelNeeded);
 					} else {
 						//self.log(modelNeeded);
 						for(var n in modelNeeded) {
 							loadModel(modelNeeded[n].toLowerCase(), self.models[modelNeeded[n].toLowerCase()]);
 						}
-						self.models[name].schema[needed] = [self.dba.getRawModel(modelNeeded)];
+						self.Model[name].schema[needed] = [self.dba.getRawModel(modelNeeded)];
 					}
 				}
 
-				self.dba.addModel(name, self.models[name].schema);
-				self.loadedModels[name] = _.extend(self.models[name], self.Model);
+				self.dba.addModel(name, self.Model[name].schema);
+				// Extend the models with the dba
+				self.Model[name] = _.extend(self.Model[name], self.BaseModel);
 			} else {
-				self.dba.addModel(name, self.models[name].schema);
+				self.dba.addModel(name, self.Model[name].schema);
+				// Extend the models with the dba
+				self.Model[name] = _.extend(self.Model[name], self.BaseModel);
 			}
 		}
 	}
 
 	// Load the model schema
 	for (var m in this.models) {
+		// Instanstiate the model
 		loadModel(m, this.models[m]);
 	}
 
@@ -273,11 +280,17 @@ Hype.prototype.start = function() {
 
 	self.log('Starting application');
 
+	// Test for installation
+	self.log("TEST ONLY: Install script for core");
+	var install = require(path.resolve('app/plugins/hype/core/install/1.0.0.0.js'));
+	new install(self);
+
 	var readAndSetRoutes = function() {
 		var namespace, module, controller, route, routeMethod, routeCallback;;
 
 		self.log("Preparing to set initial routes");
 
+		// @todo, optimize whatever O notation this is... 
 		for (namespace in self.enabledModules) {
 			for (module in self.enabledModules[namespace]) {
 				self.log("Searching " + namespace + "/" + module + " for controllers");
@@ -398,9 +411,9 @@ Hype.prototype.start = function() {
 		loaded.resolve();
 	});
 
-	// Test inheritance
-	// var model = this.loadedModels['setting'];
-	// self.log(model.testFunc()); // inheritance!
+	// // Test inheritance
+	// var model = self.Model['setting'];
+	// self.log("TEST FUNCTION OF INHERITANCE: " + model.testFunc()); // inheritance!
 
 	return loaded.promise;
 };
@@ -435,8 +448,8 @@ Hype.prototype.addModel = function(fullModuleName, modelName, model) {
 
 	self.log("Adding model " + fullModuleName + "/" + modelName + " to Hype");
 
-	// Load the model onto global object namespace
-	self.enabledModules[namespace][moduleName].models[modelName] = new model();
+	// Load the model onto global object but don't instantiate, we'll do that with a dba adapter
+	self.enabledModules[namespace][moduleName].models[modelName] = model;
 };
 
 Hype.prototype.addHelper = function(fullModuleName, helperName, helper) {

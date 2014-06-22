@@ -1,5 +1,9 @@
 // Should seed necessary data once
-var Install = function(db) {
+var Install = function(Hype) {
+	Hype.Log.log('in install');
+
+	var currency = Hype.Model.currency;
+	console.log(currency.load(1));
 	// Insert default config
 	// Insert default currencies
 	// Insert default attributes
