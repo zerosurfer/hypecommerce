@@ -1,16 +1,29 @@
 // Should seed necessary data once
 var Install = function(Hype) {
-	Hype.Log.log('in install');
+	Hype.Log.log('Installing Core-1.0.0.0');
 
-	var currency = Hype.Model.currency;
-	console.log(currency.load(1));
-	// Insert default config
-	// Insert default currencies
-	// Insert default attributes
-	// Insert default attribute groups (will be flexible, not strict per product)
+	var Currency = Hype.Model.currency;
 
-	// Finish the install
-	// Insert "module/hype/core/install:true" into the Settings db object
+	// Adds currencies
+	new Currency({
+		name: 'US Dollar',
+		character: '$',
+		decimals: 2
+	}).save();
+
+	new Currency({
+		name: 'Euro',
+		character: '€',
+		decimals: 2
+	}).save();
+
+	new Currency({
+		name: 'Bitcoin',
+		character: 'B',
+		decimals: 8
+	}).save();
+
+	Hype.Log.log("Done install Core-1.0.0.0");
 };
 
 module.exports = Install;

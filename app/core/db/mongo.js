@@ -57,7 +57,7 @@ MongoDba.prototype.connect = function(host, username, password, dbname) {
 };
 
 MongoDba.prototype.addModel = function (model, schema) {
-	var loaded = when.defer();
+
 	this.models[model] = schema;
 	Log.log("Adding " + model + " to Mongo");
 	//Log.log(schema);
@@ -66,10 +66,8 @@ MongoDba.prototype.addModel = function (model, schema) {
 	var mModel = mongoose.model(model, mSchema);
 	this.schemaCollection[model] = mSchema;
 	this.modelCollection[model] = mModel;
-	// At this point we have everything we need from the model
-	loaded.resolve();
 
-	return loaded.promise;
+	return mModel;
 }
 
 MongoDba.prototype.hasModel = function(model) {

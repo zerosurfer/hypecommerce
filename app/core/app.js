@@ -248,13 +248,13 @@ Hype.prototype.connect = function() {
 					}
 				}
 
-				self.dba.addModel(name, self.Model[name].schema);
+				var dbaModel = self.dba.addModel(name, self.Model[name].schema);
 				// Extend the models with the dba
-				self.Model[name] = _.extend(self.Model[name], self.BaseModel);
+				self.Model[name] = _.extend(dbaModel, self.Model[name], self.BaseModel);
 			} else {
-				self.dba.addModel(name, self.Model[name].schema);
+				var dbaModel = self.dba.addModel(name, self.Model[name].schema);
 				// Extend the models with the dba
-				self.Model[name] = _.extend(self.Model[name], self.BaseModel);
+				self.Model[name] = _.extend(dbaModel, self.Model[name], self.BaseModel);
 			}
 		}
 	}
@@ -281,9 +281,9 @@ Hype.prototype.start = function() {
 	self.log('Starting application');
 
 	// Test for installation
-	self.log("TEST ONLY: Install script for core");
-	var install = require(path.resolve('app/plugins/hype/core/install/1.0.0.0.js'));
-	new install(self);
+	// self.log("TEST ONLY: Install script for core");
+	// var install = require(path.resolve('app/plugins/hype/core/install/1.0.0.0.js'));
+	// new install(self);
 
 	var readAndSetRoutes = function() {
 		var namespace, module, controller, route, routeMethod, routeCallback;;
