@@ -235,7 +235,7 @@ Hype.prototype.start = function() {
 			};
 			next();
 		});
-
+		app.use(app.router);
 		app.use(express.favicon());
 		app.use(express.logger("dev"));
 		app.engine('html', require('ejs').renderFile);
@@ -268,6 +268,25 @@ Hype.prototype.start = function() {
 					break;
 			}
 		}
+
+		app.use(function(req, res, next){
+			res.status(404);
+
+			// respond with html page
+			if (req.accepts('html')) {
+				res.render(self.themePath + '/404.html', { url: req.url });
+				return;
+			}
+
+			// respond with json
+			if (req.accepts('json')) {
+				res.send({ error: 'Not found' });
+				return;
+			}
+
+			// // default to plain-text. send()
+			// res.type('txt').send('Not found');
+		});
 
 		app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
 	});
