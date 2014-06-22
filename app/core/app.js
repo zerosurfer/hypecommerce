@@ -96,7 +96,7 @@ Hype.prototype.Config = require('./config'); // configuration
  * @return	Hype
  */
 Hype.prototype.log = function(message, priority) {
-	new this.Log(message,priority);
+	this.Log.log(message,priority);
 	return this;
 }
 

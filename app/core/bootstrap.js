@@ -59,12 +59,12 @@ var	fs      = require('fs'),
 
 exports.init = function() {
 	// Start it up
-	new Log("Signals clear for launch");
+	Log.log("Signals clear for launch");
 	hype.init();
 };
 
 exports.loadConfiguration = function() {
-	new Log("Loading the configuration files");
+	Log.log("Loading the configuration files");
 	// Set a promise
 	var loaded = when.defer(),
 		self = this,
@@ -105,7 +105,7 @@ exports.loadConfiguration = function() {
 			}
 			setTimeout(function() {
 				configLoaded.resolve();
-			}, 1000);
+			}, 0);
 		});
 		return configLoaded.promise;
 	},
@@ -114,13 +114,13 @@ exports.loadConfiguration = function() {
 		var modelLoaded = when.defer();
 		fs.exists(modulePath + "/models", function(exists) {
 			if (exists) {
-				new Log("Need to read models in " + modulePath + "/models");
+				Log.log("Need to read models in " + modulePath + "/models");
 
 				self.readAndLoadDirectory(modulePath + "/models", 'model', fullModuleName).then(function() {
-					new Log("Models were read");
+					Log.log("Models were read");
 					setTimeout(function() {
 						modelLoaded.resolve();
-					}, 1000);
+					}, 0);
 				});
 			}
 			
@@ -132,11 +132,11 @@ exports.loadConfiguration = function() {
 		var helperLoaded = when.defer();
 		fs.exists(modulePath + "/helpers", function(exists) {
 			if (exists) {
-				new Log("Need to read helpers in " + modulePath + "/helpers");
+				Log.log("Need to read helpers in " + modulePath + "/helpers");
 			}
 			setTimeout(function() {
 				helperLoaded.resolve();
-			}, 1000);
+			}, 0);
 		})
 		return helperLoaded.promise;
 	},
@@ -145,11 +145,11 @@ exports.loadConfiguration = function() {
 		var controllerLoaded = when.defer();
 		fs.exists(modulePath + "/controllers", function(exists) {
 			if (exists) {
-				new Log("Need to read controllers in " + modulePath + "/controllers");
+				Log.log("Need to read controllers in " + modulePath + "/controllers");
 			}
 			setTimeout(function() {
 				controllerLoaded.resolve();
-			}, 1000);
+			}, 0);
 		})
 		return controllerLoaded.promise;
 	}
@@ -186,7 +186,7 @@ exports.loadConfiguration = function() {
 			, self.loadControllerFolder(fullModuleName, filteredModules[module]))
 			.then(function() {
 				loaded.resolve();
-				new Log("Done loading all the configuration files");
+				Log.log("Done loading all the configuration files");
 			});
 		}		
 		

@@ -52,15 +52,15 @@ MongoDba = function() {
 }
 
 MongoDba.prototype.connect = function(host, username, password, dbname) {
-	new Log("Connecting to MongoDB on " + host + "/" + dbname);
+	Log.log("Connecting to MongoDB on " + host + "/" + dbname);
 	this.connector = mongoose.connect('mongodb://' + host + '/' + dbname);
 };
 
 MongoDba.prototype.addModel = function (model, schema) {
 	var loaded = when.defer();
 	this.models[model] = schema;
-	new Log("Adding " + model + " to Mongo");
-	//new Log(schema);
+	Log.log("Adding " + model + " to Mongo");
+	//Log.log(schema);
 
 	var mSchema = new mongoose.Schema(schema);
 	var mModel = mongoose.model(model, mSchema);

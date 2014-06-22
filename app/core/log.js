@@ -1,33 +1,38 @@
 var Log;
 
-Log = function(message, priority) {
-	var date, timestamp;
+Log = function() {
 
-	if (priority === undefined) {
-		priority = 'INFO';
-	}
-	
-	// Add a timestamp
-	date = new Date();
-	timestamp = '[' +  date.toUTCString() + '] ';
-	message = timestamp + message;
+	this.log = function(message, priority) {
+		var date, timestamp;
 
-	// Log appropriately
-	switch(priority) {
-		case 'DEBUG' :
-			console.debug(message);
-			break;
-		case 'INFO' :
-			console.log(message);
-			break;
-		case 'WARN' :
-			console.warn(message);
-			break;
-		case 'ERROR' :
-			console.error(message);
-			break;
+		if (priority === undefined) {
+			priority = 'INFO';
+		}
+		
+		// Add a timestamp
+		date = new Date();
+		timestamp = '[' +  date.toUTCString() + '] ';
+		message = timestamp + message;
+
+		// Log appropriately
+		switch(priority) {
+			case 'DEBUG' :
+				console.debug(message);
+				break;
+			case 'INFO' :
+				console.log(message);
+				break;
+			case 'WARN' :
+				console.warn(message);
+				break;
+			case 'ERROR' :
+				console.error(message);
+				break;
+		}
+		return this;
 	}
+
 	return this;
 }
 
-module.exports = Log;
+module.exports = new Log();
