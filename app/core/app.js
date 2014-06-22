@@ -196,28 +196,29 @@ Hype.prototype.connect = function() {
 			// get the file as well
 
 			// extend models
-				var modelPath = path.resolve('app/plugins/hype/core/models') + "/" + name + ".js",
-					ModuleModel;
-				fs.exists(modelPath, function(exists) {
-					if (exists) {
-						// load the model
-						ModuleModel = require(path.resolve('app/plugins/hype/core/models') + "/" + name + ".js");
-						moduleModel = new ModuleModel();
+			var modelPath = path.resolve('app/plugins/hype/core/models') + "/" + name + ".js",
+				ModuleModel;
+			fs.exists(modelPath, function(exists) {
+				if (exists) {
+					// load the model
+					ModuleModel = require(path.resolve('app/plugins/hype/core/models') + "/" + name + ".js");
+					moduleModel = new ModuleModel();
 
-						// extend the model
-						_.extend(moduleModel, self.Model);
+					// extend the model from the Model created above in connect()
+					_.extend(moduleModel, self.Model);
 
-						// testing
-						if (name == 'Setting') {
-							moduleModel.settingFunc();
-							moduleModel.testFunc();
-						}
-						//console.log(moduleModel.getDb());
-					} else {
-						console.log("No model file found for " + name);
+					// testing
+					if (name == 'Setting') {
+						moduleModel.settingFunc();
+						moduleModel.testFunc(); // inheritance!!
 					}
+					// We have a way to connect to the db now, not ideal?
+					//console.log(moduleModel.getDb());
+				} else {
+					console.log("No model file found for " + name);
+				}
 
-				});
+			});
 
 			if (model.deps) {
 				for(var needed in model.deps) {

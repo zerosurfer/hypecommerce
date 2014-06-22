@@ -1,5 +1,5 @@
 // Should seed necessary data once
-var install = {
+var Install = function(db) {
 	// Insert default config
 	// Insert default currencies
 	// Insert default attributes
@@ -7,6 +7,6 @@ var install = {
 
 	// Finish the install
 	// Insert "module/hype/core/install:true" into the Settings db object
-}
+};
 
-module.exports = install;
+module.exports = Install;
