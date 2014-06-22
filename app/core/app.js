@@ -304,9 +304,7 @@ Hype.prototype.start = function() {
 			app.settings.env );
 	});
 
-	console.log(app.routes);
-
-
+	//console.log(app.routes);
 	return loaded.resolve();
 };
 
