@@ -1,0 +1,5 @@
+/**
+ * Core admin panel configuration
+ *
+ *
+ */
