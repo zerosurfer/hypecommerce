@@ -28,7 +28,7 @@ config = {
 			admin: "admin",
 			db: {
 				type: "mongo",
-				connection: {
+				mongo: {
 					host: "127.0.0.1",
 					port: 27017,
 					username: "",
@@ -58,7 +58,7 @@ config = {
 			admin: "admin",
 			db: {
 				type: "mongo",
-				connection: {
+				mongo: {
 					host: "127.0.0.1",
 					port: 27017,
 					username: "",
@@ -87,7 +87,7 @@ config = {
 			port: 80,
 			db: {
 				type: "mongo",
-				connection: {
+				mongo: {
 					host: "127.0.0.1",
 					port: 27017,
 					dbname: "hype_production"

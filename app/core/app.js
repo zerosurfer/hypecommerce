@@ -160,11 +160,11 @@ Hype.prototype.connect = function() {
 		case 'mongo' :
 			this.dba = require('./db/mongo');
 			this.dba.connect(
-				this.configuration.db.connection.host + (this.configuration.db.connection.port ? 
-					":" + this.configuration.db.connection.port : ''),
-				this.configuration.db.connection.username,
-				this.configuration.db.connection.password,
-				this.configuration.db.connection.dbname
+				this.configuration.db[this.configuration.db.type].host + (this.configuration.db[this.configuration.db.type].port ? 
+					":" + this.configuration.db[this.configuration.db.type].port : ''),
+				this.configuration.db[this.configuration.db.type].username,
+				this.configuration.db[this.configuration.db.type].password,
+				this.configuration.db[this.configuration.db.type].dbname
 			);
 			break;
 		case 'couchdb' :
