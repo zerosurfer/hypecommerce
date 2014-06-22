@@ -23,7 +23,7 @@
  */
 
 // Load necessary modules/files
-var	config = require('./config'),
+var	fs = require('fs'),
 	express = require('express'), // Express framework
 	app = express(), // Express application
 	when = require('when'),
@@ -60,8 +60,9 @@ Hype = function() {
 		// Holds the available modules
         inst.enabledModules = [];
 
-     	// Check if we need the wizard first
-     	// inst.Wizard = require('./wizard');
+        inst.installed = false;
+
+        inst.wizard = false;
 	}
 	return inst;
 };
@@ -72,6 +73,12 @@ Hype.prototype.Helper = require('./helper');
 Hype.prototype.Controller = require('./controller');
 Hype.prototype.Install = require('./install');
 Hype.prototype.Server = require('./server');
+Hype.prototype.Email = require('./email');
+Hype.prototype.Cluster = require('./cluster');
+Hype.prototype.Auth = require('./auth');
+Hype.prototype.Db = require('./db');
+Hype.prototype.Admin = require('./admin');
+Hype.prototype.Config = require('./config');
 
 /**
  * Initiate Hype
@@ -83,8 +90,6 @@ Hype.prototype.init = function() {
 	var self = this;
 
 	console.log("Preparing to start Hype");
-	loaded.resolve();
-
 
 	return when.join(
 		this.configure(),
@@ -124,18 +129,21 @@ Hype.prototype.configure = function() {
 	console.log("Setting up configuration");
 
 	// Set the environment
-	this.env = config.hype.environment;
+	this.env = this.Config.hype.environment;
 
 	// Set the theme (temporarily)
-	this.theme = config.hype.theme;
+	this.theme = this.Config.hype.theme;
 
 	// Set the theme path
 	this.themePath = path.resolve('app/themes/' + this.theme);
 
 	// Load the applicable configuration
-	this.configuration = config.server[this.env];
+	this.configuration = this.Config.server[this.env];
 
-	// Load all the enabled plugins
+	// Check if installed, if not then we need to hijack the system here and force installation
+    if (!this.installed) {
+    	this.wizard = require('./wizard');
+    }
 
 	return loaded.resolve();
 }
@@ -179,7 +187,6 @@ Hype.prototype.connect = function() {
 	var loadModel = function(name, model) {
 		if (!self.dba.models[name]) {
 			if (model.deps) {
-
 				for(var needed in model.deps) {
 					if (typeof model.deps[needed] === 'string') {
 						if (!self.dba.hasModel(model.deps[needed])) {
@@ -214,7 +221,6 @@ Hype.prototype.connect = function() {
 Hype.prototype.start = function() {
 	var self = this,
 		loaded = when.defer(),
-		admin = require('./admin'),
 		r,
 		route,
 		routeMethod,
@@ -227,14 +233,12 @@ Hype.prototype.start = function() {
 		app.use(express.cookieParser());
 		app.use(express.methodOverride());
 
-		// Set locals to use on the config.js files
-		// dba -> Default db connector
-		app.use(function (req, res, next) {
-			res.locals = {
-				dba: self.dba
-			};
+		// CSRF Token for CORS
+		app.use(function(req, res, next) {
+			res.locals.csrftoken = req.session._csrf;
 			next();
-		});
+		})
+
 		app.use(app.router);
 		app.use(express.favicon());
 		app.use(express.logger("dev"));
@@ -245,8 +249,11 @@ Hype.prototype.start = function() {
 		});
 
 		// Add the admin routes
-		app.get('/' + self.configuration.admin, admin.index);
-		app.get('/' + self.configuration.admin + '/:controller/:action', admin.test);
+		// These should be required from admin.js
+		app.get('/' + self.configuration.admin, self.Admin.requiredAuth(), self.Admin.index);
+		app.get('/' + self.configuration.admin + '/login', self.Admin.login);
+		app.post('/' + self.configuration.admin + '/login', self.Admin.loginPost);
+		app.get('/' + self.configuration.admin + '/:controller/:action', self.Admin.test);
 
 		// Add the api routes
 		for(r in self.routes) {
@@ -295,6 +302,8 @@ Hype.prototype.start = function() {
 		console.log( 'Express server listening on port %d in %s mode', self.configuration.port,
 			app.settings.env );
 	});
+
+	console.log(app.routes);
 
 
 	return loaded.resolve();

@@ -1,0 +1,4 @@
+/**
+ * Abstract db logic class
+ *
+ */

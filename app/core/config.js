@@ -36,8 +36,19 @@ config = {
 					dbname: "hype_development"
 				}
 			},
+			https: {
+				port: 4443
+			},
 			session: {
-				storage: "redis"
+				storage: "redis",
+				redis: {
+					host: "localhost",
+					port: 6379,
+					db: "hype_development",
+					pass: "u2T2BvKcXXGk9pKXjfXw",
+					secret: "XMGnKPtQEuZbWYWLp5CZ",
+					cookie: { path: "/", maxAge: 3600000 }
+				}
 			}
 		},
 

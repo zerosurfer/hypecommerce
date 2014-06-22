@@ -27,6 +27,8 @@
     "mongodb": "~1.2.14",
     "mongoose": "~3.8",
     "when": "*",
+    "connect-redis":"*",
+    "passport": "*",
     "ejs": "*"
   },
   "devDependencies": {
