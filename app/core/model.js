@@ -4,15 +4,30 @@
  */
 var Model;
 
-Model = function(db) {
+Model = function(dba) {
 
+	this.attrs = {},
+	this.originalAttrs = {},
+	this.dirty = false,
 
-	this.testFunc = function() {
-		console.log("Hello function");
+	this.load = function(id) {
+		// get from the db
+		// this.attrs = model;
+		// this.originalAttrs = model;
+	}
+
+	this.save = function() {
+		if (this.dirty) {
+			// .. save ..
+		}
 	},
 
-	this.getDb = function() {
-		return db.modelCollection;
+	this.remove = function() {
+		// Free up dependencies
+	},
+
+	this.testFunc = function() {
+		return "Hello function";
 	}
 }
 

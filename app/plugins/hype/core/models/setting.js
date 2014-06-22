@@ -23,10 +23,6 @@ Setting = function(db) {
 		view: 'View',
 	}
 
-	this.settingFunc = function() {
-		console.log("Settings function");
-	}
-
 	return this;
 }
 module.exports = Setting;

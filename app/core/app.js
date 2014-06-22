@@ -62,7 +62,7 @@ Hype = function() {
         inst.enabledModules = [];
 
         // Holds the available model files
-        inst.enabledModels = [];
+        inst.loadedModels = [];
 
         inst.installed = false;
 
@@ -83,6 +83,8 @@ Hype.prototype.Auth = require('./auth'); // authentication logic (passport|other
 Hype.prototype.Db = require('./db'); // database logic (mongodb|other)
 Hype.prototype.Admin = require('./admin'); // admin logic
 Hype.prototype.Config = require('./config'); // configuration
+// Hype.prototype.Locale = require('./locale'); // translations, can look into the airbnb plugin/licensing for backbone
+
 // Hype.prototype.Wizard = require('./wizard');
 
 /**
@@ -94,14 +96,18 @@ Hype.prototype.init = function() {
 	var loaded = when.defer();
 	var self = this;
 
-	console.log("Preparing to start Hype");
+	console.log("Hype init");
 
 	return when.join(
 		this.configure(),
 		this.preload(),
 		this.connect(),
 		this.start()
-	);
+	).then(function() {
+		console.log("Hype is up and running,  Enjoy ;)");
+	}).otherwise(function() {
+		console.log("failure");
+	});
 };
 
 /**
@@ -128,7 +134,9 @@ Hype.prototype.configure = function() {
     	this.wizard = require('./wizard');
     }
 
-	return loaded.resolve();
+    loaded.resolve();
+
+	return loaded.promise;
 }
 
 Hype.prototype.preload = function() {
@@ -152,6 +160,8 @@ Hype.prototype.preload = function() {
 			}
 		}
 	}
+
+	loaded.resolve();
 
 	return loaded.promise;
 };
@@ -221,6 +231,7 @@ Hype.prototype.connect = function() {
 				}
 
 				self.dba.addModel(name, self.models[name].schema);
+				self.loadedModels[name] = _.extend(self.models[name], self.Model);
 			} else {
 				self.dba.addModel(name, self.models[name].schema);
 			}
@@ -232,7 +243,9 @@ Hype.prototype.connect = function() {
 		loadModel(m, this.models[m]);
 	}
 
-	return loaded.resolve();
+	loaded.resolve();
+
+	return loaded.promise;
 }
 
 Hype.prototype.start = function() {
@@ -320,10 +333,15 @@ Hype.prototype.start = function() {
 	app.listen(this.configuration.port, function() {
 		console.log( 'Express server listening on port %d in %s mode', self.configuration.port,
 			app.settings.env );
+			
+		loaded.resolve();
 	});
 
-	//console.log(app.routes);
-	return loaded.resolve();
+	// Test inheritance
+	// var model = this.loadedModels['setting'];
+	// console.log(model.testFunc()); // inheritance!
+
+	return loaded.promise;
 };
 
 Hype.prototype.addModule = function(fullModuleName, module) {
