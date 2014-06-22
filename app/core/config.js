@@ -54,17 +54,31 @@ config = {
 
 		staging: {
 			url: "http://staging.hypecommerce.com/",
-			port: 80,
+			port: 5000,
+			admin: "admin",
 			db: {
 				type: "mongo",
 				connection: {
 					host: "127.0.0.1",
 					port: 27017,
-					dbname: "hype_staging"
+					username: "",
+					password: "",
+					dbname: "hype_development"
 				}
 			},
+			https: {
+				port: 4443
+			},
 			session: {
-				storage: "redis"
+				storage: "redis",
+				redis: {
+					host: "localhost",
+					port: 6379,
+					db: "hype_development",
+					pass: "u2T2BvKcXXGk9pKXjfXw",
+					secret: "XMGnKPtQEuZbWYWLp5CZ",
+					cookie: { path: "/", maxAge: 3600000 }
+				}
 			}
 		},
 

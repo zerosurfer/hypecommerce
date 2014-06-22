@@ -68,17 +68,18 @@ Hype = function() {
 };
 
 // Load the core classes
-Hype.prototype.Model = require('./model');
-Hype.prototype.Helper = require('./helper');
-Hype.prototype.Controller = require('./controller');
-Hype.prototype.Install = require('./install');
-Hype.prototype.Server = require('./server');
-Hype.prototype.Email = require('./email');
-Hype.prototype.Cluster = require('./cluster');
-Hype.prototype.Auth = require('./auth');
-Hype.prototype.Db = require('./db');
-Hype.prototype.Admin = require('./admin');
-Hype.prototype.Config = require('./config');
+Hype.prototype.Model = require('./model'); // base model
+Hype.prototype.Helper = require('./helper'); // base helper
+Hype.prototype.Controller = require('./controller'); // base controller
+Hype.prototype.Install = require('./install'); // installation script logic
+Hype.prototype.Server = require('./server'); // server logic (express|other)
+Hype.prototype.Email = require('./email'); // email logic (sendmail|other)
+Hype.prototype.Cluster = require('./cluster'); // deployment/clustering logic
+Hype.prototype.Auth = require('./auth'); // authentication logic (passport|other)
+Hype.prototype.Db = require('./db'); // database logic (mongodb|other)
+Hype.prototype.Admin = require('./admin'); // admin logic
+Hype.prototype.Config = require('./config'); // configuration
+// Hype.prototype.Wizard = require('./wizard');
 
 /**
  * Initiate Hype
@@ -233,11 +234,13 @@ Hype.prototype.start = function() {
 		app.use(express.cookieParser());
 		app.use(express.methodOverride());
 
+		app.settings.env = self.env || 'development';
+
 		// CSRF Token for CORS
-		app.use(function(req, res, next) {
-			res.locals.csrftoken = req.session._csrf;
-			next();
-		})
+		// app.use(function(req, res, next) {
+		// 	res.locals.csrftoken = res.session._csrf;
+		// 	next();
+		// })
 
 		app.use(app.router);
 		app.use(express.favicon());
@@ -276,6 +279,7 @@ Hype.prototype.start = function() {
 			}
 		}
 
+		// Setup a custom 404 page
 		app.use(function(req, res, next){
 			res.status(404);
 
@@ -290,9 +294,6 @@ Hype.prototype.start = function() {
 				res.send({ error: 'Not found' });
 				return;
 			}
-
-			// // default to plain-text. send()
-			// res.type('txt').send('Not found');
 		});
 
 		app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
@@ -333,4 +334,4 @@ Hype.prototype.getModules = function() {
 	return this.enabledModules;
 }
 
-module.exports = new Hype();
+module.exports = Hype;

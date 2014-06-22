@@ -27,10 +27,8 @@ var	fs      = require('fs'),
     url     = require('url'),
     when    = require('when'),
 	path	= require('path'),
-	hype	= require('./app'),
-
-// Define variables
-    confi;
+	Hype	= require('./app'),
+	hype	= new Hype();
 
 exports.init = function() {
 	// Start it up
