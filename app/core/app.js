@@ -170,7 +170,7 @@ Hype.prototype.preload = function() {
 			}
 			// load models
 			for (var model in currentModule.models) {
-				this.models[model] = new currentModule.models[model]();
+				this.models[model] = currentModule.models[model];
 
 			}
 		}
@@ -273,7 +273,72 @@ Hype.prototype.start = function() {
 
 	self.log('Starting application');
 
+	var readAndSetRoutes = function() {
+		var namespace, module, controller, route, routeMethod, routeCallback;;
+
+		self.log("Preparing to set initial routes");
+
+		for (namespace in self.enabledModules) {
+			for (module in self.enabledModules[namespace]) {
+				self.log("Searching " + namespace + "/" + module + " for controllers");
+				// Look for controllers
+				if (self.enabledModules[namespace][module].api) {
+					for (controller in self.enabledModules[namespace][module].api) {
+						self.log("Found controller " + controller);
+						for (route in self.enabledModules[namespace][module].api[controller].routes) {
+							routeMethod = self.enabledModules[namespace][module].api[controller].routes[route].method;
+							routeCallback = self.enabledModules[namespace][module].api[controller].routes[route].callback;
+							switch(routeMethod) {
+								case 'get' :
+									self.log("Adding GET route " + route);
+									app.get(route, routeCallback);
+									break;
+								case 'post' :
+									self.log("Adding POST route " + route);
+									app.post(route, routeCallback);
+									break;
+								case 'delete' :
+									self.log("Adding DELETE route " + route);
+									app.delete(route, routeCallback);
+									break;
+								case 'put' :
+									self.log("Adding PUT route " + route);
+									app.put(route, routeCallback);
+									break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+
+		// Add the api routes
+		for(r in self.routes) {
+			console.log(r);
+			route = self.routes[r];
+			routeMethod = route.method;
+			routeCallback = route.callback;
+			switch(routeMethod) {
+				case 'get' :
+					app.get(r, routeCallback);
+					break;
+				case 'post' :
+					app.post(r, routeCallback);
+					break;
+				case 'delete' :
+					app.delete(r, routeCallback);
+					break;
+				case 'put' :
+					app.put(r, routeCallback);
+					break;
+			}
+		}
+	}
+
 	app.configure(function(){
+
 		app.use(express.bodyParser());
 		app.use(express.cookieParser());
 		app.use(express.methodOverride());
@@ -304,26 +369,7 @@ Hype.prototype.start = function() {
 		app.post('/' + self.configuration.admin + '/login', self.Admin.loginPost);
 		app.get('/' + self.configuration.admin + '/:controller/:action', self.Admin.test);
 
-		// Add the api routes
-		for(r in self.routes) {
-			route = self.routes[r];
-			routeMethod = route.method;
-			routeCallback = route.callback;
-			switch(routeMethod) {
-				case 'get' :
-					app.get(r, routeCallback);
-					break;
-				case 'post' :
-					app.post(r, routeCallback);
-					break;
-				case 'delete' :
-					app.delete(r, routeCallback);
-					break;
-				case 'put' :
-					app.put(r, routeCallback);
-					break;
-			}
-		}
+		readAndSetRoutes();
 
 		// Setup a custom 404 page
 		app.use(function(req, res, next){
@@ -379,7 +425,6 @@ Hype.prototype.addModule = function(fullModuleName, module) {
 
 };
 
-
 Hype.prototype.addModel = function(fullModuleName, modelName, model) {
 	var self = this,
 		namespace = moduleName = undefined;
@@ -391,7 +436,35 @@ Hype.prototype.addModel = function(fullModuleName, modelName, model) {
 	self.log("Adding model " + fullModuleName + "/" + modelName + " to Hype");
 
 	// Load the model onto global object namespace
-	self.enabledModules[namespace][moduleName].models[modelName] = model;
+	self.enabledModules[namespace][moduleName].models[modelName] = new model();
+};
+
+Hype.prototype.addHelper = function(fullModuleName, helperName, helper) {
+	var self = this,
+		namespace = moduleName = undefined;
+
+	var split = fullModuleName.split('/');
+	namespace = split[0];
+	moduleName = split[1];
+
+	self.log("Adding helper " + fullModuleName + "/" + helperName + " to Hype");
+
+	// Load the helper onto global object namespace
+	self.enabledModules[namespace][moduleName].helpers[helperName] = new helper();
+};
+
+Hype.prototype.addController = function(fullModuleName, controllerName, controller) {
+	var self = this,
+		namespace = moduleName = undefined;
+
+	var split = fullModuleName.split('/');
+	namespace = split[0];
+	moduleName = split[1];
+
+	self.log("Adding controller " + fullModuleName + "/" + controllerName + " to Hype");
+
+	// Load the controller onto global object namespace
+	self.enabledModules[namespace][moduleName].api[controllerName] = new controller();
 };
 
 Hype.prototype.getModules = function() {

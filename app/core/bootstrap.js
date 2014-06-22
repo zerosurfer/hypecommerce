@@ -87,6 +87,12 @@ exports.loadConfiguration = function() {
 					case 'model' :
 						hype.addModel(module, items[i].replace('.js', ''), require(dir + "/" + items[i]));
 						break;
+					case 'helper' :
+						hype.addHelper(module, items[i].replace('.js', ''), require(dir + "/" + items[i]));
+						break;
+					case 'controller' :
+						hype.addController(module, items[i].replace('.js', ''), require(dir + "/" + items[i]));
+						break;
 				}
 				if (i + 1 == len) {
 					dirLoaded.resolve();
@@ -103,6 +109,7 @@ exports.loadConfiguration = function() {
 			if (exists) {
 				hype.addModule(fullModuleName, require(modulePath));
 			}
+			// In case of race testing, increment timeout
 			setTimeout(function() {
 				configLoaded.resolve();
 			}, 0);
@@ -118,6 +125,7 @@ exports.loadConfiguration = function() {
 
 				self.readAndLoadDirectory(modulePath + "/models", 'model', fullModuleName).then(function() {
 					Log.log("Models were read");
+					// In case of race testing, increment timeout
 					setTimeout(function() {
 						modelLoaded.resolve();
 					}, 0);
@@ -133,10 +141,15 @@ exports.loadConfiguration = function() {
 		fs.exists(modulePath + "/helpers", function(exists) {
 			if (exists) {
 				Log.log("Need to read helpers in " + modulePath + "/helpers");
+				self.readAndLoadDirectory(modulePath + "/helpers", 'helper', fullModuleName).then(function() {
+					Log.log("Helpers were read");
+					// In case of race testing, increment timeout
+					setTimeout(function() {
+						helperLoaded.resolve();
+					}, 0);
+				});
+
 			}
-			setTimeout(function() {
-				helperLoaded.resolve();
-			}, 0);
 		})
 		return helperLoaded.promise;
 	},
@@ -146,7 +159,15 @@ exports.loadConfiguration = function() {
 		fs.exists(modulePath + "/controllers", function(exists) {
 			if (exists) {
 				Log.log("Need to read controllers in " + modulePath + "/controllers");
+				self.readAndLoadDirectory(modulePath + "/controllers", 'controller', fullModuleName).then(function() {
+					Log.log("Controllers were read");
+					// In case of race testing, increment timeout
+					setTimeout(function() {
+						controllerLoaded.resolve();
+					}, 0);
+				});
 			}
+			// In case of race testing, increment timeout
 			setTimeout(function() {
 				controllerLoaded.resolve();
 			}, 0);

@@ -30,7 +30,7 @@
  	this.login = function(req, res) {
  		// set the user here when authenticated properly
  		// req.session.user = user;
- 		res.send(200, 'login');
+ 		res.render(__dirname + '/admin/index.html');
  	},
 
  	this.loginPost = function(req, res) {

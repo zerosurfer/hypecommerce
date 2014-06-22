@@ -25,7 +25,7 @@ config = {
 		development: {
 			url: "http://127.0.0.1/",
 			port: 5000,
-			admin: "admin", // url for the admin
+			admin: "supersecretarea", // url for the admin
 			db: {
 				type: "mongo",
 				mongo: {
