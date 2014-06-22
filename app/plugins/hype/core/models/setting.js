@@ -4,11 +4,13 @@
  *
  */
 
-var Hype = require('./app'),
-	Setting;
+var	Setting;
 
-Setting = Hype.Model.extend({
-	
-});
+Setting = function(db) {
+	this.settingFunc = function() {
+		console.log("Settings function");
+	}
 
+	return this;
+}
 module.exports = Setting;

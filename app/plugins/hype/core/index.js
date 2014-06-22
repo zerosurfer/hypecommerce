@@ -7,7 +7,7 @@ Core = {
 	enabled: true,
 	depends: {
 	},
-	helpers: ['Hype', 'Setting', 'Store', 'View', 'Currency', 'Language'],
+	// models: ['Setting', 'Store', 'View', 'Currency', 'Language'],
 
 	// Schemas
 	models: {

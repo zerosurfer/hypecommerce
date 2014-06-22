@@ -29,6 +29,7 @@ var	fs = require('fs'),
 	when = require('when'),
 	path = require('path'),
 	inst = false,
+	_ = require('underscore'),
 	Hype;
 
 Hype = function() {
@@ -166,6 +167,11 @@ Hype.prototype.connect = function() {
 				this.configuration.db[this.configuration.db.type].password,
 				this.configuration.db[this.configuration.db.type].dbname
 			);
+
+			// Set the db on the base model
+			var BaseModel = this.Model;
+			this.Model = new BaseModel(this.dba);
+
 			break;
 		case 'couchdb' :
 
@@ -187,6 +193,32 @@ Hype.prototype.connect = function() {
 	// Recursively load the modules into mongoose
 	var loadModel = function(name, model) {
 		if (!self.dba.models[name]) {
+			// get the file as well
+
+			// extend models
+				var modelPath = path.resolve('app/plugins/hype/core/models') + "/" + name + ".js",
+					ModuleModel;
+				fs.exists(modelPath, function(exists) {
+					if (exists) {
+						// load the model
+						ModuleModel = require(path.resolve('app/plugins/hype/core/models') + "/" + name + ".js");
+						moduleModel = new ModuleModel();
+
+						// extend the model
+						_.extend(moduleModel, self.Model);
+
+						// testing
+						if (name == 'Setting') {
+							moduleModel.settingFunc();
+							moduleModel.testFunc();
+						}
+						//console.log(moduleModel.getDb());
+					} else {
+						console.log("No model file found for " + name);
+					}
+
+				});
+
 			if (model.deps) {
 				for(var needed in model.deps) {
 					if (typeof model.deps[needed] === 'string') {
@@ -199,7 +231,6 @@ Hype.prototype.connect = function() {
 						for(var n in model.deps[needed]) {
 							loadModel(model.deps[needed][n], self.models[model.deps[needed][n]]);
 						}
-
 						self.models[name].schema[needed] = [self.dba.getRawModel(model.deps[needed])];
 					}
 				}
