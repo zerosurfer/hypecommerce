@@ -215,7 +215,7 @@ Hype.prototype.connect = function() {
 					// We have a way to connect to the db now, not ideal?
 					//console.log(moduleModel.getDb());
 				} else {
-					console.log("No model file found for " + name);
+					//console.log("No model file found for " + name);
 				}
 
 			});
@@ -269,10 +269,12 @@ Hype.prototype.start = function() {
 		app.settings.env = self.env || 'development';
 
 		// CSRF Token for CORS
-		// app.use(function(req, res, next) {
-		// 	res.locals.csrftoken = res.session._csrf;
-		// 	next();
-		// })
+		// Load locals
+		app.use(function(req, res, next) {
+			//res.locals.csrftoken = res.session._csrf;
+			res.locals.admin = self.configuration.admin;
+			next();
+		})
 
 		app.use(app.router);
 		app.use(express.favicon());

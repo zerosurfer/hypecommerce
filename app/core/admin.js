@@ -12,7 +12,7 @@
 	 		if (req.session && req.session.authenticated) {
 	 			return next();
 	 		} else {
-	 			return res.redirect('/admin/login');
+	 			return res.redirect(res.locals.admin + '/login');
 	 		}
  		}
  	},

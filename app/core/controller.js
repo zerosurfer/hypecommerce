@@ -1,7 +1,6 @@
 /**
  * Base controller
  *
- *
  */
 
 var domain = require('domain'),
