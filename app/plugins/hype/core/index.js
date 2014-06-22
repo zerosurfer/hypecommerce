@@ -7,81 +7,9 @@ Core = {
 	enabled: true,
 	depends: {
 	},
-	// models: ['Setting', 'Store', 'View', 'Currency', 'Language'],
 
-	// Schemas
-	models: {
-		Setting: {
-			options: {
-
-			},
-			schema: {
-				path: String, // module/group/setting
-				value: String, // some value
-				created: { type: Date, default: Date.now },
-				updated: { type: Date, default: Date.now }
-			},
-			deps: {
-				store: 'Store',
-				view: 'View',
-			}
-		},
-		// A category will be assigned to a store
-		Store: {
-			schema: {
-				name: String, // My Store
-				code: String, // default
-				//views: ['View'], // [en_US, en_UK, de_DE, fr_FR, es_ES]
-				created: { type: Date, default: Date.now },
-				updated: { type: Date, default: Date.now }
-			},
-			deps: {
-				views: ['View']
-			}
-		},
-		View: {
-			schema: {
-				name: String, // English
-				code: String, // en_US | de_DE
-				url: String, // http://www.hypecommerce.com/ | http://www.hypecommerce.de/
-				language: String, // en_US | de_DE
-				primary: Boolean, // true
-				created: { type: Date, default: Date.now },
-				updated: { type: Date, default: Date.now }
-			},
-			deps: {
-				currency: 'Currency' // Currency.character = $
-			}
-		},
-		Currency: {
-			schema: {
-				name: String,
-				character: String, // currency char, like B for Bitcoin or $ for Dollar
-				decimals: Number,
-				created: { type: Date, default: Date.now },
-				updated: { type: Date, default: Date.now }
-			}
-		},
-		Language: {
-			schema: {
-				name: String, // English, German, Pirate
-				code: String, // en_US, de_DE (where to look for .json translation files)
-				created: { type: Date, default: Date.now },
-				updated: { type: Date, default: Date.now }
-			}
-		},
-		// Media can be an image, mp4, wav, etc.
-		Media: {
-			schema: {
-				filename: String,
-				filepath: String,
-				description: String,
-				type: String, // mp4, wav, jpg, etc.
-				created: { type: Date, default: Date.now },
-				updated: { type: Date, default: Date.now }
-			}
-		},
-	},
+	// Models get appended automatically from the models folder
+	models: {},
 
 	// Api configuration
 	api: {

@@ -7,7 +7,6 @@
 var	Setting;
 
 Setting = function(db) {
-	this.name = 'Setting',
 	
 	this.options = {
 

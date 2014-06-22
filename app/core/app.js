@@ -104,28 +104,6 @@ Hype.prototype.init = function() {
 	);
 };
 
-Hype.prototype.preload = function() {
-	var loaded = when.defer();
-	console.log("Setting up the routers");
-
-	for(var moduleName in this.enabledModules) {
-		currentModule = this.enabledModules[moduleName];
-		for (var route in currentModule.api.routes) {
-			
-			console.log("Setting up router " + route + " for " + moduleName);
-			this.routes[route] = currentModule.api.routes[route];
-
-		}
-		// load models
-		for (var model in currentModule.models) {
-			this.models[model] = currentModule.models[model];
-
-		}
-	}
-
-	return loaded.promise;
-};
-
 /**
  * Set all the configuration values for node/hype
  */
@@ -152,6 +130,31 @@ Hype.prototype.configure = function() {
 
 	return loaded.resolve();
 }
+
+Hype.prototype.preload = function() {
+	var loaded = when.defer();
+	console.log("Setting up the routers");
+
+	for(var namespace in this.enabledModules) {
+		currentNamespace = this.enabledModules[namespace];
+		for (var module in currentNamespace) {
+			var currentModule = currentNamespace[module];
+			for (var route in currentModule.api.routes) {
+				
+				console.log("Setting up router " + route + " for " + moduleName);
+				this.routes[route] = currentModule.api.routes[route];
+
+			}
+			// load models
+			for (var model in currentModule.models) {
+				this.models[model] = new currentModule.models[model]();
+
+			}
+		}
+	}
+
+	return loaded.promise;
+};
 
 Hype.prototype.connect = function() {
 	var self = this;
@@ -195,47 +198,25 @@ Hype.prototype.connect = function() {
 
 	// Recursively load the modules into mongoose
 	var loadModel = function(name, model) {
+		var modelNeeded = undefined;
+
 		if (!self.dba.models[name]) {
-			// get the file as well
-
-			// extend models
-			var modelPath = path.resolve('app/plugins/hype/core/models') + "/" + name + ".js",
-				ModuleModel;
-			fs.exists(modelPath, function(exists) {
-				if (exists) {
-					// load the model
-					ModuleModel = require(path.resolve('app/plugins/hype/core/models') + "/" + name + ".js");
-					moduleModel = new ModuleModel();
-
-					// extend the model from the Model created above in connect()
-					_.extend(moduleModel, self.Model);
-
-					// testing
-					if (name == 'Setting') {
-						moduleModel.settingFunc();
-						moduleModel.testFunc(); // inheritance!!
-					}
-					// We have a way to connect to the db now, not ideal?
-					//console.log(moduleModel.getDb());
-				} else {
-					//console.log("No model file found for " + name);
-				}
-
-			});
-
 			if (model.deps) {
 				for(var needed in model.deps) {
-					if (typeof model.deps[needed] === 'string') {
-						if (!self.dba.hasModel(model.deps[needed])) {
-							loadModel(model.deps[needed], self.models[model.deps[needed]]);
+					modelNeeded = model.deps[needed];
+					if (typeof modelNeeded === 'string') {
+						modelNeeded = modelNeeded.toLowerCase();
+						if (!self.dba.hasModel(modelNeeded)) {
+							loadModel(modelNeeded, self.models[modelNeeded]);
 						}
 
-						self.models[name].schema[needed] = self.dba.getRawModel(model.deps[needed]);
+						self.models[name].schema[needed] = self.dba.getRawModel(modelNeeded);
 					} else {
-						for(var n in model.deps[needed]) {
-							loadModel(model.deps[needed][n], self.models[model.deps[needed][n]]);
+						//console.log(modelNeeded);
+						for(var n in modelNeeded) {
+							loadModel(modelNeeded[n].toLowerCase(), self.models[modelNeeded[n].toLowerCase()]);
 						}
-						self.models[name].schema[needed] = [self.dba.getRawModel(model.deps[needed])];
+						self.models[name].schema[needed] = [self.dba.getRawModel(modelNeeded)];
 					}
 				}
 
@@ -345,83 +326,39 @@ Hype.prototype.start = function() {
 	return loaded.resolve();
 };
 
-Hype.prototype.addModule = function(module, path) {
-	var self = this;
-	var loaded = when.defer();
+Hype.prototype.addModule = function(fullModuleName, module) {
+	var self = this,
+		namespace = moduleName = undefined;
 
-	// Test timing
-	//setTimeout(function() { console.log("waiting..."); loaded.resolve(); }, 4000);
+	console.log("Adding " + fullModuleName + " to Hype");
 
-	when(this.loadModels(module.name, path)).then(function() {
-		console.log('done');
-		// Don't load modules twice, if they exist, we're going to take the first instance we find	
-		if (self.enabledModules[module.name] !== undefined) {
-			console.log("Module " + module.name + " already exists, skipping")
-		// Check enabled
-		} else if (module.enabled == true) {
+	var split = fullModuleName.split('/');
+	namespace = split[0];
+	moduleName = split[1];
 
-			// Check dependencies
-			console.log("Module " + module.name + " was added to Hype");
-			self.enabledModules[module.name] = module;
-			
-		}
-	})
+	// Load a module into the appropriate namespace, when we have overrides we'll call upon those functions in the JSON array
+	if (self.enabledModules[namespace] === undefined) {
+		self.enabledModules[namespace] = [];
+	}
 
-	loaded.resolve(); 
+	// Set the global object namespace
+	self.enabledModules[namespace][moduleName] = module;
 
-	return loaded.promise;
 };
 
-Hype.prototype.loadModels = function(module, path) {
-	var	modelPath = path + "/models",
-		loaded = when.defer();
-			i = j = len = 0,
-			self = this;
 
-	console.log('Waiting for models for ' + module);
+Hype.prototype.addModel = function(fullModuleName, modelName, model) {
+	var self = this,
+		namespace = moduleName = undefined;
 
-	// Should actually check for the index.js file and throw an error if not found
-	// Kind of crappy, we need to load the file first before checking if it's disabled
-	// It's practically loaded at this point, we're just preventing it from becoming
-	// bootstrapped into runtime
-	fs.exists(modelPath, function(exists) {
-		if (exists) {
-			fs.readdir(modelPath, function(err, models) {
-				len = models.length;
-				console.log('Reading ' + modelPath);
-				if (models) {
-					console.log("Models loading for " + module);
-					len = models.length;
-					for (i; i < models.length; i++) {
-						modelName = models[i];
-						console.log("Loading " + modelName);
-						self.addModel(modelName, require(modelPath + "/" + modelName));
-						console.log('hi');
-						loaded.resolve();
-					}
-				}
-			});
-			
-		}
-	});
+	var split = fullModuleName.split('/');
+	namespace = split[0];
+	moduleName = split[1];
 
-	return loaded.promise;
-}
+	console.log("Adding model " + fullModuleName + "/" + modelName + " to Hype");
 
-
-Hype.prototype.addModel = function(name, model) {
-	var loaded = when.defer();
-
-	// Test timing
-	//setTimeout(function() { console.log("waiting..."); loaded.resolve(); }, 4000);
-
-	loaded.resolve(); 
-	
-	console.log("Model " + name + " was added to Hype");
-	this.enabledModels[name] = model;
-
-
-	return loaded.promise;
+	// Load the model onto global object namespace
+	self.enabledModules[namespace][moduleName].models[modelName] = model;
 };
 
 Hype.prototype.getModules = function() {
