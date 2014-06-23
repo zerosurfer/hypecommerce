@@ -6,7 +6,7 @@
 
 var	View;
 
-View = function(db) {
+View = function() {
 	
 	this.schema = {
 		name: String, // English

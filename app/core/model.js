@@ -22,11 +22,11 @@ Model = function(Hype, dba) {
 		return id;
 	}
 
-	this.save = function() {
-		if (this.checkDirty()) {
-			// .. save ..
-		}
-	},
+	// this.save = function() {
+	// 	if (this.checkDirty()) {
+	// 		// .. save ..
+	// 	}
+	// },
 
 	this.remove = function() {
 		// Free up dependencies

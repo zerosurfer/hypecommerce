@@ -6,7 +6,7 @@
 
 var	Currency;
 
-Currency = function(db) {
+Currency = function() {
 	
 	this.schema = {
 		name: String,

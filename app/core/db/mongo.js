@@ -57,15 +57,15 @@ MongoDba.prototype.connect = function(host, username, password, dbname) {
 };
 
 MongoDba.prototype.addModel = function (model, schema) {
-
-	this.models[model] = schema;
 	Log.log("Adding " + model + " to Mongo");
-	//Log.log(schema);
+	//console.log(schema);
 
 	var mSchema = new mongoose.Schema(schema);
 	var mModel = mongoose.model(model, mSchema);
 	this.schemaCollection[model] = mSchema;
 	this.modelCollection[model] = mModel;
+
+	this.models[model] = schema;
 
 	return mModel;
 }

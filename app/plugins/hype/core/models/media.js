@@ -6,7 +6,7 @@
 
 var	Media;
 
-Media = function(db) {
+Media = function() {
 	
 	this.schema = {
 		filename: String,

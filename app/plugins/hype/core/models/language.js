@@ -6,7 +6,7 @@
 
 var	Language;
 
-Language = function(db) {
+Language = function() {
 	
 	this.schema = {
 		name: String, // English, German, Pirate

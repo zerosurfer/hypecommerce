@@ -6,7 +6,7 @@
 
 var	Setting;
 
-Setting = function(db) {
+Setting = function() {
 	
 	this.options = {
 

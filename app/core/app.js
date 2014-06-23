@@ -69,22 +69,21 @@ Hype = function() {
 };
 
 // Load the core classes, could act as singletons
-Hype.prototype.Log = require('./log');
-Hype.prototype.BaseModel = require('./model'); // base model
-Hype.prototype.Helper = require('./helper'); // base helper
-Hype.prototype.Controller = require('./controller'); // base controller
-Hype.prototype.Install = require('./install'); // installation script logic
-Hype.prototype.Server = require('./server'); // server logic (express|other)
-Hype.prototype.Email = require('./email'); // email logic (sendmail|other)
-Hype.prototype.Cluster = require('./cluster'); // deployment/clustering logic
-Hype.prototype.Auth = require('./auth'); // authentication logic (passport|other)
-Hype.prototype.Db = require('./db'); // database logic (mongodb|other)
 Hype.prototype.Admin = require('./admin'); // admin logic
+Hype.prototype.Auth = require('./auth'); // authentication logic (passport|other)
+Hype.prototype.BaseModel = require('./model'); // base model
+Hype.prototype.Cluster = require('./cluster'); // deployment/clustering logic
 Hype.prototype.Config = require('./config'); // configuration
+Hype.prototype.Controller = require('./controller'); // base controller
+Hype.prototype.Db = require('./db'); // database logic (mongodb|other)
+Hype.prototype.Email = require('./email'); // email logic (sendmail|other)
+Hype.prototype.Helper = require('./helper'); // base helper
+Hype.prototype.Install = require('./install'); // installation script logic
+Hype.prototype.Locale = require('./locale'); // translations, can look into the airbnb plugin/licensing for backbone
+Hype.prototype.Log = require('./log');
 Hype.prototype.Model = {}; // holds models
-// Hype.prototype.Locale = require('./locale'); // translations, can look into the airbnb plugin/licensing for backbone
-
-// Hype.prototype.Wizard = require('./wizard');
+Hype.prototype.Server = require('./server'); // server logic (express|other)
+Hype.prototype.Wizard = require('./wizard');
 
 /**
  * Logging
@@ -243,18 +242,20 @@ Hype.prototype.connect = function() {
 						//self.log(modelNeeded);
 						for(var n in modelNeeded) {
 							loadModel(modelNeeded[n].toLowerCase(), self.models[modelNeeded[n].toLowerCase()]);
+							self.Model[name].schema[needed] = [self.dba.getRawModel(modelNeeded[n].toLowerCase())];
+							break;
 						}
-						self.Model[name].schema[needed] = [self.dba.getRawModel(modelNeeded)];
+						
 					}
 				}
-
+				console.log(self.Model[name].schema);
 				var dbaModel = self.dba.addModel(name, self.Model[name].schema);
 				// Extend the models with the dba
-				self.Model[name] = _.extend(dbaModel, self.Model[name], self.BaseModel);
+				self.Model[name] = _.extend(dbaModel, self.BaseModel, self.Model[name]);
 			} else {
 				var dbaModel = self.dba.addModel(name, self.Model[name].schema);
 				// Extend the models with the dba
-				self.Model[name] = _.extend(dbaModel, self.Model[name], self.BaseModel);
+				self.Model[name] = _.extend(dbaModel, self.BaseModel, self.Model[name]);
 			}
 		}
 	}
@@ -282,8 +283,8 @@ Hype.prototype.start = function() {
 
 	// Test for installation
 	// self.log("TEST ONLY: Install script for core");
-	// var install = require(path.resolve('app/plugins/hype/core/install/1.0.0.0.js'));
-	// new install(self);
+	var install = require(path.resolve('app/plugins/hype/core/install/1.0.0.0.js'));
+	//new install(self);
 
 	var readAndSetRoutes = function() {
 		var namespace, module, controller, route, routeMethod, routeCallback;;

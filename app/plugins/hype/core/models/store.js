@@ -6,7 +6,7 @@
 
 var	Store;
 
-Store = function(db) {
+Store = function() {
 	
 	this.schema = {
 		name: String, // My Store
