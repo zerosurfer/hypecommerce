@@ -35,7 +35,10 @@ MongoDba = function() {
 		inst = this;
 
 		// Holds the connection
-		inst.connector = null;
+		inst.connection = null;
+
+		// Holds the db connection
+		inst.db = null;
 
 		// Holds models
 		inst.modelCollection = [];
@@ -50,8 +53,13 @@ MongoDba = function() {
 }
 
 MongoDba.prototype.connect = function(host, username, password, dbname) {
+	var self = this;
+	
 	Log.log("Connecting to MongoDB on " + host + "/" + dbname);
-	this.connector = mongoose.connect('mongodb://' + host + '/' + dbname);
+	this.connection = mongoose.connect('mongodb://' + host + '/' + dbname, function(error) {
+		self.db = mongoose.connection.db;
+	});
+
 };
 
 MongoDba.prototype.addModel = function (model, schema) {

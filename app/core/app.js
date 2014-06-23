@@ -112,6 +112,7 @@ Hype.prototype.init = function() {
 		this.configure(),
 		this.preload(),
 		this.connect(),
+		this.install(),
 		this.start()
 	).then(function() {
 		self.log("Hype is up and running,  Enjoy ;)");
@@ -252,12 +253,16 @@ Hype.prototype.connect = function() {
 				}
 				//console.log(self.Model[name].schema);
 				var dbaModel = self.dba.addModel(name, self.Model[name].schema);
-				// Extend the models with the dba
-				self.Model[name] = _.extend(dbaModel, self.BaseModel, self.Model[name]);
+				// Extend the models with the base model
+				self.Model[name] = _.extend(self.Model[name], self.BaseModel);
+				// Add the db adapter 
+				self.Model[name].Db = dbaModel;
 			} else {
 				var dbaModel = self.dba.addModel(name, self.Model[name].schema);
-				// Extend the models with the dba
-				self.Model[name] = _.extend(dbaModel, self.BaseModel, self.Model[name]);
+				// Extend the models with the base model
+				self.Model[name] = _.extend(self.Model[name], self.BaseModel);
+				// Add the db adapter 
+				self.Model[name].Db = dbaModel;
 			}
 		}
 	}
@@ -273,6 +278,40 @@ Hype.prototype.connect = function() {
 	return loaded.promise;
 }
 
+Hype.prototype.install = function() {
+	var self = this,
+		loaded = when.defer(),
+		Setting,
+		query;
+
+	self.log('Checking for module upgrades');
+
+	// Get the current version of each module from the db
+	Setting = this.Model.setting;
+	Setting.Db.find({ 'path': /install\/version/ }, function(err, settings) {
+		console.dir(settings);
+		loaded.resolve();
+	});
+
+	// Get the current version of each module from the filesystem
+
+	// Check modules that diff for an install script related to the version number
+
+	// Run the script
+
+	// Update the version in the database
+
+	// Test for installation
+	// self.log("TEST ONLY: Install script for core");
+	// var install = require(path.resolve('app/plugins/hype/core/install/1.0.0.0.js'));
+	// new install(self);
+
+
+	self.log('Done checking for module upgrades');
+
+	return loaded.promise;
+}
+
 Hype.prototype.start = function() {
 	var self = this,
 		loaded = when.defer(),
@@ -282,11 +321,6 @@ Hype.prototype.start = function() {
 		routeCallback;
 
 	self.log('Starting application');
-
-	// Test for installation
-	// self.log("TEST ONLY: Install script for core");
-	var install = require(path.resolve('app/plugins/hype/core/install/1.0.0.0.js'));
-	new install(self);
 
 	var readAndSetRoutes = function() {
 		var namespace, module, controller, route, routeMethod, routeCallback;;
@@ -325,30 +359,6 @@ Hype.prototype.start = function() {
 						}
 					}
 				}
-			}
-		}
-
-
-
-		// Add the api routes
-		for(r in self.routes) {
-			console.log(r);
-			route = self.routes[r];
-			routeMethod = route.method;
-			routeCallback = route.callback;
-			switch(routeMethod) {
-				case 'get' :
-					app.get(r, routeCallback);
-					break;
-				case 'post' :
-					app.post(r, routeCallback);
-					break;
-				case 'delete' :
-					app.delete(r, routeCallback);
-					break;
-				case 'put' :
-					app.put(r, routeCallback);
-					break;
 			}
 		}
 	}
