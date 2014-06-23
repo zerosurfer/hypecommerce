@@ -62,8 +62,6 @@ Hype = function() {
         inst.enabledModules = [];
 
         inst.installed = false;
-
-        inst.wizard = false;
 	}
 	return inst;
 };
@@ -71,19 +69,21 @@ Hype = function() {
 // Load the core classes, could act as singletons
 Hype.prototype.Admin = require('./admin'); // admin logic
 Hype.prototype.Auth = require('./auth'); // authentication logic (passport|other)
+Hype.prototype.BaseHelper = require('./helper'); // base helper
 Hype.prototype.BaseModel = require('./model'); // base model
 Hype.prototype.Cluster = require('./cluster'); // deployment/clustering logic
 Hype.prototype.Config = require('./config'); // configuration
 Hype.prototype.Controller = require('./controller'); // base controller
 Hype.prototype.Db = require('./db'); // database logic (mongodb|other)
 Hype.prototype.Email = require('./email'); // email logic (sendmail|other)
-Hype.prototype.Helper = require('./helper'); // base helper
+Hype.prototype.Helper = {}; // global hold for helpers
 Hype.prototype.Install = require('./install'); // installation script logic
 Hype.prototype.Locale = require('./locale'); // translations, can look into the airbnb plugin/licensing for backbone
-Hype.prototype.Log = require('./log');
-Hype.prototype.Model = {}; // holds models
+Hype.prototype.Log = require('./log'); // core logging
+Hype.prototype.Model = {}; // global hold for models
 Hype.prototype.Server = require('./server'); // server logic (express|other)
-Hype.prototype.Wizard = require('./wizard');
+Hype.prototype.Session = require('./session'); // session logic (redis|other)
+Hype.prototype.Wizard = false; // installation wizard for first-time install (should probably inject this on a boolean check)
 
 /**
  * Logging
@@ -222,7 +222,7 @@ Hype.prototype.connect = function() {
 	var loadModel = function(name, model) {
 		var modelNeeded = undefined;
 
-		if (!self.dba.models[name]) {
+		if (!self.dba.hasModel(name)) {
 
 			if (self.Model[name] === undefined) {
 				self.Model[name] = new model();
@@ -237,7 +237,9 @@ Hype.prototype.connect = function() {
 							loadModel(modelNeeded, self.models[modelNeeded]);
 						}
 
-						self.Model[name].schema[needed] = self.dba.getRawModel(modelNeeded);
+						// We must set as an array? Pointless to encapsulate in the config then if it is always an array
+						// @todo reinvestigate scenario
+						self.Model[name].schema[needed] = [self.dba.getRawModel(modelNeeded)];
 					} else {
 						//self.log(modelNeeded);
 						for(var n in modelNeeded) {
@@ -248,7 +250,7 @@ Hype.prototype.connect = function() {
 						
 					}
 				}
-				console.log(self.Model[name].schema);
+				//console.log(self.Model[name].schema);
 				var dbaModel = self.dba.addModel(name, self.Model[name].schema);
 				// Extend the models with the dba
 				self.Model[name] = _.extend(dbaModel, self.BaseModel, self.Model[name]);
@@ -284,7 +286,7 @@ Hype.prototype.start = function() {
 	// Test for installation
 	// self.log("TEST ONLY: Install script for core");
 	var install = require(path.resolve('app/plugins/hype/core/install/1.0.0.0.js'));
-	//new install(self);
+	new install(self);
 
 	var readAndSetRoutes = function() {
 		var namespace, module, controller, route, routeMethod, routeCallback;;

@@ -2,19 +2,19 @@
 var Install = function(Hype) {
 	Hype.Log.log('Installing Core-1.0.0.0');
 
-	// var Currency = Hype.Model.currency,
-	// 	Language = Hype.Model.language,
-	// 	View = Hype.Model.view;
+	var Currency = Hype.Model.currency,
+		Language = Hype.Model.language,
+		View = Hype.Model.view;
 
-	// // Adds currencies
-	// var currency = new Currency({
-	// 	name: 'US Dollar',
-	// 	character: '$',
-	// 	decimals: 2
-	// });
-	// currency.save();
+	// Adds currencies
+	var currency = new Currency({
+		name: 'US Dollar',
+		character: '$',
+		decimals: 2
+	});
+	currency.save();
 
-	// console.log(currency);
+	console.log(currency);
 
 	// new Currency({
 	// 	name: 'Euro',
@@ -50,17 +50,17 @@ var Install = function(Hype) {
 	// }).save();
 
 	//Add View
-	// var view = new View({
-	// 	name: 'My Store English', // English
-	// 	code: 'store-en_US', // en_US | de_DE
-	// 	url: 'http://localhost:5000/', // http://www.hypecommerce.com/ | http://www.hypecommerce.de/
-	// 	language: 'en_US', // en_US | de_DE
-	// 	primary: true, // true
-	// 	currency: currency
-	// });
-	// view.save();
+	var view = new View({
+		name: 'My Store English', // English
+		code: 'store-en_US', // en_US | de_DE
+		url: 'http://localhost:5000/', // http://www.hypecommerce.com/ | http://www.hypecommerce.de/
+		language: 'en_US', // en_US | de_DE
+		primary: true, // true
+		currency: currency
+	});
+	view.save();
 
-	// console.log(view);
+	console.log(view);
 
 	// var store = new Store({
 	// 	name: 'My Store', // My Store

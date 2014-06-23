@@ -45,8 +45,6 @@ MongoDba = function() {
 
 		// Holds Schemas
 		inst.schemaCollection = [];
-
-		inst.models = [];
 	}
 	return inst;
 }
@@ -58,14 +56,11 @@ MongoDba.prototype.connect = function(host, username, password, dbname) {
 
 MongoDba.prototype.addModel = function (model, schema) {
 	Log.log("Adding " + model + " to Mongo");
-	//console.log(schema);
 
 	var mSchema = new mongoose.Schema(schema);
 	var mModel = mongoose.model(model, mSchema);
 	this.schemaCollection[model] = mSchema;
 	this.modelCollection[model] = mModel;
-
-	this.models[model] = schema;
 
 	return mModel;
 }
@@ -79,7 +74,8 @@ MongoDba.prototype.getModel = function(model) {
 };
 
 MongoDba.prototype.getRawModel = function(model) {
-	return this.models[model];
+	return this.schemaCollection[model];
+	//return this.models[model];
 };
 
 MongoDba.prototype.getSchema = function(model) {
