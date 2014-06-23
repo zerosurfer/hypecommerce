@@ -24,8 +24,6 @@
 
 // Load necessary modules/files
 var	fs = require('fs'),
-	express = require('express'), // Express framework
-	app = express(), // Express application
 	when = require('when'),
 	path = require('path'),
 	inst = false,
@@ -289,7 +287,7 @@ Hype.prototype.install = function() {
 	// Get the current version of each module from the db
 	Setting = this.Model.setting;
 	Setting.Db.find({ 'path': /install\/version/ }, function(err, settings) {
-		console.dir(settings);
+		//console.dir(settings);
 		loaded.resolve();
 	});
 
@@ -314,119 +312,11 @@ Hype.prototype.install = function() {
 
 Hype.prototype.start = function() {
 	var self = this,
-		loaded = when.defer(),
-		r,
-		route,
-		routeMethod,
-		routeCallback;
+		loaded = when.defer();
 
-	self.log('Starting application');
-
-	var readAndSetRoutes = function() {
-		var namespace, module, controller, route, routeMethod, routeCallback;;
-
-		self.log("Preparing to set initial routes");
-
-		// @todo, optimize whatever O notation this is... 
-		for (namespace in self.enabledModules) {
-			for (module in self.enabledModules[namespace]) {
-				self.log("Searching " + namespace + "/" + module + " for controllers");
-				// Look for controllers
-				if (self.enabledModules[namespace][module].api) {
-					for (controller in self.enabledModules[namespace][module].api) {
-						self.log("Found controller " + controller);
-						for (route in self.enabledModules[namespace][module].api[controller].routes) {
-							routeMethod = self.enabledModules[namespace][module].api[controller].routes[route].method;
-							routeCallback = self.enabledModules[namespace][module].api[controller].routes[route].callback;
-							switch(routeMethod) {
-								case 'get' :
-									self.log("Adding GET route " + route);
-									app.get(route, routeCallback);
-									break;
-								case 'post' :
-									self.log("Adding POST route " + route);
-									app.post(route, routeCallback);
-									break;
-								case 'delete' :
-									self.log("Adding DELETE route " + route);
-									app.delete(route, routeCallback);
-									break;
-								case 'put' :
-									self.log("Adding PUT route " + route);
-									app.put(route, routeCallback);
-									break;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	app.configure(function(){
-
-		app.use(express.bodyParser());
-		app.use(express.cookieParser());
-		app.use(express.methodOverride());
-
-		app.settings.env = self.env || 'development';
-
-		// CSRF Token for CORS
-		// Load locals
-		app.use(function(req, res, next) {
-			//res.locals.csrftoken = res.session._csrf;
-			res.locals.admin = self.configuration.admin;
-			next();
-		})
-
-		app.use(app.router);
-		app.use(express.favicon());
-		app.use(express.logger("dev"));
-		app.engine('html', require('ejs').renderFile);
-		app.set('views', self.themePath);
-		app.get('/', function (req, res) {
-			res.render(self.themePath + '/index.html');
-		});
-
-		// Add the admin routes
-		// These should be required from admin.js
-		app.get('/' + self.configuration.admin, self.Admin.requiredAuth(), self.Admin.index);
-		app.get('/' + self.configuration.admin + '/login', self.Admin.login);
-		app.post('/' + self.configuration.admin + '/login', self.Admin.loginPost);
-		app.get('/' + self.configuration.admin + '/:controller/:action', self.Admin.test);
-
-		readAndSetRoutes();
-
-		// Setup a custom 404 page
-		app.use(function(req, res, next){
-			res.status(404);
-
-			// respond with html page
-			if (req.accepts('html')) {
-				res.render(self.themePath + '/404.html', { url: req.url });
-				return;
-			}
-
-			// respond with json
-			if (req.accepts('json')) {
-				res.send({ error: 'Not found' });
-				return;
-			}
-		});
-
-		app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
-	});
-
-	app.listen(this.configuration.port, function() {
-		self.log( 'Express server listening on port %d in %s mode', self.configuration.port,
-			app.settings.env );
-			
+	this.Server.init(this).then(function() {
 		loaded.resolve();
 	});
-
-	// // Test inheritance
-	// var model = self.Model['setting'];
-	// self.log("TEST FUNCTION OF INHERITANCE: " + model.testFunc()); // inheritance!
 
 	return loaded.promise;
 };
