@@ -55,9 +55,6 @@ Hype = function() {
 
 		// Holds models for mongoose
 		inst.models = [];
-		
-		// Holds the available modules
-        inst.enabledModules = [];
 
         inst.installed = false;
 	}
@@ -67,11 +64,12 @@ Hype = function() {
 // Load the core classes, could act as singletons
 Hype.prototype.Admin = require('./admin'); // admin logic
 Hype.prototype.Auth = require('./auth'); // authentication logic (passport|other)
-Hype.prototype.BaseHelper = require('./helper'); // base helper
-Hype.prototype.BaseModel = require('./model'); // base model
+Hype.prototype.BaseController = require('./controller'); // base controller // @todo deprecate into inst
+Hype.prototype.BaseHelper = require('./helper'); // base helper // @todo deprecate into inst
+Hype.prototype.BaseModel = require('./model'); // base model // @todo deprecate into inst
 Hype.prototype.Cluster = require('./cluster'); // deployment/clustering logic
 Hype.prototype.Config = require('./config'); // configuration
-Hype.prototype.Controller = require('./controller'); // base controller
+Hype.prototype.Controller = {}; // global hold for controllers // @todo maybe not a good idea?
 Hype.prototype.Db = require('./db'); // database logic (mongodb|other)
 Hype.prototype.Email = require('./email'); // email logic (sendmail|other)
 Hype.prototype.Helper = {}; // global hold for helpers
@@ -79,6 +77,7 @@ Hype.prototype.Install = require('./install'); // installation script logic
 Hype.prototype.Locale = require('./locale'); // translations, can look into the airbnb plugin/licensing for backbone
 Hype.prototype.Log = require('./log'); // core logging
 Hype.prototype.Model = {}; // global hold for models
+Hype.prototype.Module = {}; // global hold for enabled modules
 Hype.prototype.Server = require('./server'); // server logic (express|other)
 Hype.prototype.Session = require('./session'); // session logic (redis|other)
 Hype.prototype.Wizard = false; // installation wizard for first-time install (should probably inject this on a boolean check)
@@ -154,8 +153,8 @@ Hype.prototype.preload = function() {
 	var self = this;
 	self.log("Setting up the routers");
 
-	for(var namespace in this.enabledModules) {
-		currentNamespace = this.enabledModules[namespace];
+	for(var namespace in this.Module) {
+		currentNamespace = this.Module[namespace];
 		for (var module in currentNamespace) {
 			var currentModule = currentNamespace[module];
 			for (var route in currentModule.api.routes) {
@@ -280,30 +279,109 @@ Hype.prototype.install = function() {
 	var self = this,
 		loaded = when.defer(),
 		Setting,
-		query;
+		query,
+		module,
+		namespace,
+		loadedVersion,
+		dbVersion,
+		installVersion,
+		dir,
+		install,
+		installVersion,
+		Install,
+		storedSettings = {}, // indexed settings by path
+		modules = {},
+		dbVersions = {}, //db
+		count = 0, // count loadedVersions
+		checkCount = 0,
+		loadedVersions = {}; //loaded in hype
 
 	self.log('Checking for module upgrades');
 
 	// Get the current version of each module from the db
 	Setting = this.Model.setting;
-	Setting.Db.find({ 'path': /install\/version/ }, function(err, settings) {
-		//console.dir(settings);
-		loaded.resolve();
+	Setting.Db.find({ 'path': /install/ }, function(err, settings) {
+		for (setting in settings) {
+			//console.log(settings[setting]);
+			dbVersions[settings[setting].path] = settings[setting].value;
+			storedSettings[settings[setting].path] = settings[setting];
+		}
+
+		//console.log(dbVersions);
+
+		// Get the current version of each module loaded into Hype
+		for (namespace in self.Module) {
+			for (module in self.Module[namespace]) {
+				modules["module/" + namespace + "/" + module + "/install"] = namespace + "/" + module; // for use when loading the files
+				loadedVersions["module/" + namespace + "/" + module + "/install"] = self.Module[namespace][module].version;
+				count++;
+			}
+		}
+
+		//console.log(loadedVersions);
+
+		// Check for new modules
+		// I want to eventually use the BaseHelper class for some crazy recursive function but for now it's hacked here
+		for (loadedVersion in loadedVersions) {
+			// Found something different
+			if (dbVersions[loadedVersion] !== undefined && dbVersions[loadedVersion] !== loadedVersions[loadedVersion]) {
+				// Take the versions, remove the periods
+				dbVersion = dbVersions[loadedVersion].replace(/\./g, "");
+				installVersion = loadedVersions[loadedVersion].replace(/\./g, "");
+
+				// Scan the module install folder for any new install js files up until the final number
+				dir = path.resolve('app/plugins') + "/" + modules[loadedVersion] + "/install";
+				fs.readdir(dir, function(err, items) {
+					for (var i in items) {
+						var fileVersion = +items[i].replace(/\./g, "").replace('js', ""); // force a number`
+						if (fileVersion > dbVersion && fileVersion <= installVersion && installVersion !== dbVersion) {
+							self.log("Installing changes on " + modules[loadedVersion] + " - Version: " + loadedVersion);
+
+							// Execute the install file
+							Install = require(dir + "/" + items[i]);
+							install = new Install(self);
+
+							// Update the db with new version number
+							storedSettings[loadedVersion].value = loadedVersions[loadedVersion];
+							storedSettings[loadedVersion].save();
+							// Resolve
+							loaded.resolve();
+						}
+					}
+				});
+			// Found something new
+			} else if(dbVersions[loadedVersion] === undefined) {
+				// Run anything in the directory up to the version number, update the db with the latest
+				installVersion = loadedVersions[loadedVersion].replace(/\./g, "");
+				dir = path.resolve('app/plugins') + "/" + modules[loadedVersion] + "/install";
+				fs.readdir(dir, function(err, items) {
+					for (var i in items) {
+
+						var fileVersion = +items[i].replace(/\./g, "").replace('js', ""); // force a number
+						
+						if (fileVersion <= installVersion) {
+							// Execute the install file
+							// Race condition here
+							Install = require(dir + "/" + items[i]);
+							install = new Install(self);
+							installVersion = items[i].replace('\.js', "");
+						}
+					}
+
+					// Update the db with modules version number
+					//Setting.Db.create({ path: "module/" + modules[loadedVersion] + "/install", value: loadedVersions[loadedVersion] });
+
+					// Resolve
+					//loaded.resolve();
+				});
+			}
+
+			if (checkCount + 1 == count) {
+				loaded.resolve();
+			}
+			checkCount++;
+		}
 	});
-
-	// Get the current version of each module from the filesystem
-
-	// Check modules that diff for an install script related to the version number
-
-	// Run the script
-
-	// Update the version in the database
-
-	// Test for installation
-	// self.log("TEST ONLY: Install script for core");
-	// var install = require(path.resolve('app/plugins/hype/core/install/1.0.0.0.js'));
-	// new install(self);
-
 
 	self.log('Done checking for module upgrades');
 
@@ -332,12 +410,12 @@ Hype.prototype.addModule = function(fullModuleName, module) {
 	moduleName = split[1];
 
 	// Load a module into the appropriate namespace, when we have overrides we'll call upon those functions in the JSON array
-	if (self.enabledModules[namespace] === undefined) {
-		self.enabledModules[namespace] = [];
+	if (self.Module[namespace] === undefined) {
+		self.Module[namespace] = [];
 	}
 
 	// Set the global object namespace
-	self.enabledModules[namespace][moduleName] = module;
+	self.Module[namespace][moduleName] = module;
 
 };
 
@@ -352,7 +430,7 @@ Hype.prototype.addModel = function(fullModuleName, modelName, model) {
 	self.log("Adding model " + fullModuleName + "/" + modelName + " to Hype");
 
 	// Load the model onto global object but don't instantiate, we'll do that with a dba adapter
-	self.enabledModules[namespace][moduleName].models[modelName] = model;
+	self.Module[namespace][moduleName].models[modelName] = model;
 };
 
 Hype.prototype.addHelper = function(fullModuleName, helperName, helper) {
@@ -366,7 +444,7 @@ Hype.prototype.addHelper = function(fullModuleName, helperName, helper) {
 	self.log("Adding helper " + fullModuleName + "/" + helperName + " to Hype");
 
 	// Load the helper onto global object namespace
-	self.enabledModules[namespace][moduleName].helpers[helperName] = new helper();
+	self.Module[namespace][moduleName].helpers[helperName] = new helper();
 };
 
 Hype.prototype.addController = function(fullModuleName, controllerName, controller) {
@@ -380,11 +458,11 @@ Hype.prototype.addController = function(fullModuleName, controllerName, controll
 	self.log("Adding controller " + fullModuleName + "/" + controllerName + " to Hype");
 
 	// Load the controller onto global object namespace
-	self.enabledModules[namespace][moduleName].api[controllerName] = new controller();
+	self.Module[namespace][moduleName].api[controllerName] = new controller();
 };
 
 Hype.prototype.getModules = function() {
-	return this.enabledModules;
+	return this.Module;
 }
 
 module.exports = Hype;

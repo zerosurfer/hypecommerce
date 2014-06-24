@@ -27,11 +27,9 @@ Server = function() {
 			// @todo, optimize whatever O notation this is... 
 			for (namespace in Hype.enabledModules) {
 				for (module in Hype.enabledModules[namespace]) {
-					Hype.log("Searching " + namespace + "/" + module + " for controllers");
 					// Look for controllers
 					if (Hype.enabledModules[namespace][module].api) {
 						for (controller in Hype.enabledModules[namespace][module].api) {
-							Hype.log("Found controller " + controller);
 							for (route in Hype.enabledModules[namespace][module].api[controller].routes) {
 								routeMethod = Hype.enabledModules[namespace][module].api[controller].routes[route].method;
 								routeCallback = Hype.enabledModules[namespace][module].api[controller].routes[route].callback;
