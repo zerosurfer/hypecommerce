@@ -79,16 +79,21 @@ Server = function() {
 			app.use(express.logger("dev"));
 			app.engine('html', require('ejs').renderFile);
 			app.set('views', Hype.themePath);
+
+			// Render the theme path 
 			app.get('/', function (req, res) {
 				res.render(Hype.themePath + '/index.html');
 			});
 
+			// Render for admin
+
 			// Add the admin routes
-			// These should be required from admin.js
+			// These should be required from ./admin.js
 			app.get('/' + Hype.configuration.admin, Hype.Admin.requiredAuth(), Hype.Admin.index);
 			app.get('/' + Hype.configuration.admin + '/login', Hype.Admin.login);
 			app.post('/' + Hype.configuration.admin + '/login', Hype.Admin.loginPost);
-			app.get('/' + Hype.configuration.admin + '/:controller/:action', Hype.Admin.test);
+			app.use('/' + Hype.configuration.admin + '/css' , express.static(__dirname + '/admin/css'));
+			app.use('/' + Hype.configuration.admin + '/js' , express.static(__dirname + '/admin/js'));
 
 			readAndSetRoutes();
 

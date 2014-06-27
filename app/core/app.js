@@ -109,7 +109,7 @@ Hype.prototype.init = function() {
 		this.configure(),
 		this.preload(),
 		this.connect(),
-		this.install(),
+		//this.install(),
 		this.start()
 	).then(function() {
 		self.log("Hype is up and running,  Enjoy ;)");
@@ -275,6 +275,13 @@ Hype.prototype.connect = function() {
 	return loaded.promise;
 }
 
+/**
+ * Installs a module's install scripts up until the specified version number in index.js
+ *
+ * @todo	This function is bad ... just horribly hacked together, we'll eventually need
+ *			to take a look at this and move it's functionality to seperate functions that 
+ * 			can be easily interpretted
+ */
 Hype.prototype.install = function() {
 	var self = this,
 		loaded = when.defer(),
@@ -284,7 +291,6 @@ Hype.prototype.install = function() {
 		namespace,
 		loadedVersion,
 		dbVersion,
-		installVersion,
 		dir,
 		install,
 		installVersion,
@@ -294,7 +300,46 @@ Hype.prototype.install = function() {
 		dbVersions = {}, //db
 		count = 0, // count loadedVersions
 		checkCount = 0,
-		loadedVersions = {}; //loaded in hype
+		loadedVersions = {},
+		loadedVersionMap = []; // uses checkCount as the key
+
+	var installModule = function(moduleObj, resolvePath) {
+		console.log("Installing module...");
+
+		var installed = when.defer();
+
+		var installVersion = moduleObj.replace(/\./g, "");
+		var dir = path.resolve('app/plugins') + "/" + resolvePath + "/install";
+
+		fs.readdir(dir, function(err, items) {
+			//console.log(items);
+			for (var i in items) {
+				console.log(items[i]);
+				var fileVersion = +items[i].replace(/\./g, "").replace('js', ""); // force a number
+				if (fileVersion <= installVersion) {
+					// Execute the install file
+					// Race condition here
+					Install = require(dir + "/" + items[i]);
+					install = new Install(self);
+					when(install.up()).then(function() {
+						console.log("Finished install of file");
+					})
+					installVersion = items[i].replace('\.js', "");
+				}
+			}
+
+			// Update the db with modules version number
+			// if (setting) {
+			// 	setting.Db.value = loadedVersions[loadedVersion]
+			// 	: Setting.Db.create({ path: "module/" + modules[loadedVersion] + "/install", value: loadedVersions[loadedVersion] });
+			// }
+
+			//installed.resolve();
+
+		});
+
+		return installed.promise;
+	}
 
 	self.log('Checking for module upgrades');
 
@@ -314,6 +359,7 @@ Hype.prototype.install = function() {
 			for (module in self.Module[namespace]) {
 				modules["module/" + namespace + "/" + module + "/install"] = namespace + "/" + module; // for use when loading the files
 				loadedVersions["module/" + namespace + "/" + module + "/install"] = self.Module[namespace][module].version;
+				loadedVersionMap.push("module/" + namespace + "/" + module + "/install");
 				count++;
 			}
 		}
@@ -321,8 +367,9 @@ Hype.prototype.install = function() {
 		//console.log(loadedVersions);
 
 		// Check for new modules
-		// I want to eventually use the BaseHelper class for some crazy recursive function but for now it's hacked here
+		// I want to eventually use a class to run some crazy recursive function but for now it's hacked here
 		for (loadedVersion in loadedVersions) {
+
 			// Found something different
 			if (dbVersions[loadedVersion] !== undefined && dbVersions[loadedVersion] !== loadedVersions[loadedVersion]) {
 				// Take the versions, remove the periods
@@ -352,33 +399,14 @@ Hype.prototype.install = function() {
 			// Found something new
 			} else if(dbVersions[loadedVersion] === undefined) {
 				// Run anything in the directory up to the version number, update the db with the latest
-				installVersion = loadedVersions[loadedVersion].replace(/\./g, "");
-				dir = path.resolve('app/plugins') + "/" + modules[loadedVersion] + "/install";
-				fs.readdir(dir, function(err, items) {
-					for (var i in items) {
-
-						var fileVersion = +items[i].replace(/\./g, "").replace('js', ""); // force a number
-						
-						if (fileVersion <= installVersion) {
-							// Execute the install file
-							// Race condition here
-							Install = require(dir + "/" + items[i]);
-							install = new Install(self);
-							installVersion = items[i].replace('\.js', "");
-						}
-					}
-
-					// Update the db with modules version number
-					//Setting.Db.create({ path: "module/" + modules[loadedVersion] + "/install", value: loadedVersions[loadedVersion] });
-
-					// Resolve
-					//loaded.resolve();
+				var setting = null;
+				var j = 0;
+				
+				when(installModule(loadedVersions[loadedVersion], modules[loadedVersion])).then(function(){
+					console.log('done');
 				});
 			}
 
-			if (checkCount + 1 == count) {
-				loaded.resolve();
-			}
 			checkCount++;
 		}
 	});

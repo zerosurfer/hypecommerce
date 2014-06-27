@@ -6,7 +6,6 @@ IndexController = function() {
 		'/test' : {
 			method: 'get',
 			callback: function(request, response) {
-
 				response.send(200, 'hi test');
 			}
 		}
