@@ -109,7 +109,7 @@ Hype.prototype.init = function() {
 		this.configure(),
 		this.preload(),
 		this.connect(),
-		//this.install(),
+		this.install(),
 		this.start()
 	).then(function() {
 		self.log("Hype is up and running,  Enjoy ;)");
@@ -283,6 +283,18 @@ Hype.prototype.connect = function() {
  * 			can be easily interpretted
  */
 Hype.prototype.install = function() {
+	var self = this,
+		loaded = when.defer();
+
+	self.log("Checking for new installation scripts");
+
+	self.log("Done checking for new installation scripts");
+	return loaded.promise;
+}
+
+
+
+Hype.prototype.installWtf = function() {
 	var self = this,
 		loaded = when.defer(),
 		Setting,

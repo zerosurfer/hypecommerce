@@ -17,12 +17,12 @@ Server = function() {
 			routeMethod,
 			routeCallback;
 
-		Hype.log('Starting application');
+		Hype.log('Preparing the server...');
 
 		var readAndSetRoutes = function() {
 			var namespace, module, controller, route, routeMethod, routeCallback;;
 
-			Hype.log("Preparing to set initial routes");
+			Hype.log("Setting initial routes");
 
 			// @todo, optimize whatever O notation this is... 
 			for (namespace in Hype.enabledModules) {
@@ -56,13 +56,15 @@ Server = function() {
 					}
 				}
 			}
+
+			Hype.log("Done setting routes");
 		}
 
 		app.configure(function(){
 
-			app.use(express.bodyParser());
+			//app.use(express.bodyParser());
 			app.use(express.cookieParser());
-			app.use(express.methodOverride());
+			//app.use(express.methodOverride());
 
 			app.settings.env = Hype.env || 'development';
 
@@ -116,10 +118,10 @@ Server = function() {
 
 			app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
 		});
-
+		
+		Hype.log("Starting server...");
 		app.listen(Hype.configuration.port, function() {
-			Hype.log( 'Express server listening on port %d in %s mode', Hype.configuration.port,
-				app.settings.env );
+			Hype.log('Express server listening on port ' + Hype.configuration.port + ' in ' + app.settings.env + ' mode');
 				
 			loaded.resolve();
 		});
