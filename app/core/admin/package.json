@@ -1,0 +1,18 @@
+{
+  "name": "admin",
+  "version": "0.0.1",
+  "description": "Hype Commerce admin section",
+  "main": "admin.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "author": "kurtiskemple@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-sass": "~0.7.3",
+    "grunt-contrib-jasmine": "~0.6.5",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-watch": "~0.6.1"
+  }
+}
