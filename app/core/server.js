@@ -12,7 +12,9 @@ Server = function() {
 	this.init = function(Hype) {
 
 		if (cluster.isMaster) {
+			// Hardcoded, not sure if i like it
 			var cpuCount = require('os').cpus().length;
+			cpuCount = 8;
 
 		    // Create a worker for each CPU
 		    for (var i = 0; i < cpuCount; i += 1) {
@@ -22,6 +24,17 @@ Server = function() {
 		} else {
 			return this._init(Hype);
 		}
+
+		// Listen for dying workers
+		cluster.on('exit', function (worker) {
+		    console.log('Worker ' + worker.id + ' died, replacing');
+		    cluster.fork();
+
+		});
+
+		cluster.on('online', function(worker) {
+		  console.log("Yay, the worker responded after it was forked");
+		});
 	},
 
 	this._init = function(Hype) {
