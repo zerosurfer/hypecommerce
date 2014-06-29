@@ -22,87 +22,196 @@
  * @license		http://www.hypecommerce.com/license
  */
 
+/**
+* A NOTE ON Extending modules
+*
+* We load all hype modules first, then "rewrite" them using the local config.js files 
+*
+* Example:
+* Load hype/core/config.js - set all configuration necessary
+* Load local/mymodule/config.js which contains something like:
+*  
+*  core: { 
+*    api: {
+*	    routes: {
+*	      '/test' : {
+*		    method: 'get',
+*		      callback: function(request, response) {
+*			    response.send(200, 'hi test');
+*			  }
+*		  }
+*	    }
+*    }
+*  )
+*
+* This would overwrite the api route and do it's own thing - this is going to get rough with multiple extends, no?
+* We'll need to find a sane way to deal with this
+*/
+
 // Load libraries
 var	fs      = require('fs'),
     url     = require('url'),
     when    = require('when'),
 	path	= require('path'),
 	Hype	= require('./app'),
-
-// Define variables
-    config,
-
-// Load Hype
+	Log 	= require('./log');
 	hype	= new Hype();
 
 exports.init = function() {
 	// Start it up
-	when(hype.init()).then(function() {
-		console.log ("Ready for action");
-	}).otherwise(function() {
-		console.log("Failed to initialze Hype");
-	});
+	Log.log("Signals clear for launch");
+	hype.init();
 };
 
 exports.loadConfiguration = function() {
+	Log.log("Loading the configuration files");
 	// Set a promise
-	var loaded = when.defer();
-	var self = this;
+	var loaded = when.defer(),
+		self = this,
+		coreModulePath = path.resolve('app/plugins/hype'),
+		localModulePath = path.resolve('app/plugins/local');
 
-	// The plan here is to make modules overwriteable
-	// "hype", "local" folders - if the bootstrap finds the module in local first, it will use that
-	// one. This would require copying down an entire module, which might be okay since all modules
-	// will be versioned with documentation so that upgrades only affect a small portion of the
-	// application, not the entire thing as a whole. If the user wants to upgrade their local
-	// module, it's on their own terms to make it compatible
-	var modulePath = path.resolve('app/plugins/hype');
-	// var localModulePath = path.resolve('app/plugins/hype');
+	this.readAndLoadDirectory = function(dir, type, module) {
+		var dirLoaded = when.defer(),
+			i = j = len = 0;
 
-	this.loadModule = function(module) {
-		var moduleLoaded = when.defer();
-		
-		// Should actually check for the config.js file and throw an error if not found
-		// Kind of crappy, we need to load the file first before checking if it's disabled
-		// It's practically loaded at this point, we're just preventing it from becoming
-		// bootstrapped into runtime
-		when(hype.addModule(require(modulePath + "/" + module + "/config.js"))).then(function() {
-			return moduleLoaded.resolve();
-		});
-
-		return moduleLoaded.promise;
-	}
-
-	this.loadModules = function() {
-		var modulesLoaded = when.defer(),
-			i = j = len = 0,
-			moduleName = undefined;
-
-		fs.readdir(modulePath, function(err, modules) {
-			len = modules.length
-			for (i; i < modules.length; i++) {
-				moduleName = modules[i];
-				// No hidden files or disabled modules
-				if (moduleName.indexOf('.') === 0) {
+		fs.readdir(dir, function(err, items) {
+			len = items.length;
+			for (i; i < len; i++) {
+				// skip hidden files
+				if (items[i].indexOf('.') === 0) {
 					len--;
 					continue;
 				}
-				when(self.loadModule(moduleName)).then(function() {
-					if (j + 1 == len)
-						return modulesLoaded.resolve();
-					else
-						++j;
-				}).otherwise(function(err) {
-					console.log("No " + err);
-				});	
+				switch(type) {
+					case 'model' :
+						hype.addModel(module, items[i].replace('.js', ''), require(dir + "/" + items[i]));
+						break;
+					case 'helper' :
+						hype.addHelper(module, items[i].replace('.js', ''), require(dir + "/" + items[i]));
+						break;
+					case 'controller' :
+						hype.addController(module, items[i].replace('.js', ''), require(dir + "/" + items[i]));
+						break;
+				}
+				if (i + 1 == len) {
+					dirLoaded.resolve();
+				}
 			}
 		});
 
-		return modulesLoaded.promise;
+		return dirLoaded.promise;
+	},
+
+	this.loadConfigurationFile = function(fullModuleName, modulePath) {
+		var configLoaded = when.defer();
+		fs.exists(modulePath + "/index.js", function(exists) {
+			if (exists) {
+				hype.addModule(fullModuleName, require(modulePath));
+			}
+			// In case of race testing, increment timeout
+			setTimeout(function() {
+				configLoaded.resolve();
+			}, 0);
+		});
+		return configLoaded.promise;
+	},
+
+	this.loadModelFolder = function(fullModuleName, modulePath) {
+		var modelLoaded = when.defer();
+		fs.exists(modulePath + "/models", function(exists) {
+			if (exists) {
+				Log.log("Need to read models in " + modulePath + "/models");
+
+				self.readAndLoadDirectory(modulePath + "/models", 'model', fullModuleName).then(function() {
+					Log.log("Models were read");
+					// In case of race testing, increment timeout
+					setTimeout(function() {
+						modelLoaded.resolve();
+					}, 0);
+				});
+			}
+			
+		})
+		return modelLoaded.promise;
+	},
+
+	this.loadHelperFolder = function(fullModuleName, modulePath) {
+		var helperLoaded = when.defer();
+		fs.exists(modulePath + "/helpers", function(exists) {
+			if (exists) {
+				Log.log("Need to read helpers in " + modulePath + "/helpers");
+				self.readAndLoadDirectory(modulePath + "/helpers", 'helper', fullModuleName).then(function() {
+					Log.log("Helpers were read");
+					// In case of race testing, increment timeout
+					setTimeout(function() {
+						helperLoaded.resolve();
+					}, 0);
+				});
+
+			}
+		})
+		return helperLoaded.promise;
+	},
+
+	this.loadControllerFolder = function(fullModuleName, modulePath) {
+		var controllerLoaded = when.defer();
+		fs.exists(modulePath + "/controllers", function(exists) {
+			if (exists) {
+				Log.log("Need to read controllers in " + modulePath + "/controllers");
+				self.readAndLoadDirectory(modulePath + "/controllers", 'controller', fullModuleName).then(function() {
+					Log.log("Controllers were read");
+					// In case of race testing, increment timeout
+					setTimeout(function() {
+						controllerLoaded.resolve();
+					}, 0);
+				});
+			}
+			// In case of race testing, increment timeout
+			setTimeout(function() {
+				controllerLoaded.resolve();
+			}, 0);
+		})
+		return controllerLoaded.promise;
 	}
 
-	return when.join(
-		this.loadModules()
-	).then(function() {
-		console.log("Finished bootstrap!");
-	})
+	var i = j = len = 0,
+		module = undefined,
+		filteredModules = {},
+		promises = [],
+		fullModuleName = namespace = moduleName = modulePath = undefined;
+
+	// Read the directory of core modules first
+	fs.readdir(coreModulePath, function(err, modules) {
+
+		// Filter the list of modules
+		len = modules.length;
+		for (i; i < len; i++) {
+			moduleName = modules[i];
+			// No hidden files or folders
+			if (moduleName.indexOf('.') !== 0) {
+				modulePath = coreModulePath + "/" + moduleName;
+				filteredModules[moduleName] = modulePath;
+			}
+		}
+
+		// Since we're loading core modules, define the namespace as "hype"
+		namespace = 'hype';
+
+		// Actually require the index.js file for each module
+		for (module in filteredModules) {
+			fullModuleName = namespace + "/" + module;
+			when.join(self.loadConfigurationFile(fullModuleName, filteredModules[module])
+			, self.loadModelFolder(fullModuleName, filteredModules[module])
+			, self.loadHelperFolder(fullModuleName, filteredModules[module])
+			, self.loadControllerFolder(fullModuleName, filteredModules[module]))
+			.then(function() {
+				loaded.resolve();
+				Log.log("Done loading all the configuration files");
+			});
+		}		
+		
+	});
+
+	return loaded.promise;
 };

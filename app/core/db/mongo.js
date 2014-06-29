@@ -23,46 +23,72 @@
  */
 
 // Load necessary modules/files
-var	mongoose = require('mongoose');
+var	mongoose = require('mongoose'),
+	Log = require('./../log'),
+	when = require('when'),
+	inst = false,
+	MongoDba;
 
-exports.connect = function(host, username, password, dbname) {
-	console.log("Connecting to MongoDB on %s/%s", host, dbname);
-	mongoose.connect('mongodb://' + host + '/' + dbname);
-};
+MongoDba = function() {
+	if (!inst) {
+		// Start the instance
+		inst = this;
 
-exports.addModel = function (model, schema) {
-	// Need to resolve dependencies before this point
+		// Holds the connection
+		inst.connection = null;
 
-	// Add the schema to a tmpCollection
-	this.tmpCollection[model] = schema;
+		// Holds the db connection
+		inst.db = null;
 
-	// Loop through the tmpCollection, we'll add previous schemas to the schema
-	var s, c, a, v;
-	for(c in this.tmpCollection) {
-		s = this.tmpCollection[c]; // schema
+		// Holds models
+		inst.modelCollection = [];
 
-		// a = attributeName, v = attributeValue
-		for(a in s) {
-			v = s[a];
-			// If it's a string, we'll need to replace the string with the right model/schema
-			if (typeof v === 'string') {
+		// Holds singletons
+		inst.singletonCollection = [];
 
-			// If it's an object (array) then replace whatever is inside with the right model/schema
-			} else if (typeof v === 'object') {
-
-			}
-		}
+		// Holds Schemas
+		inst.schemaCollection = [];
 	}
-
-	// var mSchema = new mongoose.Schema(schema);
-	// var tmpModel = mongoose.model(model, mSchema);
-
-	// this.schemas[model] = mSchema;
-	// this.models[model] = tmpModel;
+	return inst;
 }
 
+MongoDba.prototype.connect = function(host, username, password, dbname) {
+	var self = this;
+	
+	Log.log("Connecting to MongoDB on " + host + "/" + dbname);
+	this.connection = mongoose.connect('mongodb://' + host + '/' + dbname, function(error) {
+		self.db = mongoose.connection.db;
+	});
 
+};
 
-exports.tmpCollection = [];
-exports.schemas = [];
-exports.models = [];
+MongoDba.prototype.addModel = function (model, schema) {
+	Log.log("Adding " + model + " to Mongo");
+
+	var mSchema = new mongoose.Schema(schema);
+	var mModel = mongoose.model(model, mSchema);
+	this.schemaCollection[model] = mSchema;
+	this.modelCollection[model] = mModel;
+
+	return mModel;
+}
+
+MongoDba.prototype.hasModel = function(model) {
+	return (this.modelCollection[model] !== undefined) ? true : false;
+}
+
+MongoDba.prototype.getModel = function(model) {
+	return this.modelCollection[model];
+};
+
+MongoDba.prototype.getRawModel = function(model) {
+	return this.schemaCollection[model];
+	//return this.models[model];
+};
+
+MongoDba.prototype.getSchema = function(model) {
+	return this.schemaCollection[model];
+};
+
+module.exports = new MongoDba();
+

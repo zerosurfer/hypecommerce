@@ -3,7 +3,7 @@ var Product;
 
 Product = {
 	name: 'Product',
-	enabled: true,
+	enabled: false,
 	depends: {
 		'core': '>=1.0.0.0'
 	},
@@ -51,11 +51,32 @@ Product = {
 	api: {
 		routes: {
 			// Route name + method must be unique, if conflicts are found the route won't be included in the final set
-			'/product/edit/:id' : {
+			'/product/:id' : {
 				method: 'put',
 				callback: function(request, response) {
 					response.send(200, 'getting product');
 				}
+			}
+		}
+	},
+	// Admin configuration
+	admin: {
+		routes: {
+			'/product': {
+				method: 'get',
+				callback: function(request, response) {
+					console.log(request);
+					console.log(response);
+				}
+			},
+			'/product/create': {
+				method: 'post'
+			},
+			'/product/edit/:id': {
+				method: 'put'
+			},
+			'/product/delete/:id': {
+				method: 'delete'
 			}
 		}
 	}
