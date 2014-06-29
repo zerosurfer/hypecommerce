@@ -4,6 +4,7 @@
  *
  */
 var Server,
+	_ = require('underscore'),
 	when = require('when'),
 	express = require('express'), // Express framework
 	app = express(); // Express application;
@@ -24,41 +25,32 @@ Server = function() {
 
 			Hype.log("Setting initial routes");
 
-			// @todo, optimize whatever O notation this is... 
-			for (namespace in Hype.enabledModules) {
-				for (module in Hype.enabledModules[namespace]) {
-					// Look for controllers
-					if (Hype.enabledModules[namespace][module].api) {
-						for (controller in Hype.enabledModules[namespace][module].api) {
-							for (route in Hype.enabledModules[namespace][module].api[controller].routes) {
-								routeMethod = Hype.enabledModules[namespace][module].api[controller].routes[route].method;
-								routeCallback = Hype.enabledModules[namespace][module].api[controller].routes[route].callback;
-								switch(routeMethod) {
-									case 'get' :
-										Hype.log("Adding GET route " + route);
-										app.get(route, routeCallback);
-										break;
-									case 'post' :
-										Hype.log("Adding POST route " + route);
-										app.post(route, routeCallback);
-										break;
-									case 'delete' :
-										Hype.log("Adding DELETE route " + route);
-										app.delete(route, routeCallback);
-										break;
-									case 'put' :
-										Hype.log("Adding PUT route " + route);
-										app.put(route, routeCallback);
-										break;
-								}
-							}
-						}
+			_(Hype.enabledModules).chain().each(function(namespace) {
+
+				_(namespace).each(function(module) {
+
+					// if module has routes
+					if (module.api) {
+
+						_(module.api).each(function(controller) {
+
+							_(controller.routes).each(function(route, routeName) {
+
+								// routeName is the object key, route is the object value
+
+								// log the route addition
+								Hype.log('Adding ' + route.method[0].toUppercase + route.method.slice(1) + ' route: ' + routeName)
+
+								// using array notation to call the appropriate method
+								app[route.method](routeName, route.callback);
+							});
+						});
 					}
-				}
-			}
+				});
+			});
 
 			Hype.log("Done setting routes");
-		}
+		};
 
 		app.configure(function(){
 
@@ -82,7 +74,7 @@ Server = function() {
 			app.engine('html', require('ejs').renderFile);
 			app.set('views', Hype.themePath);
 
-			// Render the theme path 
+			// Render the theme path
 			app.get('/', function (req, res) {
 				res.render(Hype.themePath + '/index.html');
 			});
@@ -118,11 +110,11 @@ Server = function() {
 
 			app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
 		});
-		
+
 		Hype.log("Starting server...");
 		app.listen(Hype.configuration.port, function() {
 			Hype.log('Express server listening on port ' + Hype.configuration.port + ' in ' + 	app.settings.env + ' mode');
-				
+
 			loaded.resolve();
 		});
 
