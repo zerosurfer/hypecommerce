@@ -5,13 +5,30 @@
  */
 var Server,
 	_ = require('underscore'),
-	when = require('when'),
-	express = require('express'), // Express framework
-	app = express(); // Express application;
+	when = require('when');
+var cluster = require('cluster');
 
 Server = function() {
 	this.init = function(Hype) {
+
+		if (cluster.isMaster) {
+			var cpuCount = require('os').cpus().length;
+
+		    // Create a worker for each CPU
+		    for (var i = 0; i < cpuCount; i += 1) {
+		        cluster.fork();
+		    }
+
+		} else {
+			return this._init(Hype);
+		}
+	},
+
+	this._init = function(Hype) {
+
 		var self = this,
+			express = require('express'), // Express framework
+			app = express(), // Express application;
 			loaded = when.defer(),
 			r,
 			route,
@@ -77,6 +94,7 @@ Server = function() {
 			// Render the theme path
 			app.get('/', function (req, res) {
 				res.render(Hype.themePath + '/index.html');
+				Hype.log('Serving from Worker ' + cluster.worker.id);
 			});
 
 			// Render for admin

@@ -105,15 +105,15 @@ Hype.prototype.init = function() {
 
 	self.log("Hype init");
 
+	// This doesn't always work, if we don't return a promise on install() it still runs through
 	return when.join(
 		this.configure(),
 		this.preload(),
 		this.connect(),
 		this.install()
 	).then(function() {
-		self.start()
-	}
-	).then(function() {
+		self.start();
+	}).then(function() {
 		self.log("Hype is up and running,  Enjoy ;)");
 	}).otherwise(function() {
 		self.log("failure");
