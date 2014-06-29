@@ -391,9 +391,20 @@ Hype.prototype.start = function() {
 	var self = this,
 		loaded = when.defer();
 
-	this.Server.init(this).then(function() {
-		loaded.resolve();
-	});
+	if (this.configuration.nodes > 1) {
+		var Cluster = new this.Cluster();
+
+		Cluster.init(this).then(function() {
+			loaded.resolve();
+		});
+
+	} else {
+		// if (this.configuration)
+		console.log('hi');
+		this.Server.init(this).then(function() {
+			loaded.resolve();
+		});
+	}
 
 	return loaded.promise;
 };
@@ -464,4 +475,4 @@ Hype.prototype.getModules = function() {
 	return this.Module;
 }
 
-module.exports = Hype;
+module.exports = new Hype();

@@ -6,35 +6,10 @@
 var Server,
 	_ = require('underscore'),
 	when = require('when');
-var cluster = require('cluster');
 
 Server = function() {
 	this.init = function(Hype) {
-
-		if (cluster.isMaster) {
-			// Hardcoded, not sure if i like it
-			var cpuCount = require('os').cpus().length;
-			cpuCount = 8;
-
-		    // Create a worker for each CPU
-		    for (var i = 0; i < cpuCount; i += 1) {
-		        cluster.fork();
-		    }
-
-		} else {
-			return this._init(Hype);
-		}
-
-		// Listen for dying workers
-		cluster.on('exit', function (worker) {
-		    console.log('Worker ' + worker.id + ' died, replacing');
-		    cluster.fork();
-
-		});
-
-		cluster.on('online', function(worker) {
-		  console.log("Yay, the worker responded after it was forked");
-		});
+		return this._init(Hype);
 	},
 
 	this._init = function(Hype) {
@@ -107,7 +82,6 @@ Server = function() {
 			// Render the theme path
 			app.get('/', function (req, res) {
 				res.render(Hype.themePath + '/index.html');
-				Hype.log('Serving from Worker ' + cluster.worker.id);
 			});
 
 			// Render for admin

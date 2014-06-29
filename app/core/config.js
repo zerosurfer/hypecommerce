@@ -49,7 +49,8 @@ config = {
 					secret: "XMGnKPtQEuZbWYWLp5CZ",
 					cookie: { path: "/", maxAge: 3600000 }
 				}
-			}
+			},
+			nodes: 2 // for clustering
 		},
 
 		staging: {

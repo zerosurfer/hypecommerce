@@ -55,12 +55,11 @@ var	fs      = require('fs'),
 	path	= require('path'),
 	Hype	= require('./app'),
 	Log 	= require('./log');
-	hype	= new Hype();
 
 exports.init = function() {
 	// Start it up
 	Log.log("Signals clear for launch");
-	hype.init();
+	Hype.init();
 };
 
 exports.loadConfiguration = function() {
@@ -85,13 +84,13 @@ exports.loadConfiguration = function() {
 				}
 				switch(type) {
 					case 'model' :
-						hype.addModel(module, items[i].replace('.js', ''), require(dir + "/" + items[i]));
+						Hype.addModel(module, items[i].replace('.js', ''), require(dir + "/" + items[i]));
 						break;
 					case 'helper' :
-						hype.addHelper(module, items[i].replace('.js', ''), require(dir + "/" + items[i]));
+						Hype.addHelper(module, items[i].replace('.js', ''), require(dir + "/" + items[i]));
 						break;
 					case 'controller' :
-						hype.addController(module, items[i].replace('.js', ''), require(dir + "/" + items[i]));
+						Hype.addController(module, items[i].replace('.js', ''), require(dir + "/" + items[i]));
 						break;
 				}
 				if (i + 1 == len) {
@@ -107,7 +106,7 @@ exports.loadConfiguration = function() {
 		var configLoaded = when.defer();
 		fs.exists(modulePath + "/index.js", function(exists) {
 			if (exists) {
-				hype.addModule(fullModuleName, require(modulePath));
+				Hype.addModule(fullModuleName, require(modulePath));
 			}
 			// In case of race testing, increment timeout
 			setTimeout(function() {
