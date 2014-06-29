@@ -1,0 +1,4 @@
+/**
+ * Abstract email logic
+ *
+ */

@@ -10,18 +10,7 @@ Checkout = {
 
 	// Schemas
 	models: {
-		Checkout: {
-			name: String,
-			path: 'Url',
-			parent: 'Checkout',
-			store: 'Store',
-			canFilter: Boolean,
-			filters: ['Attribute'],
-			metaDescription: String,
-			metaTags: String,
-			createdAt: Date,
-			updatedAt: Date
-		},
+
 	},
 
 	// Api configuration

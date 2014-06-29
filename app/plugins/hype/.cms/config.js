@@ -4,7 +4,7 @@ var Cms;
 Cms = {
 	name: 'Cms',
 	version: '1.0.0.0',
-	enabled: true,
+	enabled: false,
 	depends: {
 		'core': '>=1.0.0.0'
 	},
@@ -12,18 +12,28 @@ Cms = {
 	// Schemas
 	models: {
 		Page: {
-			title: String,
-			content: String,
-			identifier: String,
-			createdAt: Date,
-			updatedAt: Date
+			schema: {
+				title: String,
+				content: String,
+				identifier: String,
+				created: { type: Date, default: Date.now },
+				updated: { type: Date, default: Date.now }
+			},
+			hasOne: {
+				store: 'Store'
+			}
 		},
 		Block: {
-			title: String,
-			content: String,
-			code: String,
-			createdAt: Date,
-			updatedAt: Date
+			schema: {
+				title: String,
+				content: String,
+				code: String,
+				created: { type: Date, default: Date.now },
+				updated: { type: Date, default: Date.now }
+			},
+			hasOne: {
+				store: 'Store'
+			}
 		}
 	},
 
@@ -34,6 +44,7 @@ Cms = {
 			'/cms/:id' : {
 				method: 'get',
 				callback: function(request, response) {
+					console.log(response.locals.dba.getModel('Page'));
 					response.send(200, 'getting cms');
 				}
 			}
@@ -45,8 +56,6 @@ Cms = {
 			'/cms': {
 				method: 'get',
 				callback: function(request, response) {
-					console.log(request);
-					console.log(response);
 				}
 			},
 			'/cms/create': {
