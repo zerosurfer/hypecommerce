@@ -3,7 +3,7 @@ var Core;
 
 Core = {
 	name: 'Core',
-	version: '1.1.0.5',
+	version: '1.0.0.5',
 	enabled: true,
 	depends: {
 	},

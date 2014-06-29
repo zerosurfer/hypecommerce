@@ -291,13 +291,26 @@ Hype.prototype.install = function() {
 	self.log("Checking for new installation scripts");
 
 	// Run the installer on a script
-	var installVersion = function(script) {
-		var installed = when.defer();
+	var installVersion = function(module, script, version) {
 		var Install = require(script);
-		var install = new Install();
+		var install = new Install(self);
 		// Run the script
 		if (typeof(install.up) !== undefined) {
 			install.up();
+
+			// Mark the db as updated
+
+			// Attempt to find something
+			var InstallSetting = self.Model.setting;
+			InstallSetting.Db.findOneAndUpdate(
+				{ 'path' : "module/" + module + "/install" },
+				{ 'value': version.replace('.js', '') },
+				{ 'upsert': true },
+				function(err, doc) {
+					// executed query
+				}
+			);
+			
 		}
 
 	}
@@ -323,49 +336,54 @@ Hype.prototype.install = function() {
 		for (var setting in settings) {
 			dbVersions[settings[setting].path] = settings[setting];
 		}
+		// Find all loaded version
+		for (var namespace in self.Module) {
+			for (var module in self.Module[namespace]) {
+				var modulePath = "module/" + namespace + "/" + module + "/install";
+				instanstiatedVersions[modulePath] = self.Module[namespace][module];
+				modules[modulePath] = namespace + "/" + module;
+				moduleCount++;
+			}
+		}
+
+		var j = 0;
+		// Compare the differences
+		for (var instPath in instanstiatedVersions) {
+			var instVersion = instanstiatedVersions[instPath].version.replace(/\./g, "");
+			var needToInstall = false;
+
+			// Check the db path
+			var dbVersion = (dbVersions[instPath] !== undefined) ? dbVersions[instPath].value.replace(/\./g, "") : 0;
+			if (dbVersions[instPath] === undefined) {
+				self.log("Found new module: " + instanstiatedVersions[instPath].name + " (Version: " + instanstiatedVersions[instPath].version + ")");
+				needToInstall = true;
+			}
+			
+			if (needToInstall) {
+				// Read the versions we need
+				var dir = path.resolve('app/plugins') + "/" + modules[instPath] + "/install";
+				var items = fs.readdirSync(dir);
+				for (var item in items) {
+					var scriptVersion = items[item].replace(/\./g, "").replace('js', '');
+					if (scriptVersion > dbVersion && scriptVersion <= instVersion) {
+						//module, script, version, setting
+						installVersion(modules[instPath], dir + "/" + items[item], items[item]);
+					}
+				}
+			}
+
+			if (j + 1 == moduleCount) {
+				loaded.resolve();
+			}
+
+			j++;
+		}	
+		//loaded.resolve();
+
+		self.log("Done checking for new installation scripts");
+
 	});
 
-	// Find all loaded version
-	for (var namespace in self.Module) {
-		for (var module in self.Module[namespace]) {
-			var modulePath = "module/" + namespace + "/" + module + "/install";
-			instanstiatedVersions[modulePath] = self.Module[namespace][module];
-			modules[modulePath] = namespace + "/" + module;
-			moduleCount++;
-		}
-	}
-
-	var j = 0;
-	// Compare the differences
-	for (var instPath in instanstiatedVersions) {
-		var instVersion = instanstiatedVersions[instPath].version.replace(/\./g, "");
-		var needToInstall = false;
-
-		// Check the db path
-		if (dbVersions[instPath] === undefined) {
-			self.log("Found new module: " + instanstiatedVersions[instPath].name + " (Version: " + instanstiatedVersions[instPath].version + ")");
-			needToInstall = true;
-		} else {
-			var dbVersion = dbVersions[dbPath].value.replace(/\./g, "");
-		}
-		
-		if (needToInstall) {
-			// Read the versions we need
-			var dir = path.resolve('app/plugins') + "/" + modules[instPath] + "/install";
-			fs.readdir(dir, function(err, items) {
-				console.log(items);
-
-				if (j + 1 == moduleCount) {
-					loaded.resolve();
-				}
-
-				j++;
-			});
-		}
-	}	
-	//loaded.resolve();
-
-	self.log("Done checking for new installation scripts");
 	return loaded.promise;
 }
 
