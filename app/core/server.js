@@ -25,7 +25,7 @@ Server = function() {
 
 			Hype.log("Setting initial routes");
 
-			_(Hype.enabledModules).chain().each(function(namespace) {
+			_(Hype.enabledModules).each(function(namespace) {
 
 				_(namespace).each(function(module) {
 
