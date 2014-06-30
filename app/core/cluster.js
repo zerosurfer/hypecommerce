@@ -16,13 +16,13 @@ Cluster = function() {
 
 		if (cluster.isMaster) {
 			// Setup the workers
-			cluster.setupMaster({
-				exec : './app/core/worker.js'
-			});
+			// cluster.setupMaster({
+			// 	exec : './app/core/worker.js'
+			// });
 
 			// Fork workers.
 			for (var i = 0; i < Hype.configuration.nodes; i++) {
-				Hype.log("Cluster spinning up new worker (#" + (i + 1) + ")");
+				Hype.log("Cluster spinning up new worker " + (i + 1));
 				cluster.fork();
 			}
 
@@ -30,8 +30,6 @@ Cluster = function() {
 				Hype.log("Cluster node " + worker.process.pid + " has died");
 			});
 		} else {
-
-			Hype.log("TESTING up ");
 			Hype.Server.init(Hype).then(function() {
 				loaded.resolve();
 			});

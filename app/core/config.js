@@ -50,7 +50,7 @@ config = {
 					cookie: { path: "/", maxAge: 3600000 }
 				}
 			},
-			nodes: 2 // for clustering
+			nodes: 4 // for clustering
 		},
 
 		staging: {

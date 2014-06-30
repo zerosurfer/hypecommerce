@@ -357,6 +357,11 @@ Hype.prototype.install = function() {
 			if (dbVersions[instPath] === undefined) {
 				self.log("Found new module: " + instanstiatedVersions[instPath].name + " (Version: " + instanstiatedVersions[instPath].version + ")");
 				needToInstall = true;
+			} else {
+				var dbVersion = dbVersions[instPath].value.replace(/\./g, "");
+				if (dbVersion < instVersion) {
+					needToInstall = true;
+				}
 			}
 			
 			if (needToInstall) {
@@ -400,7 +405,6 @@ Hype.prototype.start = function() {
 
 	} else {
 		// if (this.configuration)
-		console.log('hi');
 		this.Server.init(this).then(function() {
 			loaded.resolve();
 		});

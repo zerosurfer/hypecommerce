@@ -1,15 +1,9 @@
-var when = require('when');
 // Should seed necessary data once
 var Install = function(Hype) {
 	this.up = function() {
+		Hype.log('Installing Core-1.0.0.5');
 
-		var loaded = when.defer();
-
-		Hype.Log.log('Installing Core-1.0.0.5');
-		loaded.resolve();
-		Hype.Log.log("Done install Core-1.0.0.5");
-
-		return loaded.promise;
+		Hype.log("Done install Core-1.0.0.5");
 	},
 
 	this.down = function() {
