@@ -315,6 +315,7 @@ Hype.prototype.install = function() {
 
 	}
 	// Run the uninstaller on a script
+	// @todo uninstall something when the version is lower
 	var uninstallVersion = function(script) {
 		var Install = require(script);
 		var install = new Install();

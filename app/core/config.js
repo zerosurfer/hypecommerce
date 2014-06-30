@@ -26,6 +26,7 @@ config = {
 			url: "http://127.0.0.1/",
 			port: 5000,
 			admin: "supersecretarea", // url for the admin
+			nodes: 2, // for clustering
 			db: {
 				type: "mongo",
 				mongo: {
@@ -49,8 +50,7 @@ config = {
 					secret: "XMGnKPtQEuZbWYWLp5CZ",
 					cookie: { path: "/", maxAge: 3600000 }
 				}
-			},
-			nodes: 4 // for clustering
+			}
 		},
 
 		staging: {
