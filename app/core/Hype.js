@@ -28,7 +28,6 @@ var	fs = require('fs'),
 	path = require('path'),
 	inst = false,
 	_ = require('underscore'),
-	HypePlugin = require('./plugin.js'),
 	Hype;
 
 Hype = function() {
@@ -92,6 +91,10 @@ Hype = function() {
  * in other module call `Hype.Plugins.MyPlugin.publicFunc()`
  */
 
+// Plugin class used to create a `new` Plugin
+Hype.prototype.Plugin = require('./Hype/HypePlugin');
+
+// plugin function to register a new plugin
 Hype.prototype.plugin = function(name, config) {
 
 	if (!this.Plugins) { this.Plugins = {} };
@@ -107,13 +110,14 @@ Hype.prototype.plugin = function(name, config) {
 
 	var fn = require(config.main + '.js');
 
-	var plugin = new this.Plugin(config);
+	var HypePlugin = this.Plugin.extend(config);
+
+	var plugin = new HypePlugin();
 
 	fn(plugin, this, _);
 
 	Hype.Plugins[name] = plugin;
 };
-
 
 Hype.prototype.loadPlugins = function(path) {
 
@@ -152,53 +156,14 @@ Hype.prototype.loadPlugins = function(path) {
 	});
 };
 
-Hype.prototype.Plugin = function(config) {
-	this.name = config.name;
-	this.version = config.version;
-	this.enabled = config.enabled;
-	this.depends = config.depends;
-
-	Hype.addPluginDeps(name, config);
-
-	/**
-	 * @todo: maybe add more global plugin helpers like extension methods etc...???
-	 */
-	return this;
-};
-
-Hype.loadPlugins('./plugins'); // core HYPE plugins
-Hype.loadPlugins('../plugins'); // third party plugins
-
-Hype.prototype.addPluginDeps = function(config) {
-	if (!this._pluginDeps) { this._plugin = {}; }
-
-	this._pluginDeps[name] = {};
-
-	/**
-	 * @todo: make these check for file or dir, may be folder of models or file, etc...
-	 */
-
-	if (config.models) {
-		this._pluginDeps[name].models = require(config.models);
-	}
-
-	if (config.routes) {
-		this._pluginDeps[name].routes = require(config.routes);
-	}
-
-	if (config.scripts) {
-		this._pluginDeps[name].scripts = require(config.scripts);
-	}
-};
-
-Hype.prototype.initPluginsDeps = function() {
+Hype.prototype.initPlugins = function() {
 	var self = this;
 
 	this.routes = {};
 	this.models = {};
 	this.scripts = {};
 
-	_(this._pluginDeps).each(function(plugin) {
+	_(this.Plugins).each(function(plugin) {
 
 		if (plugin.routes) {
 			_(plugin.routes).each(function(route, routeKey) {
@@ -219,9 +184,6 @@ Hype.prototype.initPluginsDeps = function() {
 		}
 	});
 };
-
-Hype.initPluginDeps();
-
 
 /**
  * @todo: all of these globals need to be come private plugins that only expose an interface
@@ -260,7 +222,7 @@ Hype.prototype.Wizard = false; // installation wizard for first-time install (sh
  * @param	string	priority;	DEBUG|INFO|WARN|ERROR
  * @return	Hype
  */
-Hype.log = function(message, priority) {
+Hype.prototype.log = function(message, priority) {
 	var date, timestamp;
 
 	if (priority === undefined) {
