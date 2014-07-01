@@ -24,28 +24,15 @@ Server = function() {
 
 			Hype.log("Setting initial routes");
 
-			_(Hype.enabledModules).each(function(namespace) {
+			_(Hype.routes).each(function(route, routeName) {
 
-				_(namespace).each(function(module) {
+				// routeName is the object key, route is the object value
 
-					// if module has routes
-					if (module.api) {
+				// log the route addition
+				Hype.log('Adding ' + route.method[0].toUppercase + route.method.slice(1) + ' route: ' + routeName)
 
-						_(module.api).each(function(controller) {
-
-							_(controller.routes).each(function(route, routeName) {
-
-								// routeName is the object key, route is the object value
-
-								// log the route addition
-								Hype.log('Adding ' + route.method[0].toUppercase + route.method.slice(1) + ' route: ' + routeName)
-
-								// using array notation to call the appropriate method
-								app[route.method](routeName, route.callback);
-							});
-						});
-					}
-				});
+				// using array notation to call the appropriate method
+				app[route.method](routeName, route.callback);
 			});
 
 			Hype.log("Done setting routes");

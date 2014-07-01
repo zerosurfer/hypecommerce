@@ -28,6 +28,7 @@ var	fs = require('fs'),
 	path = require('path'),
 	inst = false,
 	_ = require('underscore'),
+	HypePlugin = require('./plugin.js'),
 	Hype;
 
 Hype = function() {
@@ -72,7 +73,7 @@ Hype = function() {
  *
  * 	var privateFunc = function() {
  * 		// do private stuff
- * 		return 'HYPE is the bee's knees
+ * 		return 'HYPE is the bee\'s knees';
  * 	};
  *
  * 	Plugin.publicFunc = function() {
@@ -91,15 +92,22 @@ Hype = function() {
  * in other module call `Hype.Plugins.MyPlugin.publicFunc()`
  */
 
-Hype.prototype.plugin = function(name, fn) {
+Hype.prototype.plugin = function(name, config) {
 
 	if (!this.Plugins) { this.Plugins = {} };
 
-	if (!fn) {
+	if (!config) {
 		return (this.Plugins[name]) ? Hype.plugins[name] : undefined;
 	}
 
-	var plugin = new Hype.Plugin();
+	if (!config.main) {
+		Hype.log('No main file for plugin: ' + name);
+		return;
+	}
+
+	var fn = require(config.main + '.js');
+
+	var plugin = new this.Plugin(config);
 
 	fn(plugin, this, _);
 
@@ -110,35 +118,109 @@ Hype.prototype.plugin = function(name, fn) {
 Hype.prototype.loadPlugins = function(path) {
 
 	fs.readdirSync(path).forEach(function(file) {
+
+		/**
+		 * loop over plugins
+		 * read plugin config from `plugin.json`
+		 * all other files go in to a lib dir
+		 * load plugin
+		 *
+		 * Example:
+		 *
+		 * plugins
+		 * - MyPlugin
+		 *   - plugin.json
+		 *   - lib
+		 *     - MyPlugin.js
+		 *     - Helper.js
+		 *     - Models.js
+		 *     - etc
+		 * - SomeOtherPlugin
+		 *   - plugin.json
+		 *   - lib
+		 *     - SomeOtherPlugin.js
+		 *     - Helper.js
+		 *     - Models.js
+		 *     - etc
+		 */
+
 		var pluginPath = path + '/' + file;
+		var config = require(pluginPath + '/plugin.json');
 
-		fs.readdirSync(path).forEach(function(file) {
-			var stat = fs.statSync(pluginPath + '/' + file);
+		this.plugin(path.basename(file, '.js'), config);
 
-			if (stat.isFile()) {
-
-				/**
-				 * set plugin to name of File in plugin dir,
-				 * all plugins get a root js file named for the plugin
-				 * and a lib dir to add code to
-				 * Example:
-				 * plugins
-				 * - MyPlugin
-				 *   - MyPlugin.js
-				 *   - lib
-				 *     - Helper.js
-				 *     - Models.js
-				 *     - etc
-				 */
-
-				this.plugin(path.basename(file, '.js'), require(newPath));
-			}
-		});
 	});
+};
+
+Hype.prototype.Plugin = function(config) {
+	this.name = config.name;
+	this.version = config.version;
+	this.enabled = config.enabled;
+	this.depends = config.depends;
+
+	Hype.addPluginDeps(name, config);
+
+	/**
+	 * @todo: maybe add more global plugin helpers like extension methods etc...???
+	 */
+	return this;
 };
 
 Hype.loadPlugins('./plugins'); // core HYPE plugins
 Hype.loadPlugins('../plugins'); // third party plugins
+
+Hype.prototype.addPluginDeps = function(config) {
+	if (!this._pluginDeps) { this._plugin = {}; }
+
+	this._pluginDeps[name] = {};
+
+	/**
+	 * @todo: make these check for file or dir, may be folder of models or file, etc...
+	 */
+
+	if (config.models) {
+		this._pluginDeps[name].models = require(config.models);
+	}
+
+	if (config.routes) {
+		this._pluginDeps[name].routes = require(config.routes);
+	}
+
+	if (config.scripts) {
+		this._pluginDeps[name].scripts = require(config.scripts);
+	}
+};
+
+Hype.prototype.initPluginsDeps = function() {
+	var self = this;
+
+	this.routes = {};
+	this.models = {};
+	this.scripts = {};
+
+	_(this._pluginDeps).each(function(plugin) {
+
+		if (plugin.routes) {
+			_(plugin.routes).each(function(route, routeKey) {
+				self.routes[routeKey] = route;
+			});
+		}
+
+		if (plugin.models) {
+			_(plugin.modles).each(function(model, modelKey) {
+				self.models[modelKey] = model;
+			});
+		}
+
+		if (plugin.scripts) {
+			_(plugin.scripts).each(function(script, scriptKey) {
+				self.scripts[scriptKey] = script;
+			});
+		}
+	});
+};
+
+Hype.initPluginDeps();
 
 
 /**
@@ -336,8 +418,12 @@ Hype.prototype.connect = function() {
 
 					if (typeof dep === 'string') {
 						if (!self.dba.hasModel(modelNeeded)) {
-							loadModel(modelNeeded, self.modelss[modelNeeded]);
+							loadModel(modelNeeded, dep);
 						}
+					} else {
+						_(dep).each(function(needed) {
+
+						});
 					}
 				});
 
@@ -351,6 +437,7 @@ Hype.prototype.connect = function() {
 
 						// We must set as an array? Pointless to encapsulate in the config then if it is always an array
 						// @todo reinvestigate scenario
+						// It is an array of documents, so it's always an array
 						self.models[name].schema[needed] = [self.dba.getRawModel(modelNeeded)];
 					} else {
 						//self.log(modelNeeded);
