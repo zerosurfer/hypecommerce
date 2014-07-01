@@ -87,6 +87,8 @@ Hype = function() {
  *
  * 	auth.logOut();
  * };
+ *
+ * in other module call `Hype.Plugins.MyPlugin.publicFunc()`
  */
 
 Hype.prototype.plugin = function(name, fn) {
@@ -107,21 +109,31 @@ Hype.prototype.plugin = function(name, fn) {
 
 Hype.prototype.loadPlugins = function(path) {
 
-	fs.readdir(path).forEach(function(file) {
-		var newPath = path + '/' + file;
-		var stat = fs.statSync(newPath);
+	fs.readdirSync(path).forEach(function(file) {
+		var pluginPath = path + '/' + file;
 
-		if (stat.isFile()) {
+		fs.readdirSync(path).forEach(function(file) {
+			var stat = fs.statSync(pluginPath + '/' + file);
 
-			if (file === 'plugin.js') {
+			if (stat.isFile()) {
 
-				obj = require(file);
-				Hype.plugin(, obj.fn);
+				/**
+				 * set plugin to name of File in plugin dir,
+				 * all plugins get a root js file named for the plugin
+				 * and a lib dir to add code to
+				 * Example:
+				 * plugins
+				 * - MyPlugin
+				 *   - MyPlugin.js
+				 *   - lib
+				 *     - Helper.js
+				 *     - Models.js
+				 *     - etc
+				 */
+
+				this.plugin(path.basename(file, '.js'), require(newPath));
 			}
-		} else if (stat.isDirectory()) {
-
-			this.loadPlugins(newPath);
-		}
+		});
 	});
 };
 
