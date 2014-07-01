@@ -21,7 +21,6 @@ Server = function() {
 		Hype.log('Preparing the server...');
 
 		var readAndSetRoutes = function() {
-			var namespace, module, controller, route, routeMethod, routeCallback;;
 
 			Hype.log("Setting initial routes");
 
@@ -86,8 +85,7 @@ Server = function() {
 			app.get('/' + Hype.configuration.admin, Hype.Admin.requiredAuth(), Hype.Admin.index);
 			app.get('/' + Hype.configuration.admin + '/login', Hype.Admin.login);
 			app.post('/' + Hype.configuration.admin + '/login', Hype.Admin.loginPost);
-			app.use('/' + Hype.configuration.admin + '/css' , express.static(__dirname + '/admin/css'));
-			app.use('/' + Hype.configuration.admin + '/js' , express.static(__dirname + '/admin/js'));
+			app.use(express.static(__dirname + '/admin/static'));
 
 			readAndSetRoutes();
 

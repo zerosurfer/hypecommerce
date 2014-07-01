@@ -1,7 +1,7 @@
 var	User;
 
 User = function() {
-	
+
 	this.schema = {
 		firstname: String,
 		lastname: String,
@@ -10,7 +10,8 @@ User = function() {
 		created: { type: Date, default: Date.now },
 		updated: { type: Date, default: Date.now }
 	}
-	
+
 	return this;
 }
+
 module.exports = User;
