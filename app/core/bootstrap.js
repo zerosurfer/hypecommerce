@@ -25,13 +25,13 @@
 /**
 * A NOTE ON Extending modules
 *
-* We load all hype modules first, then "rewrite" them using the local config.js files 
+* We load all hype modules first, then "rewrite" them using the local config.js files
 *
 * Example:
 * Load hype/core/config.js - set all configuration necessary
 * Load local/mymodule/config.js which contains something like:
-*  
-*  core: { 
+*
+*  core: {
 *    api: {
 *	    routes: {
 *	      '/test' : {
@@ -53,7 +53,7 @@ var	fs      = require('fs'),
     url     = require('url'),
     when    = require('when'),
 	path	= require('path'),
-	Hype	= require('./app'),
+	Hype	= require('./Hype'),
 	Log 	= require('./log');
 	hype	= new Hype();
 
@@ -131,7 +131,7 @@ exports.loadConfiguration = function() {
 					}, 0);
 				});
 			}
-			
+
 		})
 		return modelLoaded.promise;
 	},
@@ -209,8 +209,8 @@ exports.loadConfiguration = function() {
 				loaded.resolve();
 				Log.log("Done loading all the configuration files");
 			});
-		}		
-		
+		}
+
 	});
 
 	return loaded.promise;

@@ -1,22 +1,25 @@
 // Require
 var Admin;
 
-Admin = {
-	name: 'Admin',
-	version: '1.0.0.0',
-	enabled: true,
-	depends: {
-	},
+module.exports = function(Hype) {
+	Admin = {
+		name: 'Admin',
+		version: '1.0.0.0',
+		enabled: true,
+		depends: {
+		},
 
-	// Models get appended automatically from the models folder
-	models: {},
+		// Models get appended automatically from the models folder
+		models: {},
 
-	// Api configuration
-	api: {},
+		// Api configuration
+		api: require('./api')(Hype),
 
-	// Helpers
-	helpers: {},
+		// Helpers
+		helpers: {},
+
+	};
+
+	return Admin;
 
 };
-
-module.exports = Admin;

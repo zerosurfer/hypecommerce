@@ -18,35 +18,35 @@ Server = function() {
 			routeMethod,
 			routeCallback;
 
+		Hype.log('Loading plugins...');
+
+		Hype.loadPlugins('./plugins'); // core HYPE plugins
+		Hype.loadPlugins('../plugins'); // third party plugins
+
+		Hype.log('Plugins loaded.');
+
+		Hype.log('Initializing plugins...');
+
+		// initialize plugins (add routes, models, and scripts)
+		Hype.initPlugins();
+
+		Hype.log('Plugins initialized');
+
 		Hype.log('Preparing the server...');
 
 		var readAndSetRoutes = function() {
-			var namespace, module, controller, route, routeMethod, routeCallback;;
 
-			Hype.log("Setting initial routes");
+			Hype.log("Setting initial routes...");
 
-			_(Hype.enabledModules).each(function(namespace) {
+			_(Hype.routes).each(function(route, routeName) {
 
-				_(namespace).each(function(module) {
+				// routeName is the object key, route is the object value
 
-					// if module has routes
-					if (module.api) {
+				// log the route addition
+				Hype.log('Adding ' + route.method[0].toUppercase + route.method.slice(1) + ' route: ' + routeName)
 
-						_(module.api).each(function(controller) {
-
-							_(controller.routes).each(function(route, routeName) {
-
-								// routeName is the object key, route is the object value
-
-								// log the route addition
-								Hype.log('Adding ' + route.method[0].toUppercase + route.method.slice(1) + ' route: ' + routeName)
-
-								// using array notation to call the appropriate method
-								app[route.method](routeName, route.callback);
-							});
-						});
-					}
-				});
+				// using array notation to call the appropriate method
+				app[route.method](routeName, route.callback);
 			});
 
 			Hype.log("Done setting routes");
@@ -86,8 +86,7 @@ Server = function() {
 			app.get('/' + Hype.configuration.admin, Hype.Admin.requiredAuth(), Hype.Admin.index);
 			app.get('/' + Hype.configuration.admin + '/login', Hype.Admin.login);
 			app.post('/' + Hype.configuration.admin + '/login', Hype.Admin.loginPost);
-			app.use('/' + Hype.configuration.admin + '/css' , express.static(__dirname + '/admin/css'));
-			app.use('/' + Hype.configuration.admin + '/js' , express.static(__dirname + '/admin/js'));
+			app.use(express.static(__dirname + '/admin/static'));
 
 			readAndSetRoutes();
 

@@ -17,9 +17,9 @@
  *
  * @package		Hype
  * @version		0.0.1.0
- * @author		Hype Commerce Team <team@hypecommerce.com>
- * @copyright	Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypecommerce.com/)
- * @license		http://www.hypecommerce.com/license
+ * @author		Hype Commerce Team <team@hypejs.com>
+ * @copyright	Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
+ * @license		http://www.hypejs.com/license
  */
 
 // Load necessary modules/files
@@ -28,7 +28,9 @@ var	fs = require('fs'),
 	path = require('path'),
 	inst = false,
 	_ = require('underscore'),
-	Hype;
+	Hype,
+	HypePlugin = require('./Hype/HypePlugin'),
+	Modules = {};
 
 Hype = function() {
 	if (!inst) {
@@ -56,27 +58,182 @@ Hype = function() {
 		// Holds models for mongoose
 		inst.models = [];
 
-        inst.installed = false;
+		inst.installed = false;
 	}
+
 	return inst;
 };
 
+/**
+ * @todo: need to set up a plugin system,
+ * so they can add a callback that has access to Hype object,
+ * allows them to access needed things for plugin development
+ *
+ * Example:
+ * module.exports = function(Hype) {
+ *
+ * 	var privateFunc = function() {
+ * 		// do private stuff
+ * 		return 'HYPE is the bee\'s knees';
+ * 	};
+ *
+ * 	Plugin.publicFunc = function() {
+ * 		console.log(privateFunc());
+ * 	}
+ *
+ * 	var auth = Hype.Auth;
+ *
+ * 	// or
+ *
+ * 	var auth = Hype.require('Auth'); !!!! Gold!!!!
+ *
+ * 	auth.logOut();
+ * };
+ *
+ * in other module call `Hype.MyPlugin.publicFunc()`
+ */
+
+// Don't need deafult plugin
+
+
+// require function to call a plugin interface ?? maybe change interface ??
+Hype.prototype.require = function(name) {
+
+	return (Modules[name] && Modules[name].interface && Modules[name].enabled) ? Modules[name].interface : undefined;
+};
+
+Hype.prototype.loadPlugins = function(path) {
+
+	fs.readdirSync(path).forEach(function(file) {
+
+		/**
+		 * loop over plugins
+		 * read plugin config from `plugin.json`
+		 * all other files go in to a lib dir
+		 * load plugin
+		 *
+		 * Example:
+		 *
+		 * plugins
+		 * - MyPlugin
+		 *   - plugin.json
+		 *   - lib
+		 *     - MyPlugin.js
+		 *     - Helper.js
+		 *     - Models.js
+		 *     - etc
+		 * - SomeOtherPlugin
+		 *   - plugin.json
+		 *   - lib
+		 *     - SomeOtherPlugin.js
+		 *     - Helper.js
+		 *     - Models.js
+		 *     - etc
+		 */
+
+		var pluginPath = path + '/' + file,
+			config = require(pluginPath + '/plugin.json'),
+			name = path.basename(file, '.js');
+
+		// if main path for interface is not set log and return
+		if (!config.main) {
+			Hype.log('No main file for plugin: ' + name);
+			return;
+		}
+
+		var fn = require(config.main), // get interface creational function
+			HypePlugin = this.Plugin.extend(config), // create extended plugin
+			hypePlugin = new HypePlugin(), // instantiate plugin
+
+		hypePlugin.interface = fn(this); // add the plugin interface
+
+		Modules[name] = hypePlugin; // run pluginInterface through creational function
+
+	});
+};
+
+Hype.module = function(moduleID, creator) {
+	var temp;
+
+	// sanity check for correct types on our params
+	if (typeof moduleID === 'string' && typeof creator === 'function') {
+		// create a temp instance of our module to ensure it will start correctly when called
+		temp = creator();
+
+		if ( temp.init
+				&& temp.destroy
+				&& typeof temp.init === 'function'
+				&& typeof temp.destroy === 'function' ) {
+
+			temp = null;
+			module_data[ moduleID ] = {
+				create: creator,
+				instance: null,
+				evts: null
+			};
+			return true;
+		} else {
+
+			root.util.log( 1, 'Module : "' + moduleID + '"" : Registration : FAILED : "Instance has either no init or no destroy method"' );
+			return false;
+		}
+	}
+};
+
+Hype.prototype.initModules = function(app) {
+	var self = this;
+
+	this.routes = {};
+	this.models = {};
+	this.scripts = {};
+
+	_(Modules).each(function(plugin) {
+
+		if (plugin.routes) {
+			_(plugin.routes).each(function(route, routeKey) {
+				self.routes[routeKey] = route;
+			});
+		}
+
+		if (plugin.models) {
+			_(plugin.modles).each(function(model, modelKey) {
+				self.models[modelKey] = model;
+			});
+		}
+
+		if (plugin.scripts) {
+			_(plugin.scripts).each(function(script, scriptKey) {
+				self.scripts[scriptKey] = script;
+			});
+		}
+	});
+};
+
+/**
+ * @todo: all of these globals need to be come private plugins that only expose an interface
+ * to protect as much of the core as possible
+ *
+ * @todo: move all files to core/plugins dir
+ */
 // Load the core classes, could act as singletons
-Hype.prototype.Admin = require('./admin'); // admin logic
+//Hype.prototype.Admin = require('./admin'); // admin logic
 Hype.prototype.Auth = require('./auth'); // authentication logic (passport|other)
 Hype.prototype.BaseController = require('./controller'); // base controller // @todo deprecate into inst
 Hype.prototype.BaseHelper = require('./helper'); // base helper // @todo deprecate into inst
 Hype.prototype.BaseModel = require('./model'); // base model // @todo deprecate into inst
 Hype.prototype.Cluster = require('./cluster'); // deployment/clustering logic
 Hype.prototype.Config = require('./config'); // configuration
-Hype.prototype.Controller = {}; // global hold for controllers // @todo maybe not a good idea?
 Hype.prototype.Db = require('./db'); // database logic (mongodb|other)
 Hype.prototype.Email = require('./email'); // email logic (sendmail|other)
 Hype.prototype.Helper = {}; // global hold for helpers
 Hype.prototype.Install = require('./install'); // installation script logic
 Hype.prototype.Locale = require('./locale'); // translations, can look into the airbnb plugin/licensing for backbone
 Hype.prototype.Log = require('./log'); // core logging
-Hype.prototype.Model = {}; // global hold for models
+
+/**
+ * @todo: Models should only be available through Hype.dba
+ */
+
 Hype.prototype.Module = {}; // global hold for enabled modules
 Hype.prototype.Server = require('./server'); // server logic (express|other)
 Hype.prototype.Session = require('./session'); // session logic (redis|other)
@@ -90,9 +247,21 @@ Hype.prototype.Wizard = false; // installation wizard for first-time install (sh
  * @return	Hype
  */
 Hype.prototype.log = function(message, priority) {
-	this.Log.log(message,priority);
+	var date, timestamp;
+
+	if (priority === undefined) {
+		priority = 'info';
+	}
+
+	// Add a timestamp
+	date = new Date();
+	timestamp = '[' +  date.toUTCString() + '] ';
+	message = timestamp + message;
+
+	console[priority](message);
+
 	return this;
-}
+};
 
 /**
  * Initiate Hype
@@ -111,7 +280,7 @@ Hype.prototype.init = function() {
 		this.connect(),
 		this.install()
 	).then(function() {
-		self.start()
+		self.start();
 	}
 	).then(function() {
 		self.log("Hype is up and running,  Enjoy ;)");
@@ -124,8 +293,9 @@ Hype.prototype.init = function() {
  * Set all the configuration values for node/hype
  */
 Hype.prototype.configure = function() {
-	var loaded = when.defer();
-	var self = this;
+	var loaded = when.defer(),
+		self = this;
+
 	self.log("Setting up configuration");
 
 	// Set the environment
@@ -160,7 +330,7 @@ Hype.prototype.preload = function() {
 		for (var module in currentNamespace) {
 			var currentModule = currentNamespace[module];
 			for (var route in currentModule.api.routes) {
-				
+
 				self.log("Setting up router " + route + " for " + moduleName);
 				this.routes[route] = currentModule.api.routes[route];
 
@@ -189,7 +359,7 @@ Hype.prototype.connect = function() {
 		case 'mongo' :
 			this.dba = require('./db/mongo');
 			this.dba.connect(
-				this.configuration.db[this.configuration.db.type].host + (this.configuration.db[this.configuration.db.type].port ? 
+				this.configuration.db[this.configuration.db.type].host + (this.configuration.db[this.configuration.db.type].port ?
 					":" + this.configuration.db[this.configuration.db.type].port : ''),
 				this.configuration.db[this.configuration.db.type].username,
 				this.configuration.db[this.configuration.db.type].password,
@@ -224,44 +394,59 @@ Hype.prototype.connect = function() {
 
 		if (!self.dba.hasModel(name)) {
 
-			if (self.Model[name] === undefined) {
-				self.Model[name] = new model();
+			if (self.models[name] === undefined) {
+				self.models[name] = new model();
 			}
 
-			if (self.Model[name].deps) {
-				for(var needed in self.Model[name].deps) {
-					modelNeeded = self.Model[name].deps[needed];
+			if (self.models[name].deps) {
+
+				_(self.models[name].deps).each(function(dep, key) {
+
+					if (typeof dep === 'string') {
+						if (!self.dba.hasModel(modelNeeded)) {
+							loadModel(modelNeeded, dep);
+						}
+					} else {
+						_(dep).each(function(needed) {
+
+						});
+					}
+				});
+
+				for(var needed in self.models[name].deps) {
+					modelNeeded = self.models[name].deps[needed];
 					if (typeof modelNeeded === 'string') {
 						modelNeeded = modelNeeded.toLowerCase();
 						if (!self.dba.hasModel(modelNeeded)) {
-							loadModel(modelNeeded, self.models[modelNeeded]);
+							loadModel(modelNeeded, self.modelss[modelNeeded]);
 						}
 
 						// We must set as an array? Pointless to encapsulate in the config then if it is always an array
 						// @todo reinvestigate scenario
-						self.Model[name].schema[needed] = [self.dba.getRawModel(modelNeeded)];
+						// It is an array of documents, so it's always an array
+						self.models[name].schema[needed] = [self.dba.getRawModel(modelNeeded)];
 					} else {
 						//self.log(modelNeeded);
 						for(var n in modelNeeded) {
-							loadModel(modelNeeded[n].toLowerCase(), self.models[modelNeeded[n].toLowerCase()]);
-							self.Model[name].schema[needed] = [self.dba.getRawModel(modelNeeded[n].toLowerCase())];
+							loadModel(modelNeeded[n].toLowerCase(), self.modelss[modelNeeded[n].toLowerCase()]);
+							self.models[name].schema[needed] = [self.dba.getRawModel(modelNeeded[n].toLowerCase())];
 							break;
 						}
-						
+
 					}
 				}
-				//console.log(self.Model[name].schema);
-				var dbaModel = self.dba.addModel(name, self.Model[name].schema);
+				//console.log(self.models[name].schema);
+				var dbaModel = self.dba.addModel(name, self.models[name].schema);
 				// Extend the models with the base model
-				self.Model[name] = _.extend(self.Model[name], self.BaseModel);
-				// Add the db adapter 
-				self.Model[name].Db = dbaModel;
+				self.models[name] = _.extend(self.models[name], self.BaseModel);
+				// Add the db adapter
+				self.models[name].Db = dbaModel;
 			} else {
-				var dbaModel = self.dba.addModel(name, self.Model[name].schema);
+				var dbaModel = self.dba.addModel(name, self.models[name].schema);
 				// Extend the models with the base model
-				self.Model[name] = _.extend(self.Model[name], self.BaseModel);
-				// Add the db adapter 
-				self.Model[name].Db = dbaModel;
+				self.models[name] = _.extend(self.models[name], self.BaseModel);
+				// Add the db adapter
+				self.models[name].Db = dbaModel;
 			}
 		}
 	}
@@ -281,7 +466,7 @@ Hype.prototype.connect = function() {
  * Installs a module's install scripts up until the specified version number in index.js
  *
  * @todo	This function is bad ... just horribly hacked together, we'll eventually need
- *			to take a look at this and move it's functionality to seperate functions that 
+ *			to take a look at this and move it's functionality to seperate functions that
  * 			can be easily interpretted
  */
 Hype.prototype.install = function() {
@@ -301,7 +486,7 @@ Hype.prototype.install = function() {
 			// Mark the db as updated
 
 			// Attempt to find something
-			var InstallSetting = self.Model.setting;
+			var InstallSetting = self.models.setting;
 			InstallSetting.Db.findOneAndUpdate(
 				{ 'path' : "module/" + module + "/install" },
 				{ 'value': version.replace('.js', '') },
@@ -310,7 +495,7 @@ Hype.prototype.install = function() {
 					// executed query
 				}
 			);
-			
+
 		}
 
 	}
@@ -358,7 +543,7 @@ Hype.prototype.install = function() {
 				self.log("Found new module: " + instanstiatedVersions[instPath].name + " (Version: " + instanstiatedVersions[instPath].version + ")");
 				needToInstall = true;
 			}
-			
+
 			if (needToInstall) {
 				// Read the versions we need
 				var dir = path.resolve('app/plugins') + "/" + modules[instPath] + "/install";
@@ -377,7 +562,7 @@ Hype.prototype.install = function() {
 			}
 
 			j++;
-		}	
+		}
 		//loaded.resolve();
 
 		self.log("Done checking for new installation scripts");

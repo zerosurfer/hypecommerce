@@ -27,5 +27,4 @@ Controller = function() {
 			throw new Error("Breaking this on purpose");
 		});
 	}
-}
-
+};
