@@ -88,7 +88,7 @@ Hype = function() {
  * in other module call `Hype.MyPlugin.publicFunc()`
  */
 
-// require function to call a plugin interface ?? maybe change interface ??
+// require function to call a plugin instance ?? maybe change instance ??
 Hype.prototype.require = function(name) {
 
 	return (Modules[name] && Modules[name].instance !== undefined && Modules[name].isEnabled()) ? Modules[name].instance : undefined;

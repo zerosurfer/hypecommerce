@@ -26,7 +26,7 @@ module.exports = function(Hype) {
     };
 
     HypeModule.prototype.enable = function() {
-        this._enabled = enabled;
+        this._enabled = true;
     };
 
     HypeModule.prototype.disable = function() {
