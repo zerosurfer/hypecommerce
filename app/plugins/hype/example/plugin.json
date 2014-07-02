@@ -4,7 +4,7 @@
     "depends": {
         "core": ">=1.0.0.0"
     },
-    "main": "lib/Category",
+    "main": "lib/example",
     "models": "lib/models",
     "routes": "lib/routes",
     "scipts": "lib/scripts"

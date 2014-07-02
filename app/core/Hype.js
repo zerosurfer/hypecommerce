@@ -28,7 +28,9 @@ var	fs = require('fs'),
 	path = require('path'),
 	inst = false,
 	_ = require('underscore'),
-	Hype;
+	Hype,
+	HypePlugin = require('./Hype/HypePlugin'),
+	Modules = {};
 
 Hype = function() {
 	if (!inst) {
@@ -68,7 +70,7 @@ Hype = function() {
  * allows them to access needed things for plugin development
  *
  * Example:
- * module.exports = function(Plugin, Hype, _) {
+ * module.exports = function(Hype) {
  *
  * 	var privateFunc = function() {
  * 		// do private stuff
@@ -79,44 +81,25 @@ Hype = function() {
  * 		console.log(privateFunc());
  * 	}
  *
- * 	var auth = Hype.Plugins.Auth;
+ * 	var auth = Hype.Auth;
  *
  * 	// or
  *
- * 	var auth = Hype.plugin('Auth');
+ * 	var auth = Hype.require('Auth'); !!!! Gold!!!!
  *
  * 	auth.logOut();
  * };
  *
- * in other module call `Hype.Plugins.MyPlugin.publicFunc()`
+ * in other module call `Hype.MyPlugin.publicFunc()`
  */
 
-// Plugin class used to create a `new` Plugin
-Hype.prototype.Plugin = require('./Hype/HypePlugin');
+// Don't need deafult plugin
 
-// plugin function to register a new plugin
-Hype.prototype.plugin = function(name, config) {
 
-	if (!this.Plugins) { this.Plugins = {} };
+// require function to call a plugin interface ?? maybe change interface ??
+Hype.prototype.require = function(name) {
 
-	if (!config) {
-		return (this.Plugins[name]) ? Hype.plugins[name] : undefined;
-	}
-
-	if (!config.main) {
-		Hype.log('No main file for plugin: ' + name);
-		return;
-	}
-
-	var fn = require(config.main + '.js');
-
-	var HypePlugin = this.Plugin.extend(config);
-
-	var plugin = new HypePlugin();
-
-	fn(plugin, this, _);
-
-	Hype.Plugins[name] = plugin;
+	return (Modules[name] && Modules[name].interface && Modules[name].enabled) ? Modules[name].interface : undefined;
 };
 
 Hype.prototype.loadPlugins = function(path) {
@@ -148,22 +131,63 @@ Hype.prototype.loadPlugins = function(path) {
 		 *     - etc
 		 */
 
-		var pluginPath = path + '/' + file;
-		var config = require(pluginPath + '/plugin.json');
+		var pluginPath = path + '/' + file,
+			config = require(pluginPath + '/plugin.json'),
+			name = path.basename(file, '.js');
 
-		this.plugin(path.basename(file, '.js'), config);
+		// if main path for interface is not set log and return
+		if (!config.main) {
+			Hype.log('No main file for plugin: ' + name);
+			return;
+		}
+
+		var fn = require(config.main), // get interface creational function
+			HypePlugin = this.Plugin.extend(config), // create extended plugin
+			hypePlugin = new HypePlugin(), // instantiate plugin
+
+		hypePlugin.interface = fn(this); // add the plugin interface
+
+		Modules[name] = hypePlugin; // run pluginInterface through creational function
 
 	});
 };
 
-Hype.prototype.initPlugins = function() {
+Hype.module = function(moduleID, creator) {
+	var temp;
+
+	// sanity check for correct types on our params
+	if (typeof moduleID === 'string' && typeof creator === 'function') {
+		// create a temp instance of our module to ensure it will start correctly when called
+		temp = creator();
+
+		if ( temp.init
+				&& temp.destroy
+				&& typeof temp.init === 'function'
+				&& typeof temp.destroy === 'function' ) {
+
+			temp = null;
+			module_data[ moduleID ] = {
+				create: creator,
+				instance: null,
+				evts: null
+			};
+			return true;
+		} else {
+
+			root.util.log( 1, 'Module : "' + moduleID + '"" : Registration : FAILED : "Instance has either no init or no destroy method"' );
+			return false;
+		}
+	}
+};
+
+Hype.prototype.initModules = function(app) {
 	var self = this;
 
 	this.routes = {};
 	this.models = {};
 	this.scripts = {};
 
-	_(this.Plugins).each(function(plugin) {
+	_(Modules).each(function(plugin) {
 
 		if (plugin.routes) {
 			_(plugin.routes).each(function(route, routeKey) {
