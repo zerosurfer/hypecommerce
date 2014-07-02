@@ -24,9 +24,11 @@
 
 // Load necessary modules/files
 var	mongoose = require('mongoose'),
-	Log = require('./../log'),
+	//Log = require('./../log'),
 	when = require('when'),
 	inst = false,
+	ModelCollection = {},
+	SchemaCollection = {},
 	MongoDba;
 
 MongoDba = function() {
@@ -41,7 +43,7 @@ MongoDba = function() {
 		inst.db = null;
 
 		// Holds models
-		inst.modelCollection = [];
+		inst.;
 
 		// Holds singletons
 		inst.singletonCollection = [];
@@ -54,8 +56,8 @@ MongoDba = function() {
 
 MongoDba.prototype.connect = function(host, username, password, dbname) {
 	var self = this;
-	
-	Log.log("Connecting to MongoDB on " + host + "/" + dbname);
+
+	//Log.log("Connecting to MongoDB on " + host + "/" + dbname);
 	this.connection = mongoose.connect('mongodb://' + host + '/' + dbname, function(error) {
 		self.db = mongoose.connection.db;
 	});
@@ -63,31 +65,26 @@ MongoDba.prototype.connect = function(host, username, password, dbname) {
 };
 
 MongoDba.prototype.addModel = function (model, schema) {
-	Log.log("Adding " + model + " to Mongo");
+	//Log.log("Adding " + model + " to Mongo");
 
 	var mSchema = new mongoose.Schema(schema);
 	var mModel = mongoose.model(model, mSchema);
-	this.schemaCollection[model] = mSchema;
-	this.modelCollection[model] = mModel;
+	SchemaCollection[model] = mSchema;
+	ModelCollection[model] = mModel;
 
 	return mModel;
 }
 
 MongoDba.prototype.hasModel = function(model) {
-	return (this.modelCollection[model] !== undefined) ? true : false;
+	return (ModelCollection[model] !== undefined) ? true : false;
 }
 
 MongoDba.prototype.getModel = function(model) {
-	return this.modelCollection[model];
-};
-
-MongoDba.prototype.getRawModel = function(model) {
-	return this.schemaCollection[model];
-	//return this.models[model];
+	return ModelCollection[model];
 };
 
 MongoDba.prototype.getSchema = function(model) {
-	return this.schemaCollection[model];
+	return SchemaCollection[model];
 };
 
 module.exports = new MongoDba();

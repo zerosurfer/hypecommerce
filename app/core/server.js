@@ -23,20 +23,6 @@ Server = function() {
 			routeMethod,
 			routeCallback;
 
-		Hype.log('Loading plugins...');
-
-		Hype.loadPlugins('./plugins'); // core HYPE plugins
-		Hype.loadPlugins('../plugins'); // third party plugins
-
-		Hype.log('Plugins loaded.');
-
-		Hype.log('Initializing plugins...');
-
-		// initialize plugins (add routes, models, and scripts)
-		Hype.initPlugins();
-
-		Hype.log('Plugins initialized');
-
 		Hype.log('Preparing the server...');
 
 		var readAndSetRoutes = function() {
