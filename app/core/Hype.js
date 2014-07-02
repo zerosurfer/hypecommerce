@@ -26,10 +26,9 @@
 var	fs = require('fs'),
 	when = require('when'),
 	path = require('path'),
-	inst = false,
 	_ = require('underscore'),
+	inst = false,
 	Hype,
-	HypePlugin = require('./Hype/HypePlugin'),
 	Modules = {};
 
 Hype = function() {
@@ -81,11 +80,7 @@ Hype = function() {
  * 		console.log(privateFunc());
  * 	}
  *
- * 	var auth = Hype.Auth;
- *
- * 	// or
- *
- * 	var auth = Hype.require('Auth'); !!!! Gold!!!!
+ * 	var auth = Hype.require('Auth'); !!!! Gold !!!! What do you think @Tom??
  *
  * 	auth.logOut();
  * };
@@ -93,16 +88,16 @@ Hype = function() {
  * in other module call `Hype.MyPlugin.publicFunc()`
  */
 
-// Don't need deafult plugin
-
-
 // require function to call a plugin interface ?? maybe change interface ??
 Hype.prototype.require = function(name) {
 
-	return (Modules[name] && Modules[name].interface && Modules[name].enabled) ? Modules[name].interface : undefined;
+	return (Modules[name] && Modules[name].instance !== undefined && Modules[name].isEnabled()) ? Modules[name].instance : undefined;
 };
 
 Hype.prototype.loadPlugins = function(path) {
+
+	var HypePlugin = require('./Hype/Plugin')(Hype),
+		HypeModule = require('./Hype/Module')(Hype);
 
 	fs.readdirSync(path).forEach(function(file) {
 
@@ -142,69 +137,52 @@ Hype.prototype.loadPlugins = function(path) {
 		}
 
 		var fn = require(config.main), // get interface creational function
-			HypePlugin = this.Plugin.extend(config), // create extended plugin
 			hypePlugin = new HypePlugin(), // instantiate plugin
 
-		hypePlugin.interface = fn(this); // add the plugin interface
-
-		Modules[name] = hypePlugin; // run pluginInterface through creational function
-
+		Modules[name] = new HypeModule(fn, hypePlugin, config);
 	});
-};
-
-Hype.module = function(moduleID, creator) {
-	var temp;
-
-	// sanity check for correct types on our params
-	if (typeof moduleID === 'string' && typeof creator === 'function') {
-		// create a temp instance of our module to ensure it will start correctly when called
-		temp = creator();
-
-		if ( temp.init
-				&& temp.destroy
-				&& typeof temp.init === 'function'
-				&& typeof temp.destroy === 'function' ) {
-
-			temp = null;
-			module_data[ moduleID ] = {
-				create: creator,
-				instance: null,
-				evts: null
-			};
-			return true;
-		} else {
-
-			root.util.log( 1, 'Module : "' + moduleID + '"" : Registration : FAILED : "Instance has either no init or no destroy method"' );
-			return false;
-		}
-	}
 };
 
 Hype.prototype.initModules = function(app) {
 	var self = this;
 
-	this.routes = {};
-	this.models = {};
-	this.scripts = {};
+	_(Modules).each(function(module, moduleName) {
 
-	_(Modules).each(function(plugin) {
+		if (module.isEnabled()) {
 
-		if (plugin.routes) {
-			_(plugin.routes).each(function(route, routeKey) {
-				self.routes[routeKey] = route;
-			});
-		}
+			if (module.routes) {
 
-		if (plugin.models) {
-			_(plugin.modles).each(function(model, modelKey) {
-				self.models[modelKey] = model;
-			});
-		}
+				Hype.log('Adding route for ' + moduleName + ' module.');
 
-		if (plugin.scripts) {
-			_(plugin.scripts).each(function(script, scriptKey) {
-				self.scripts[scriptKey] = script;
-			});
+				_(module.routes).each(function(route, routeName) {
+
+					// routeName is the object key, route is the object value
+
+					// log the route addition
+					Hype.log('Adding ' + route.method[0].toUppercase + route.method.slice(1) + ' route: ' + routeName)
+
+					// using array notation to call the appropriate method
+					app[route.method](routeName, route.callback);
+				});
+
+				_(module.routes).each(function(route, routeKey) {
+					self.routes[routeKey] = route;
+				});
+			}
+
+			if (module.models) {
+				// decide how to load models here
+				// could move logic from loadModel here
+				// I assume that you can only inject models from your own plugin ????
+				// so logic should still be sound
+			}
+
+			if (module.scripts) {
+				// decide how to load scripts here, @Tom i will need your help with this for sure
+			}
+
+			// start module
+			module.start();
 		}
 	});
 };
