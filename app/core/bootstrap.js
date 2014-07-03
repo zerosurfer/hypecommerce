@@ -62,8 +62,21 @@ module.exports = (function() {
 
 	// Start it up
 	hype.log('Signals clear for launch');
-	hype.log('Building Hype');
+
+	hype.log('Loading core plugins');
+	hype.loadPlugins('./core/Plugins');
+	hype.log('Core plugins loaded');
+
+	hype.log('Loading third party plugins');
+	fs.readdirSync('./Plugins', function(file) {
+		hype.loadPlugins('./Plugins/' + file);
+	});
+	hype.log('Third party plugins loaded');
+
+
+	hype.log('Starting Hype');
 	hype.start();
+
 	hype.log('Starting server');
 	server.start();
 	hype.log('Hype is running. Enjoy!');
