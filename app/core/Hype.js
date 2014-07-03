@@ -66,7 +66,7 @@ module.exports = function(app) {
 	// require function to call a plugin instance ?? maybe change instance ??
 	Hype.prototype.require = function(name) {
 
-		return (Modules[name] && Modules[name].isEnabled()) ? Modules[name].instance : undefined;
+		return (Modules[name] && Modules[name].is('enabled') && Modules[name].is('started')) ? Modules[name].instance : undefined;
 	};
 
 	Hype.prototype.loadPlugins = function(path) {
@@ -118,16 +118,16 @@ module.exports = function(app) {
 	};
 
 	Hype.prototype.start = function() {
+		var initializer = require('./Hype/Initializer');
+
 		_(Modules).each(function(module, moduleName) {
 
-			if (module.isEnabled()) {
+			if (module.is('enabled')) {
 				module.start();
 			}
 		});
 
-		initModels();
-		initScripts();
-		initRoutes();
+		initializer.init(Modules, this, app);
 	};
 
 	/**
@@ -152,93 +152,6 @@ module.exports = function(app) {
 		console[priority](message);
 
 		return this;
-	};
-
-	// Recursively load the models into mongoose
-	var loadModel = function(name, model) {
-
-		if (!Hype.dba.hasModel(name)) {
-
-			// if model has dependencies
-			if (model.deps) {
-
-				// for each dep
-				// - check to see if it is instantiated
-				// - if not instantiate it
-				// - get the model
-				// - update the current schema
-				// - add model to dba
-
-				if (model.deps.hasMany) {
-					_(model.deps.hasMany).each(function(dep, localName) {
-						if (!Hype.dba.hasModel(dep)) {
-							loadModel(dep, Models[dep]);
-						}
-						model.schema[localName] = [Hype.dba.getModel(dep)];
-					});
-				}
-
-				if (model.deps.hasOne) {
-					_(model.deps.hasOne).each(function(dep, localName) {
-						if (!Hype.dba.hasModel(dep)) {
-							loadModel(dep, Models[dep]);
-						}
-						model.schema[localName] = Hype.dba.getModel(dep);
-					});
-				}
-
-				Hype.dba.addModel(name, model.schema);
-
-			} else {
-
-				Hype.dba.addModel(name, model.schema);
-			}
-		}
-	};
-
-	var initModels = function() {
-
-		_(Modules).each(function(module) {
-			if (module.isStarted()) {
-				if (module.models) {
-					// Load the model schema
-					_(Models).each(function(model, modelName) {
-						// Instanstiate the model
-						loadModel(modelName, model);
-					});
-				}
-			}
-		});
-	};
-
-	var initRoutes = function() {
-		_(Modules).each(function(module) {
-			if (module.isStarted()) {
-				if (module.routes) {
-					var routes = module.routes(Hype);
-					_(routes).each(function(route, routeName) {
-						// log the route addition
-						Hype.log('Adding ' + route.method.toUpperCase() + ' route: ' + routeName)
-
-						// using array notation to call the appropriate method
-						app[route.method.toLowerCase()](routeName, route.callback);
-					});
-				}
-			}
-		});
-	};
-
-	var initScripts = function() {
-		_(Modules).each(function(module) {
-			if (module.isStarted()) {
-				if (module.scripts) {
-					var scripts = module.scripts(Hype);
-					_(scripts).each(function(script, scriptName) {
-						// do script stuff
-					});
-				}
-			}
-		});
 	};
 
 	/**

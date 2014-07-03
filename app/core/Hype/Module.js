@@ -37,12 +37,8 @@ module.exports = function(Hype) {
         this.stop();
     };
 
-    HypeModule.prototype.isStarted = function() {
-        return this._started;
-    };
-
-    HypeModule.prototype.isEnabled = function() {
-        return this._enabled;
+    HypeModule.prototype.is = function(flag) {
+        return this['_' + flag];
     };
 
     return HypeModule;
