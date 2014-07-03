@@ -199,7 +199,7 @@ module.exports = function(app) {
 	var initModels = function() {
 
 		_(Modules).each(function(module) {
-			if (module.isEnabled()) {
+			if (module.isStarted()) {
 				if (module.models) {
 					// Load the model schema
 					_(Models).each(function(model, modelName) {
@@ -213,15 +213,15 @@ module.exports = function(app) {
 
 	var initRoutes = function() {
 		_(Modules).each(function(module) {
-			if (module.isEnabled()) {
+			if (module.isStarted()) {
 				if (module.routes) {
 					var routes = module.routes(Hype);
 					_(routes).each(function(route, routeName) {
 						// log the route addition
-						Hype.log('Adding ' + route.method[0].toUppercase + route.method.slice(1) + ' route: ' + routeName)
+						Hype.log('Adding ' + route.method.toUpperCase() + ' route: ' + routeName)
 
 						// using array notation to call the appropriate method
-						app[route.method](routeName, route.callback);
+						app[route.method.toLowerCase()](routeName, route.callback);
 					});
 				}
 			}
@@ -230,7 +230,7 @@ module.exports = function(app) {
 
 	var initScripts = function() {
 		_(Modules).each(function(module) {
-			if (module.isEnabled()) {
+			if (module.isStarted()) {
 				if (module.scripts) {
 					var scripts = module.scripts(Hype);
 					_(scripts).each(function(script, scriptName) {

@@ -8,6 +8,11 @@
       "name": "Thomas Lackemann",
       "email": "tlackemann@gmail.com",
       "web": "http://whoistom.me/"
+    },
+    {
+      "name": "Kurtis Kemple",
+      "email": "kurtiskemple@gmail.com",
+      "web": "http://kurtiskemple.ghost.io"
     }
   ],
   "repository": {
@@ -21,6 +26,9 @@
     "hype",
     "ecommerce"
   ],
+  "scripts": {
+    "start": "node bootstrap.js"
+  },
   "dependencies": {
     "express": "3.12.1",
     "pg": "~0.14.1",

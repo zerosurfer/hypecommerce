@@ -13,6 +13,7 @@ module.exports = function(Hype) {
         this._started = false;
         this.creator = config.creator;
         this.plugin = plugin;
+        this.version = config.version;
 
         return this;
     };
