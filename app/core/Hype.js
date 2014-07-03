@@ -63,30 +63,6 @@ module.exports = function(app) {
 		return inst;
 	};
 
-	/**
-	 * @todo: need to set up a plugin system,
-	 * so they can add a callback that has access to Hype object,
-	 * allows them to access needed things for plugin development
-	 *
-	 * Example:
-	 * module.exports = function(Hype) {
-	 *
-	 * 	var privateFunc = function() {
-	 * 		// do private stuff
-	 * 		return 'HYPE is the bee\'s knees';
-	 * 	};
-	 *
-	 * 	Plugin.publicFunc = function() {
-	 * 		console.log(privateFunc());
-	 * 	}
-	 *
-	 * 	var auth = Hype.require('Auth');
-	 *
-	 * 	auth.logOut();
-	 * };
-	 *
-	 */
-
 	// require function to call a plugin instance ?? maybe change instance ??
 	Hype.prototype.require = function(name) {
 
@@ -141,14 +117,10 @@ module.exports = function(app) {
 		});
 	};
 
-	Hype.prototype.initModules = function() {
-		var self = this;
-
+	Hype.prototype.start = function() {
 		_(Modules).each(function(module, moduleName) {
 
 			if (module.isEnabled()) {
-
-				// start module
 				module.start();
 			}
 		});
@@ -156,6 +128,30 @@ module.exports = function(app) {
 		initModels();
 		initScripts();
 		initRoutes();
+	};
+
+	/**
+	 * Logging
+	 *
+	 * @param	string	message;	Message to log
+	 * @param	string	priority;	DEBUG|INFO|WARN|ERROR
+	 * @return	Hype
+	 */
+	Hype.prototype.log = function(message, priority) {
+		var date, timestamp;
+
+		if (priority === undefined) {
+			priority = 'info';
+		}
+
+		// Add a timestamp
+		date = new Date();
+		timestamp = '[' +  date.toUTCString() + '] ';
+		message = timestamp + message;
+
+		console[priority](message);
+
+		return this;
 	};
 
 	// Recursively load the models into mongoose
@@ -173,12 +169,23 @@ module.exports = function(app) {
 				// - update the current schema
 				// - add model to dba
 
-				_(model.deps).each(function(dep, localName) {
-					if (!Hype.dba.hasModel(dep)) {
-						loadModel(dep, Models[dep]);
-					}
-					model.schema[localName] = Hype.dba.getModel(dep);
-				});
+				if (model.deps.hasMany) {
+					_(model.deps.hasMany).each(function(dep, localName) {
+						if (!Hype.dba.hasModel(dep)) {
+							loadModel(dep, Models[dep]);
+						}
+						model.schema[localName] = [Hype.dba.getModel(dep)];
+					});
+				}
+
+				if (model.deps.hasOne) {
+					_(model.deps.hasOne).each(function(dep, localName) {
+						if (!Hype.dba.hasModel(dep)) {
+							loadModel(dep, Models[dep]);
+						}
+						model.schema[localName] = Hype.dba.getModel(dep);
+					});
+				}
 
 				Hype.dba.addModel(name, model.schema);
 
@@ -231,56 +238,6 @@ module.exports = function(app) {
 					});
 				}
 			}
-		});
-	};
-
-	/**
-	 * Logging
-	 *
-	 * @param	string	message;	Message to log
-	 * @param	string	priority;	DEBUG|INFO|WARN|ERROR
-	 * @return	Hype
-	 */
-	Hype.prototype.log = function(message, priority) {
-		var date, timestamp;
-
-		if (priority === undefined) {
-			priority = 'info';
-		}
-
-		// Add a timestamp
-		date = new Date();
-		timestamp = '[' +  date.toUTCString() + '] ';
-		message = timestamp + message;
-
-		console[priority](message);
-
-		return this;
-	};
-
-	/**
-	 * Initiate Hype
-	 * Provides logic for the application, sets up the configuration, starts the express server,
-	 * connects to the db, and runs
-	 */
-	Hype.prototype.init = function() {
-		var loaded = when.defer();
-		var self = this;
-
-		self.log("Hype init");
-
-		// This doesn't always work, if we don't return a promise on install() it still runs through
-		return when.join(
-			this.configure(),
-			this.preload(),
-			this.connect(),
-			this.install()
-		).then(function() {
-			self.start();
-		}).then(function() {
-			self.log("Hype is up and running,  Enjoy ;)");
-		}).otherwise(function() {
-			self.log("failure");
 		});
 	};
 
@@ -400,27 +357,6 @@ module.exports = function(app) {
 
 		return loaded.promise;
 	}
-
-	Hype.prototype.start = function() {
-		var self = this,
-			loaded = when.defer();
-
-		if (this.configuration.nodes > 1) {
-			var Cluster = new this.Cluster();
-
-			Cluster.init(this).then(function() {
-				loaded.resolve();
-			});
-
-		} else {
-			// if (this.configuration)
-			this.Server.init(this).then(function() {
-				loaded.resolve();
-			});
-		}
-
-		return loaded.promise;
-	};
 
 	return new Hype();
 };
