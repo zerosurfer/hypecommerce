@@ -79,5 +79,6 @@ module.exports = (function() {
 
 	hype.log('Starting server');
 	server.start();
+
 	hype.log('Hype is running. Enjoy!');
 })();
