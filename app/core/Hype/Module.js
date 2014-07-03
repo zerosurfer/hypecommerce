@@ -3,20 +3,22 @@ var underscore = require('underscore');
 module.exports = function(Hype) {
     "use strict";
 
-    var HypeModule = function(fn, plugin, config) {
+    var HypeModule = function(plugin, config) {
         this.id = 'somerandomstring'; // @todo: update to use real id generation
         this._enabled = config.enabled || false;
-        this.models = config.models;
-        this.controllers = config.controllers;
+        this.models = (config.models) ? config.models : undefined;
+        this.routes = (config.routes) ? config.routes : undefined;
+        this.scripts = (config.scripts) ? config.scripts : undefined;
         this.instance = undefined;
         this._started = false;
+        this.creator = config.creator;
         this.plugin = plugin;
 
         return this;
     };
 
     HypeModule.prototype.start = function() {
-        this.instance = fn(this.plugin, Hype, _);
+        this.instance = this.creator(this.plugin, Hype, _);
         this._started = true;
     };
 
