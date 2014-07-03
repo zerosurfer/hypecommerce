@@ -7,5 +7,6 @@ module.exports = function() {
     creator: require('lib/example'),
     models: require('lib/models'),
     routes: require('lib/routes'),
-    scripts: require('lib/scripts')
+    scripts: require('lib/scripts'),
+    version: '0.0.0.1'
 };
