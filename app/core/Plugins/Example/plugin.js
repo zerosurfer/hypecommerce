@@ -1,4 +1,4 @@
-module.exports = function() {
+module.exports = {
     name: 'Category',
     enabled: false,
     depends: {

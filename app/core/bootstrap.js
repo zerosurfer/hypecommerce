@@ -74,11 +74,11 @@ module.exports = (function() {
 	hype.log('Third party plugins loaded');
 
 
-	hype.log('Starting Hype');
+	hype.log('Launching Hype');
 	hype.start();
 
 	hype.log('Starting server');
 	server.start();
 
-	hype.log('Hype is running. Enjoy!');
+	hype.log('Hype is orbiting. Enjoy!');
 })();
