@@ -9,9 +9,9 @@ module.exports = (function(installer, _) {
             if (module.is('started')) {
                 if (module.models) {
                     // Load the model schema
-                    _(Models).each(function(model, modelName) {
+                    _(module.models).each(function(model, modelName) {
                         // Instanstiate the model
-                        loadModel(modelName, model);
+                        loadModel(modelName, model, hype);
                     });
                 }
             }
@@ -62,7 +62,7 @@ module.exports = (function(installer, _) {
                 // - get the model
                 // - update the current schema
                 // - add model to dba
-
+                console.log(model);
                 if (model.deps.hasMany) {
                     _(model.deps.hasMany).each(function(dep, localName) {
                         if (!hype.dba.hasModel(dep)) {
