@@ -68,8 +68,8 @@ module.exports = (function() {
 	hype.log('Core plugins loaded');
 
 	hype.log('Loading third party plugins');
-	fs.readdirSync('./Plugins', function(file) {
-		hype.loadPlugins('./Plugins/' + file);
+	fs.readdirSync(path.resolve('./app/plugins'), function(file) {
+		hype.loadPlugins(path.resolve('./app/plugins/' + file));
 	});
 	hype.log('Third party plugins loaded');
 
@@ -78,7 +78,7 @@ module.exports = (function() {
 	hype.start();
 
 	hype.log('Starting server');
-	server.start(app, hype);
+	server.start(app, express, hype);
 
 	hype.log('Hype is orbiting. Enjoy!');
 })();

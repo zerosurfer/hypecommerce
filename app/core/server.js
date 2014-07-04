@@ -6,10 +6,10 @@
 var Server,
 	_ = require('underscore');
 
-module.exports = function(app, Hype) {
+module.exports = function() {
 	
 	Server = function() {
-		this.start = function() {
+		this.start = function(app, express, Hype) {
 			var self = this,
 				r,
 				route,
@@ -52,10 +52,10 @@ module.exports = function(app, Hype) {
 
 				// Add the admin routes
 				// These should be required from ./admin.js
-				app.get('/' + Hype.configuration.admin, Hype.Admin.requiredAuth(), Hype.Admin.index);
-				app.get('/' + Hype.configuration.admin + '/login', Hype.Admin.login);
-				app.post('/' + Hype.configuration.admin + '/login', Hype.Admin.loginPost);
-				app.use(express.static(__dirname + '/admin/static'));
+				// app.get('/' + Hype.configuration.admin, Hype.Admin.requiredAuth(), Hype.Admin.index);
+				// app.get('/' + Hype.configuration.admin + '/login', Hype.Admin.login);
+				// app.post('/' + Hype.configuration.admin + '/login', Hype.Admin.loginPost);
+				// app.use(express.static(__dirname + '/admin/static'));
 
 				// This requires the Hype object which we don't have yet
 				readAndSetRoutes();
@@ -81,9 +81,9 @@ module.exports = function(app, Hype) {
 			});
 
 			//Hype.log("Starting server...");
-			app.listen(Hype.configuration.port, function() {
-				//Hype.log('Express server listening on port ' + Hype.configuration.port + ' in ' + 	app.settings.env + ' mode');
-			});
+			// app.listen(Hype.configuration.port, function() {
+			// 	//Hype.log('Express server listening on port ' + Hype.configuration.port + ' in ' + 	app.settings.env + ' mode');
+			// });
 		}
 	}
 	
