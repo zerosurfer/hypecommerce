@@ -6,7 +6,7 @@
 var Server,
 	_ = require('underscore');
 
-module.exports = function() {
+module.exports = function(Hype) {
 	
 	Server = function() {
 		this.start = function(app, express, Hype) {

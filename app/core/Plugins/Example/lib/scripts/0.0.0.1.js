@@ -11,8 +11,7 @@ module.exports = function(Hype) {
 		this.down = function(Hype) {
 			Hype.log("Uninstalling example");
 		}
-
-
 	}
-
+	
+	return new Install();
 }
