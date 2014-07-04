@@ -64,7 +64,7 @@ module.exports = (function() {
 	hype.log('Signals clear for launch');
 
 	hype.log('Loading core plugins');
-	hype.loadPlugins('./core/Plugins');
+	hype.loadPlugins(path.resolve('./app/core/Plugins'));
 	hype.log('Core plugins loaded');
 
 	hype.log('Loading third party plugins');

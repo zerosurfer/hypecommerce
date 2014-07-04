@@ -69,12 +69,12 @@ module.exports = function(app) {
 		return (Modules[name] && Modules[name].is('enabled') && Modules[name].is('started')) ? Modules[name].instance : undefined;
 	};
 
-	Hype.prototype.loadPlugins = function(path) {
+	Hype.prototype.loadPlugins = function(filepath) {
 
 		var HypePlugin = require('./Hype/Plugin')(Hype),
 			HypeModule = require('./Hype/Module')(Hype);
 
-		fs.readdirSync(path).forEach(function(file) {
+		fs.readdirSync(filepath).forEach(function(file) {
 
 			/**
 			 * loop over plugins
@@ -101,7 +101,7 @@ module.exports = function(app) {
 			 *     - etc
 			 */
 
-			var pluginPath = path + '/' + file,
+			var pluginPath = filepath + '/' + file,
 				config = require(pluginPath + '/plugin.js')(Hype),
 				name = config.name;
 
@@ -111,7 +111,7 @@ module.exports = function(app) {
 				return;
 			}
 
-			var hypePlugin = new HypePlugin(), // instantiate plugin
+			var hypePlugin = new HypePlugin(); // instantiate plugin
 
 			Modules[name] = new HypeModule(hypePlugin, config);
 		});

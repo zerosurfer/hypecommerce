@@ -1,12 +1,12 @@
 module.exports = function() {
-    name: 'Category',
-    enabled: false,
-    depends: {
+    this.name = 'Category',
+    this.enabled = false,
+    this.depends = {
         'core': '>=1.0.0.0'
     },
-    creator: require('lib/example'),
-    models: require('lib/models'),
-    routes: require('lib/routes'),
-    scripts: require('lib/scripts'),
-    version: '0.0.0.1'
+    this.creator = require('./lib/example'),
+    this.models = require('./lib/models'),
+    this.routes = require('./lib/routes'),
+    this.scripts = require('./lib/scripts'),
+    this.version = '0.0.0.1'
 };
