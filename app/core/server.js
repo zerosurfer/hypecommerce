@@ -4,117 +4,88 @@
  *
  */
 var Server,
-	_ = require('underscore'),
-	when = require('when');
+	_ = require('underscore');
 
-Server = function() {
-	this.init = function(Hype) {
-		return this._init(Hype);
-	},
+module.exports = function(app) {
+	
+	Server = function() {
+		this.start = function() {
+			var self = this,
+				r,
+				route,
+				routeMethod,
+				routeCallback;
 
-	this._init = function(Hype) {
+			Hype.log('Preparing the server...');
 
-		var self = this,
-			express = require('express'), // Express framework
-			app = express(), // Express application;
-			loaded = when.defer(),
-			r,
-			route,
-			routeMethod,
-			routeCallback;
+			var readAndSetRoutes = function() {
 
-		Hype.log('Preparing the server...');
+				Hype.log("Setting initial routes...");
 
-		var readAndSetRoutes = function() {
+				_(Hype.routes).each(function(route, routeName) {
 
-			Hype.log("Setting initial routes...");
+					// routeName is the object key, route is the object value
 
-			_(Hype.routes).each(function(route, routeName) {
+					// log the route addition
+					Hype.log('Adding ' + route.method[0].toUppercase + route.method.slice(1) + ' route: ' + routeName)
 
-				// routeName is the object key, route is the object value
+					// using array notation to call the appropriate method
+					app[route.method](routeName, route.callback);
+				});
 
-				// log the route addition
-				Hype.log('Adding ' + route.method[0].toUppercase + route.method.slice(1) + ' route: ' + routeName)
+				Hype.log("Done setting routes");
+			};
 
-				// using array notation to call the appropriate method
-				app[route.method](routeName, route.callback);
+			app.configure(function(){
+				app.use(express.cookieParser());
+				app.settings.env = Hype.env || 'development';
+				app.use(app.router);
+				app.use(express.favicon());
+				app.use(express.logger("dev"));
+				app.engine('html', require('ejs').renderFile);
+				app.set('views', Hype.themePath);
+
+				// Render the theme path
+				app.get('/', function (req, res) {
+					res.render(Hype.themePath + '/index.html');
+				});
+
+				// Add the admin routes
+				// These should be required from ./admin.js
+				app.get('/' + Hype.configuration.admin, Hype.Admin.requiredAuth(), Hype.Admin.index);
+				app.get('/' + Hype.configuration.admin + '/login', Hype.Admin.login);
+				app.post('/' + Hype.configuration.admin + '/login', Hype.Admin.loginPost);
+				app.use(express.static(__dirname + '/admin/static'));
+
+				// This requires the Hype object which we don't have yet
+				// readAndSetRoutes();
+
+				// Setup a custom 404 page
+				app.use(function(req, res, next){
+					res.status(404);
+
+					// respond with html page
+					if (req.accepts('html')) {
+						res.render(Hype.themePath + '/404.html', { url: req.url });
+						return;
+					}
+
+					// respond with json
+					if (req.accepts('json')) {
+						res.send({ error: 'Not found' });
+						return;
+					}
+				});
+
+				app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
 			});
 
-			Hype.log("Done setting routes");
-		};
-
-		app.configure(function(){
-
-			//app.use(express.bodyParser());
-			app.use(express.cookieParser());
-			//app.use(express.methodOverride());
-
-			app.settings.env = Hype.env || 'development';
-
-			// CSRF Token for CORS
-			// Load locals
-			app.use(function(req, res, next) {
-				//res.locals.csrftoken = res.session._csrf;
-				res.locals.admin = Hype.configuration.admin;
-				next();
-			})
-
-			app.use(app.router);
-			app.use(express.favicon());
-			app.use(express.logger("dev"));
-			app.engine('html', require('ejs').renderFile);
-			app.set('views', Hype.themePath);
-
-			// Render the theme path
-			app.get('/', function (req, res) {
-				res.render(Hype.themePath + '/index.html');
+			//Hype.log("Starting server...");
+			app.listen(Hype.configuration.port, function() {
+				//Hype.log('Express server listening on port ' + Hype.configuration.port + ' in ' + 	app.settings.env + ' mode');
 			});
-
-			// Render for admin
-
-			// Add the admin routes
-			// These should be required from ./admin.js
-			app.get('/' + Hype.configuration.admin, Hype.Admin.requiredAuth(), Hype.Admin.index);
-			app.get('/' + Hype.configuration.admin + '/login', Hype.Admin.login);
-			app.post('/' + Hype.configuration.admin + '/login', Hype.Admin.loginPost);
-			app.use(express.static(__dirname + '/admin/static'));
-
-			readAndSetRoutes();
-
-			// Setup a custom 404 page
-			app.use(function(req, res, next){
-				res.status(404);
-
-				// respond with html page
-				if (req.accepts('html')) {
-					res.render(Hype.themePath + '/404.html', { url: req.url });
-					return;
-				}
-
-				// respond with json
-				if (req.accepts('json')) {
-					res.send({ error: 'Not found' });
-					return;
-				}
-			});
-
-			app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
-		});
-
-		Hype.log("Starting server...");
-		app.listen(Hype.configuration.port, function() {
-			Hype.log('Express server listening on port ' + Hype.configuration.port + ' in ' + 	app.settings.env + ' mode');
-
-			loaded.resolve();
-		});
-
-		// // Test inheritance
-		// var model = self.Model['setting'];
-		// Hype.log("TEST FUNCTION OF INHERITANCE: " + model.testFunc()); // inheritance!
-		return loaded.promise;
+		}
 	}
-
-	return this;
+	
+	return new Server();
 }
-
-module.exports = new Server();

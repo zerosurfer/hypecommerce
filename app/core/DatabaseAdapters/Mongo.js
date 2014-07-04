@@ -43,7 +43,7 @@ MongoDba = function() {
 		inst.db = null;
 
 		// Holds models
-		inst.;
+
 
 		// Holds singletons
 		inst.singletonCollection = [];
