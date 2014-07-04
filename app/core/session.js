@@ -1,4 +1,0 @@
-/**
- * Abstract Session logic
- *
- */
