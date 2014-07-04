@@ -6,7 +6,7 @@
 var Server,
 	_ = require('underscore');
 
-module.exports = function(app) {
+module.exports = function(app, Hype) {
 	
 	Server = function() {
 		this.start = function() {
@@ -58,7 +58,7 @@ module.exports = function(app) {
 				app.use(express.static(__dirname + '/admin/static'));
 
 				// This requires the Hype object which we don't have yet
-				// readAndSetRoutes();
+				readAndSetRoutes();
 
 				// Setup a custom 404 page
 				app.use(function(req, res, next){

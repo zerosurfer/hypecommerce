@@ -78,7 +78,7 @@ module.exports = (function() {
 	hype.start();
 
 	hype.log('Starting server');
-	server.start();
+	server.start(app, hype);
 
 	hype.log('Hype is orbiting. Enjoy!');
 })();

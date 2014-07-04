@@ -1,6 +1,6 @@
-module.exports = function(Hype) (
-    var example = Hype.require('Example');
+module.exports = function(Hype) {
+    //var example = Hype.require('Example');
     return {
 
     }
-);
+};
