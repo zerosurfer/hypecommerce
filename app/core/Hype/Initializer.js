@@ -1,4 +1,5 @@
 var _ = require('underscore'),
+    Models = {},
     installer = require('./Installer');
 
 module.exports = (function(installer, _) {
@@ -6,6 +7,15 @@ module.exports = (function(installer, _) {
 
     var initModels = function(modules, hype) {
         _(modules).each(function(module) {
+
+            if (module.is('started')) {
+                if (module.models) {
+                    _(module.models).each(function(model, modelName) {
+                        Models[modelName] = model;
+                    });
+                }
+            }
+
             if (module.is('started')) {
                 if (module.models) {
                     // Load the model schema
@@ -62,11 +72,11 @@ module.exports = (function(installer, _) {
                 // - get the model
                 // - update the current schema
                 // - add model to dba
-                console.log(model);
                 if (model.deps.hasMany) {
                     _(model.deps.hasMany).each(function(dep, localName) {
                         if (!hype.dba.hasModel(dep)) {
-                            loadModel(dep, Models[dep]);
+                            console.log(dep);
+                            loadModel(dep, Models[dep], hype);
                         }
                         model.schema[localName] = [hype.dba.getModel(dep)];
                     });
@@ -75,7 +85,7 @@ module.exports = (function(installer, _) {
                 if (model.deps.hasOne) {
                     _(model.deps.hasOne).each(function(dep, localName) {
                         if (!hype.dba.hasModel(dep)) {
-                            loadModel(dep, Models[dep]);
+                            loadModel(dep, Models[dep], hype);
                         }
                         model.schema[localName] = hype.dba.getModel(dep);
                     });

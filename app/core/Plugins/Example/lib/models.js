@@ -14,9 +14,27 @@ module.exports = {
             },
             hasOne: {
                 path: 'Url',
-                parent: 'Example',
+                //parent: 'Example',
                 store: 'Store'
             }
+        }
+    },
+
+    Attribute: {
+        schema: {
+            name: String,
+        }
+    },
+
+    Url: {
+        schema: {
+            name: String,
+        }
+    },
+
+    Store: {
+        schema: {
+            name: String,
         }
     }
 };
