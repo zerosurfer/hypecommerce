@@ -102,7 +102,7 @@ module.exports = function(app) {
 			 */
 
 			var pluginPath = filepath + '/' + file,
-				config = require(pluginPath + '/plugin.js')(Hype),
+				config = require(pluginPath + '/plugin.js'),
 				name = config.name;
 
 			// if main path for interface is not set log and return
