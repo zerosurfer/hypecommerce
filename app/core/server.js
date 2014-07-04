@@ -11,9 +11,6 @@ module.exports = function(app) {
 	Server = function() {
 		this.start = function() {
 			var self = this,
-				express = require('express'), // Express framework
-				app = express(), // Express application;
-				loaded = when.defer(),
 				r,
 				route,
 				routeMethod,
@@ -40,21 +37,8 @@ module.exports = function(app) {
 			};
 
 			app.configure(function(){
-
-				//app.use(express.bodyParser());
 				app.use(express.cookieParser());
-				//app.use(express.methodOverride());
-
 				app.settings.env = Hype.env || 'development';
-
-				// CSRF Token for CORS
-				// Load locals
-				app.use(function(req, res, next) {
-					//res.locals.csrftoken = res.session._csrf;
-					res.locals.admin = Hype.configuration.admin;
-					next();
-				})
-
 				app.use(app.router);
 				app.use(express.favicon());
 				app.use(express.logger("dev"));
@@ -66,8 +50,6 @@ module.exports = function(app) {
 					res.render(Hype.themePath + '/index.html');
 				});
 
-				// Render for admin
-
 				// Add the admin routes
 				// These should be required from ./admin.js
 				app.get('/' + Hype.configuration.admin, Hype.Admin.requiredAuth(), Hype.Admin.index);
@@ -75,7 +57,8 @@ module.exports = function(app) {
 				app.post('/' + Hype.configuration.admin + '/login', Hype.Admin.loginPost);
 				app.use(express.static(__dirname + '/admin/static'));
 
-				readAndSetRoutes();
+				// This requires the Hype object which we don't have yet
+				// readAndSetRoutes();
 
 				// Setup a custom 404 page
 				app.use(function(req, res, next){
@@ -97,11 +80,9 @@ module.exports = function(app) {
 				app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
 			});
 
-			Hype.log("Starting server...");
+			//Hype.log("Starting server...");
 			app.listen(Hype.configuration.port, function() {
-				Hype.log('Express server listening on port ' + Hype.configuration.port + ' in ' + 	app.settings.env + ' mode');
-
-				loaded.resolve();
+				//Hype.log('Express server listening on port ' + Hype.configuration.port + ' in ' + 	app.settings.env + ' mode');
 			});
 		}
 	}
