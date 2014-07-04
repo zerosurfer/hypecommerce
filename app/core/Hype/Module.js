@@ -1,4 +1,5 @@
-var underscore = require('underscore');
+var _ = require('underscore'),
+    path = require('path');
 
 module.exports = function(Hype) {
     "use strict";
