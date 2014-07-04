@@ -14,13 +14,12 @@
 var config;
 
 config = {
-	hype: {
-		version: "1.0.0.0",								// Hype Version
-		install: "Fri, 06 Jun 2014 12:30:23 +0000",		// May delete this line
-		secret: "8e7be24bb81205f20befd8e65e21a596",		// Encryption string
-		environment: "development",						// Runtime environment
-		theme: "ractive"								// Default theme
-	},
+	version: "1.0.0.0",								// Hype Version
+	install: "Fri, 06 Jun 2014 12:30:23 +0000",		// May delete this line
+	secret: "8e7be24bb81205f20befd8e65e21a596",		// Encryption string
+	environment: "development",						// Runtime environment
+	theme: "ractive",								// Default theme
+	
 	server: {
 		development: {
 			url: "http://127.0.0.1/",

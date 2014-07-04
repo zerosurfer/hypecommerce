@@ -1,4 +1,0 @@
-/**
- * Authentication via passport.js
- *
- */

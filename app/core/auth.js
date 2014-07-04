@@ -1,4 +1,0 @@
-/**
- * Abstract authorization class
- *
- */

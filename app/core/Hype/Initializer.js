@@ -24,7 +24,6 @@ module.exports = (function(installer, _) {
                 if (module.scripts) {
                     var scripts = module.scripts(hype);
                     _(scripts).each(function(script, scriptName) {
-
                         // @Tom, what do you think of something like this??
                         installer.runScript(scriptName, script);
                     });

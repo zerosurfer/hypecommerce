@@ -54,7 +54,7 @@ var	fs = require('fs'),
 	path = require('path'),
 	express = require('express'),
 	app = express(),
-	server = require('./Server')(app),
+	server = require('./Hype/Server')(app),
 	hype = require('./Hype')(app);
 
 module.exports = (function() {
