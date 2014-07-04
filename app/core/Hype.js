@@ -40,7 +40,7 @@ module.exports = function(app) {
 			inst = this;
 
 			// Holds current environment
-			inst.env = null;
+			inst.env = HypeConfig.hype.environment;
 
 			// Holds the default theme
 			inst.theme = null;

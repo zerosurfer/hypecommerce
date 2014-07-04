@@ -27,7 +27,7 @@
     "ecommerce"
   ],
   "scripts": {
-    "start": "node bootstrap.js"
+    "start": "node app/core/bootstrap.js"
   },
   "dependencies": {
     "express": "3.12.1",

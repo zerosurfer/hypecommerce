@@ -81,9 +81,9 @@ module.exports = function() {
 			});
 
 			//Hype.log("Starting server...");
-			// app.listen(Hype.configuration.port, function() {
-			// 	//Hype.log('Express server listening on port ' + Hype.configuration.port + ' in ' + 	app.settings.env + ' mode');
-			// });
+			app.listen(Hype.configuration.port, function() {
+				//Hype.log('Express server listening on port ' + Hype.configuration.port + ' in ' + 	app.settings.env + ' mode');
+			});
 		}
 	}
 	
