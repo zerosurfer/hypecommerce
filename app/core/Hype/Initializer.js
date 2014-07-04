@@ -7,7 +7,7 @@ module.exports = (function(installer, _) {
 
     var initModels = function(modules, hype) {
         _(modules).each(function(module) {
-
+            // Have an instance of each raw model
             if (module.is('started')) {
                 if (module.models) {
                     _(module.models).each(function(model, modelName) {
@@ -15,7 +15,7 @@ module.exports = (function(installer, _) {
                     });
                 }
             }
-
+            // Recursively load all the models
             if (module.is('started')) {
                 if (module.models) {
                     // Load the model schema
@@ -32,9 +32,13 @@ module.exports = (function(installer, _) {
        _(modules).each(function(module) {
             if (module.is('started')) {
                 if (module.scripts) {
-                    var scripts = module.scripts(hype);
+                    // We don't have a pointer to a location here, we need one, no?
+                    console.log(module);
+                    var scripts = module.scripts;
+
                     _(scripts).each(function(script, scriptName) {
-                        installer.runScript(scriptName, script);
+                    console.log(script, scriptName);
+                        //installer.installScript(scriptName, script);
                     });
                 }
             }
@@ -75,7 +79,6 @@ module.exports = (function(installer, _) {
                 if (model.deps.hasMany) {
                     _(model.deps.hasMany).each(function(dep, localName) {
                         if (!hype.dba.hasModel(dep)) {
-                            console.log(dep);
                             loadModel(dep, Models[dep], hype);
                         }
                         model.schema[localName] = [hype.dba.getModel(dep)];
@@ -87,7 +90,8 @@ module.exports = (function(installer, _) {
                         if (!hype.dba.hasModel(dep)) {
                             loadModel(dep, Models[dep], hype);
                         }
-                        model.schema[localName] = hype.dba.getModel(dep);
+                        // @kurt - idk why but this really doesn't like not being an array
+                        model.schema[localName] = [hype.dba.getModel(dep)];
                     });
                 }
 
