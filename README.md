@@ -8,7 +8,9 @@ A hyper-fast, scalable, multi-store ecommerce platform for rapid growth
 ## Installation
 ```
 npm install
-node app/hype
+npm start
+- or -
+node app/core/bootstrap.js
 ```
 
 ## Requirements
