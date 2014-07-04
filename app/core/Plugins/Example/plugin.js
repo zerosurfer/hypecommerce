@@ -1,14 +1,14 @@
-module.exports = function(Hype) {
-    this.name = 'Category',
-    this.enabled = false,
-    this.depends = {
+module.exports = {
+    name = 'Category',
+    enabled = false,
+    depends = {
         'core': '>=1.0.0.0'
     },
-    this.creator = require('./lib/example'),
-    this.models = require('./lib/models'),
-    this.routes = require('./lib/routes')(Hype),
-    //this.scripts = require('./lib/scripts'),
-    this.version = '0.0.0.1';
+    creator = require('./lib/example'),
+    models = require('./lib/models'),
+    routes = require('./lib/routes'),
+    //scripts = require('./lib/scripts'),
+    version = '0.0.0.1';
 
     return this;
 };
