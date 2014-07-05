@@ -16,11 +16,11 @@ module.exports = function(Hype) {
 				routeMethod,
 				routeCallback;
 
-			Hype.log('Preparing the server...');
+			Hype.log('Preparing the server');
 
 			var readAndSetRoutes = function() {
 
-				Hype.log("Setting initial routes...");
+				Hype.log("Setting initial routes");
 
 				_(Hype.routes).each(function(route, routeName) {
 
@@ -80,9 +80,9 @@ module.exports = function(Hype) {
 				app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
 			});
 
-			//Hype.log("Starting server...");
+			Hype.log("Starting server");
 			app.listen(Hype.configuration.port, function() {
-				Hype.log('Express server listening on port ' + Hype.configuration.port + ' in ' + 	app.settings.env + ' mode');
+				Hype.log('Hype server listening on port ' + Hype.configuration.port + ' in ' + 	app.settings.env + ' mode');
 			});
 		}
 	}

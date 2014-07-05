@@ -59,6 +59,8 @@ module.exports = function(app) {
 		var HypePlugin = require('./Hype/Plugin')(Hype),
 			HypeModule = require('./Hype/Module')(Hype);
 
+		this.log('Loading plugins from ' + filepath);
+
 		fs.readdirSync(filepath).forEach(function(file) {
 
 			/**

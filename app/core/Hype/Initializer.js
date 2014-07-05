@@ -33,11 +33,11 @@ module.exports = (function(installer, _) {
             if (module.is('started')) {
                 if (module.scripts) {
                     // We don't have a pointer to a location here, we need one, no?
-                    console.log(module);
+                    //console.log(module);
                     var scripts = module.scripts;
 
                     _(scripts).each(function(script, scriptName) {
-                    console.log(script, scriptName);
+                    //console.log(script, scriptName);
                         //installer.installScript(scriptName, script);
                     });
                 }
