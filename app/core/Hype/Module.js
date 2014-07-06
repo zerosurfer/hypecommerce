@@ -12,7 +12,7 @@ module.exports = function(Hype) {
         this.scripts = (config.scripts) ? config.scripts : undefined;
         this.instance = undefined;
         this._started = false;
-        this.creator = config.creator;
+        this.creator = config.main;
         this.plugin = plugin;
         this.version = config.version;
 

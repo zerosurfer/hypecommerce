@@ -63,47 +63,49 @@ module.exports = function(app) {
 		this.log('Loading plugins from ' + filepath);
 
 		fs.readdirSync(filepath).forEach(function(file) {
+			// Skip hidden folders and files
+			if (file.indexOf('.') !== 0) {
+				/**
+				 * loop over plugins
+				 * read plugin config from `plugin.json`
+				 * all other files go in to a lib dir
+				 * load plugin
+				 *
+				 * Example:
+				 *
+				 * plugins
+				 * - MyPlugin
+				 *   - plugin.json
+				 *   - lib
+				 *     - MyPlugin.js
+				 *     - Helper.js
+				 *     - Models.js
+				 *     - etc
+				 * - SomeOtherPlugin
+				 *   - plugin.json
+				 *   - lib
+				 *     - SomeOtherPlugin.js
+				 *     - Helper.js
+				 *     - Models.js
+				 *     - etc
+				 */
 
-			/**
-			 * loop over plugins
-			 * read plugin config from `plugin.json`
-			 * all other files go in to a lib dir
-			 * load plugin
-			 *
-			 * Example:
-			 *
-			 * plugins
-			 * - MyPlugin
-			 *   - plugin.json
-			 *   - lib
-			 *     - MyPlugin.js
-			 *     - Helper.js
-			 *     - Models.js
-			 *     - etc
-			 * - SomeOtherPlugin
-			 *   - plugin.json
-			 *   - lib
-			 *     - SomeOtherPlugin.js
-			 *     - Helper.js
-			 *     - Models.js
-			 *     - etc
-			 */
+				var pluginPath = filepath + '/' + file,
+					config = require(pluginPath + '/plugin.js'),
+					name = config.name;
 
-			var pluginPath = filepath + '/' + file,
-				config = require(pluginPath + '/plugin.js'),
-				name = config.name;
+				// if main path for interface is not set log and return
+				if (!config.main) {
+					self.log('No main file for plugin: ' + name);
+					return;
+				}
 
-			// if main path for interface is not set log and return
-			if (!config.creator) {
-				self.log('No main file for plugin: ' + name);
-				return;
+				self.log("Adding plugin: " + name);
+
+				var hypePlugin = new HypePlugin(); // instantiate plugin
+
+				Modules[name] = new HypeModule(hypePlugin, config);
 			}
-
-			self.log("Adding plugin: " + name);
-
-			var hypePlugin = new HypePlugin(); // instantiate plugin
-
-			Modules[name] = new HypeModule(hypePlugin, config);
 		});
 	};
 
