@@ -66,11 +66,14 @@ module.exports = (function(installer, _) {
     var loadModel = function(name, model, hype) {
 
         if (!hype.dba.hasModel(name)) {
-            hype.log("Loading model " + name);
+
+            hype.log("Adding model: " + name);
+
+            // Set that we're processing the model
+            hype.dba.startProcessing(name);
 
             // if model has dependencies
             if (model.deps) {
-                console.log("Found dependencies");
                 // for each dep
                 // - check to see if it is instantiated
                 // - if not instantiate it
@@ -80,9 +83,7 @@ module.exports = (function(installer, _) {
                 if (model.deps.hasMany) {
                     _(model.deps.hasMany).each(function(dep, localName) {
 
-                        if (!hype.dba.hasModel(dep)) {
-
-                            console.log("Need to load model " + dep);
+                        if (!hype.dba.hasModel(dep) && !hype.dba.isProcessing(dep)) {
                             loadModel(dep, Models[dep], hype);
                         }
                         model.schema[localName] = [hype.dba.getModel(dep)];
@@ -91,7 +92,7 @@ module.exports = (function(installer, _) {
 
                 if (model.deps.hasOne) {
                     _(model.deps.hasOne).each(function(dep, localName) {
-                        if (!hype.dba.hasModel(dep)) {
+                        if (!hype.dba.hasModel(dep) && !hype.dba.isProcessing(dep)) {
                             loadModel(dep, Models[dep], hype);
                         }
                         // @kurt - idk why but this really doesn't like not being an array
@@ -104,6 +105,8 @@ module.exports = (function(installer, _) {
             } else {
                 hype.dba.addModel(name, model.schema);
             }
+
+            hype.dba.stopProcessing(name);
         }
     };
 

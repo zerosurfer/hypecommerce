@@ -47,6 +47,9 @@ MongoDba = function() {
 
 		// Holds Schemas
 		inst.schemaCollection = [];
+
+		// Holds models being processed
+		inst._processing = [];
 	}
 	return inst;
 }
@@ -83,6 +86,20 @@ MongoDba.prototype.getModel = function(model) {
 MongoDba.prototype.getSchema = function(model) {
 	return SchemaCollection[model];
 };
+
+MongoDba.prototype.startProcessing = function(model) {
+	this._processing[model] = true;
+	return this;
+}
+
+MongoDba.prototype.stopProcessing = function(model) {
+	this._processing[model] = undefined;
+	return this;
+}
+
+MongoDba.prototype.isProcessing = function(model) {
+	return (this._processing[model] === undefined) ? false : true;
+}
 
 module.exports = new MongoDba();
 
