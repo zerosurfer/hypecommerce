@@ -4,12 +4,12 @@ module.exports = function(Hype) {
 
 	Install = function() {
 
-		this.up = function(Hype) {
-			Hype.log("Installing example");
+		this.up = function() {
+			Hype.log("Installing cart");
 		},
 
-		this.down = function(Hype) {
-			Hype.log("Uninstalling example");
+		this.down = function() {
+			Hype.log("Uninstalling cart");
 		}
 	}
 	

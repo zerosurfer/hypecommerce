@@ -131,7 +131,13 @@ module.exports = function(app) {
 	Hype.prototype.connect = function() {
 		// @todo, abstract into Hype/Database class that picks appropriate DatabaseAdapter
 		this.log("Establishing database connection with MongoDB");
-		this.dba.connect(this.configuration.db['mongo'].host, this.configuration.db['mongo'].username, this.configuration.db['mongo'].password, this.configuration.db['mongo'].port);
+		console.log(this.configuration.db['mongo'].host);
+		this.dba.connect(
+			this.configuration.db['mongo'].host + ':' + this.configuration.db['mongo'].port,
+			this.configuration.db['mongo'].username,
+			this.configuration.db['mongo'].password,
+			this.configuration.db['mongo'].dbname
+		);
 	}
 
 	/**

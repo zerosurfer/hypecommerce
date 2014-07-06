@@ -67,47 +67,96 @@ module.exports = function(Hype) {
     HypeModule.prototype.install = function() {
         var folderPath = path.resolve(this.filepath + '/' + this.scripts),
             files,
-            fileVersions,
+            self = this,
+            fileVersion,
             dbVersion,
-            installModel;
+            installModel = Hype.dba.getModel('Install'),
+            configVersion;
 
         var getLatestVersion = function(arr) {
             var version,
                 versions = [];
-            for(var i = 0; i < arr.length; i++) {
-                // format version
-                versions.push(arr[i].replace(/\./g, '').replace('js', ''));
+            if (arr.length > 0) {
+                for(var i = 0; i < arr.length; i++) {
+                    // format version
+                    versions.push(arr[i].replace(/\./g, '').replace('js', ''));
+                }
+
+                versions = versions.sort(function compare(a, b) {
+                    if (a < b)
+                        return 1;
+                    if (a >= b)
+                        return -1;
+
+                    return 0;
+                });
+            } else {
+                versions[0] = 0;
             }
-
-            versions = versions.sort(function compare(a, b) {
-                if (a < b)
-                    return 1;
-                if (a >= b)
-                    return -1;
-
-                return 0;
-            });
 
             return versions[0];
         }
+
+        var determineInstallAction = function(fileVersion, dbVersion, configVersion) {
+            var installFile;
+            //console.log("File: %s, Db: %s, Config: %s", fileVersion, dbVersion, configVersion);
+
+            if (dbVersion == configVersion) {
+                Hype.debug("Nothing to install for " + self.name);
+            }
+
+            // Install if the dbVersion is less than our configVersion
+            if (dbVersion < configVersion) {
+                Hype.debug("Preparing scripts to install for " + self.name);
+
+                fs.readdir(folderPath, function(err, files) {
+                    var scriptFileVersion;
+                    for(var f in files) {
+                        scriptFileVersion = getLatestVersion([files[f]]);
+
+                        if (scriptFileVersion <= configVersion && scriptFileVersion > dbVersion) {
+                            Hype.debug("Installing file " + files[f]);
+                            installFile = require(folderPath + '/' + files[f])(Hype);
+                            installFile.up();
+                        }
+                        
+                    }
+                });
+
+                installModel.findOneAndUpdate(
+                     { 'module' : self.name },
+                     { 'version': self.version },
+                     { 'upsert': true },
+                     function(err, doc) {
+                         // executed query
+                     }
+                 );
+            }
+        }
+
 
         // Check for new installations
         if (this.scripts) {
             // Get the latest version
             Hype.log("Checking updates for " + this.name + " v" + this.version);
+
             //Check latest file version
             Hype.debug("Checking latest scripts in " + folderPath);
             files = fs.readdirSync(folderPath);
-            console.log(getLatestVersion(files));
+            fileVersion = getLatestVersion(files);
+
+            // Config version
+            configVersion = getLatestVersion([this.version]);
 
             // Check latest db version
             Hype.debug("Checking latest version in database");
-            installModel = Hype.dba.getModel('Install');
 
             // @todo - Running into an async problem right here, will need to fix
-            installModel.find({ 'module': this.name }, function(err, settings) { 
-                console.log(settings);
-                // If we don't have anything here but we have files to 
+            installModel.find({ 'module': this.name }, function(err, settings) {
+                dbVersion = (settings[0]) ? getLatestVersion([settings[0].version]) : 0;
+                
+                // Attempt to install the module based on the fileVersion, dbVersion, and configVersion
+                determineInstallAction(fileVersion, dbVersion, configVersion);
             });
         }
     }
