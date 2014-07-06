@@ -8,12 +8,12 @@
  * @license		http://www.hypejs.com/license
  */
 
- var Admin;
+ var HypeAdmin;
 
  module.exports = function(Hype) {
- 	Admin = function() {
+ 	HypeAdmin = function() {
 
  	}
 
- 	return Admin;
+ 	return HypeAdmin;
  }
