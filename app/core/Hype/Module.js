@@ -9,13 +9,13 @@
  */
  
 var _ = require('underscore'),
+    crypto = require('crypto'),
     path = require('path');
 
 module.exports = function(Hype) {
     "use strict";
 
     var HypeModule = function(plugin, config) {
-        this.id = 'somerandomstring'; // @todo: update to use real id generation
         this._enabled = config.enabled || false;
         this.models = (config.models) ? config.models : undefined;
         this.routes = (config.routes) ? config.routes : undefined;
@@ -30,7 +30,10 @@ module.exports = function(Hype) {
     };
 
     HypeModule.prototype.start = function() {
+        var md5Hash = crypto.createHash('md5');
         this.instance = this.creator(this.plugin, Hype, _);
+        // Assign an id
+        this.id = md5Hash.update(this.getData()).digest('hex');
         this._started = true;
     };
 
@@ -47,6 +50,14 @@ module.exports = function(Hype) {
         this._enabled = false;
         this.stop();
     };
+
+    HypeModule.prototype.getData = function(data) {
+        if (data === undefined) {
+            return JSON.stringify(this);
+        }
+
+        return this[data];
+    }
 
     HypeModule.prototype.is = function(flag) {
         return this['_' + flag];
