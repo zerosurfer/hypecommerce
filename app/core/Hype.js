@@ -62,8 +62,8 @@ module.exports = function(app) {
 
 	Hype.prototype.loadPlugins = function(filepath) {
 
-		var HypePlugin = require('./Hype/Plugin')(Hype),
-			HypeModule = require('./Hype/Module')(Hype),
+		var HypePlugin = require('./Hype/Plugin')(this),
+			HypeModule = require('./Hype/Module')(this),
 			self = this;
 
 		this.log('Loading plugins from ' + filepath);
@@ -110,7 +110,7 @@ module.exports = function(app) {
 
 				var hypePlugin = new HypePlugin(); // instantiate plugin
 
-				Modules[name] = new HypeModule(hypePlugin, config);
+				Modules[name] = new HypeModule(name, hypePlugin, config, filepath + '/' + file);
 			}
 		});
 	};

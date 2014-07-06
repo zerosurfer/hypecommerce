@@ -19,13 +19,17 @@ module.exports = (function(installer, _) {
         _(modules).each(function(module) {
             // Have an instance of each raw model
             if (module.is('started')) {
+                //console.log(module);
                 if (module.models) {
                     _(module.models).each(function(model, modelName) {
                         Models[modelName] = model;
                     });
                 }
             }
-            // Recursively load all the models
+        });
+
+        // Recursively load all the models
+        _(modules).each(function(module) {
             if (module.is('started')) {
                 if (module.models) {
                     // Load the model schema
@@ -41,36 +45,27 @@ module.exports = (function(installer, _) {
     var initScripts = function(modules, hype) {
        _(modules).each(function(module) {
             if (module.is('started')) {
-                if (module.scripts) {
-                    // We don't have a pointer to a location here, we need one, no?
-                    //console.log(module);
-                    var scripts = module.scripts;
-
-                    _(scripts).each(function(script, scriptName) {
-                    //console.log(script, scriptName);
-                        //installer.installScript(scriptName, script);
-                    });
-                }
+                module.install();
             }
         });
     };
 
     var initRoutes = function(modules, hype, app) {
-        _(modules).each(function(module) {
-            if (module.is('started')) {
-                if (module.routes) {
-                    var routes = module.routes(hype);
-                    // console.log(routes);
-                    _(routes).each(function(route, routeName) {
-                        // log the route addition
-                        hype.log('Adding ' + route.method.toUpperCase() + ' route: ' + routeName)
+        // _(modules).each(function(module) {
+        //     if (module.is('started')) {
+        //         if (module.routes) {
+        //             var routes = module.routes(hype);
+        //             // console.log(routes);
+        //             _(routes).each(function(route, routeName) {
+        //                 // log the route addition
+        //                 hype.log('Adding ' + route.method.toUpperCase() + ' route: ' + routeName)
 
-                        // using array notation to call the appropriate method
-                        app[route.method.toLowerCase()](routeName, route.callback);
-                    });
-                }
-            }
-        });
+        //                 // using array notation to call the appropriate method
+        //                 app[route.method.toLowerCase()](routeName, route.callback);
+        //             });
+        //         }
+        //     }
+        // });
     };
 
     // Recursively load the models into mongoose
@@ -93,7 +88,6 @@ module.exports = (function(installer, _) {
                 // - add model to dba
                 if (model.deps.hasMany) {
                     _(model.deps.hasMany).each(function(dep, localName) {
-
                         if (!hype.dba.hasModel(dep) && !hype.dba.isProcessing(dep)) {
                             loadModel(dep, Models[dep], hype);
                         }

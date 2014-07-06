@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'Cart',
+    name: 'Store',
     enabled: true,
     depends: {
         'core': '>=1.0.0.0'
