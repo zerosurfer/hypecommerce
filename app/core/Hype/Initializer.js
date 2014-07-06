@@ -50,6 +50,7 @@ module.exports = (function(installer, _) {
             if (module.is('started')) {
                 if (module.routes) {
                     var routes = module.routes(hype);
+                    // console.log(routes);
                     _(routes).each(function(route, routeName) {
                         // log the route addition
                         hype.log('Adding ' + route.method.toUpperCase() + ' route: ' + routeName)
@@ -67,7 +68,7 @@ module.exports = (function(installer, _) {
 
         if (!hype.dba.hasModel(name)) {
 
-            hype.log("Adding model: " + name);
+            hype.debug("Adding model: " + name);
 
             // Set that we're processing the model
             hype.dba.startProcessing(name);

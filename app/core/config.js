@@ -24,6 +24,8 @@ config = {
 		development: {
 			url: "http://127.0.0.1/",
 			port: 4973, // "HYPE" on a phone keypad =)
+			log: true,
+			debug: true,
 			admin: "supersecretarea", // url for the admin
 			nodes: 2, // for clustering
 			db: {

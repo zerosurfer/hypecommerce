@@ -37,6 +37,12 @@ module.exports = function(app) {
 			// Holds the configuration
 			inst.configuration = HypeConfig.server[this.env];
 
+			// Log enabled
+			inst.logEnabled = inst.configuration.log;
+
+			// Debug enabled
+			inst.debugEnabled = inst.configuration.debug;
+
 			// database adapter
 			inst.dba = require('./DatabaseAdapters/Mongo');
 
@@ -132,23 +138,49 @@ module.exports = function(app) {
 	 * Logging
 	 *
 	 * @param	string	message;	Message to log
-	 * @param	string	priority;	DEBUG|INFO|WARN|ERROR
+	 * @param	string	priority;	debug|info|warn|error|log
 	 * @return	Hype
 	 */
 	Hype.prototype.log = function(message, priority) {
 		var date, timestamp;
 
-		if (priority === undefined) {
-			priority = 'info';
+		if (this.logEnabled) {
+			if (priority === undefined) {
+				priority = 'info';
+			}
+
+			// Add a timestamp
+			date = new Date();
+			timestamp = '[' +  date.toUTCString() + '] ';
+			message = timestamp + message;
+
+			console[priority](message);
 		}
+		return this;
+	};
 
-		// Add a timestamp
-		date = new Date();
-		timestamp = '[' +  date.toUTCString() + '] ';
-		message = timestamp + message;
+	/**
+	 * More intrusive logging
+	 *
+	 * @param	string	message;	Message to log
+	 * @param	string	priority;	debug|info|warn|error|log
+	 * @return	Hype
+	 */
+	Hype.prototype.debug = function(message, priority) {
+		var date, timestamp;
 
-		console[priority](message);
+		if (this.debugEnabled) {
+			if (priority === undefined) {
+				priority = 'info';
+			}
 
+			// Add a timestamp
+			date = new Date();
+			timestamp = '[' +  date.toUTCString() + '] ';
+			message = timestamp + message;
+
+			console[priority](message);
+		}
 		return this;
 	};
 
