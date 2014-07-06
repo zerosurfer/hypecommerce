@@ -21,6 +21,9 @@ module.exports = (function() {
 
 	hype.log('Preparing for launch');
 
+	// Connect to mongo
+	hype.connect();
+
 	// Load core plugins
 	hype.loadPlugins(path.resolve('./app/core/Plugins'));
 

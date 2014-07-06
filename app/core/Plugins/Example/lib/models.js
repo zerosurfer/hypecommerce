@@ -13,9 +13,8 @@ module.exports = {
                 filters: 'Attribute'
             },
             hasOne: {
-                path: 'Url',
-                //parent: 'Example',
-                store: 'Store'
+                parent: 'Example',
+                path: 'Url'
             }
         }
     },
@@ -23,6 +22,11 @@ module.exports = {
     Attribute: {
         schema: {
             name: String,
+        },
+        deps: {
+            hasOne: {
+                something: 'Store'
+            }
         }
     },
 

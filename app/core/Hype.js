@@ -57,7 +57,8 @@ module.exports = function(app) {
 	Hype.prototype.loadPlugins = function(filepath) {
 
 		var HypePlugin = require('./Hype/Plugin')(Hype),
-			HypeModule = require('./Hype/Module')(Hype);
+			HypeModule = require('./Hype/Module')(Hype),
+			self = this;
 
 		this.log('Loading plugins from ' + filepath);
 
@@ -94,9 +95,11 @@ module.exports = function(app) {
 
 			// if main path for interface is not set log and return
 			if (!config.creator) {
-				Hype.log('No main file for plugin: ' + name);
+				self.log('No main file for plugin: ' + name);
 				return;
 			}
+
+			self.log("Adding plugin: " + name);
 
 			var hypePlugin = new HypePlugin(); // instantiate plugin
 
@@ -116,6 +119,12 @@ module.exports = function(app) {
 
 		initializer.init(Modules, this, app);
 	};
+
+	Hype.prototype.connect = function() {
+		// @todo, abstract into Hype/Database class that picks appropriate DatabaseAdapter
+		this.log("Establishing database connection with MongoDB");
+		this.dba.connect(this.configuration.db['mongo'].host, this.configuration.db['mongo'].username, this.configuration.db['mongo'].password, this.configuration.db['mongo'].port);
+	}
 
 	/**
 	 * Logging

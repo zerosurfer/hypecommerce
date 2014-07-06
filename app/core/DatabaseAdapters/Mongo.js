@@ -42,9 +42,6 @@ MongoDba = function() {
 		// Holds the db connection
 		inst.db = null;
 
-		// Holds models
-
-
 		// Holds singletons
 		inst.singletonCollection = [];
 

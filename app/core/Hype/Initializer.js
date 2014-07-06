@@ -66,10 +66,11 @@ module.exports = (function(installer, _) {
     var loadModel = function(name, model, hype) {
 
         if (!hype.dba.hasModel(name)) {
+            hype.log("Loading model " + name);
 
             // if model has dependencies
             if (model.deps) {
-
+                console.log("Found dependencies");
                 // for each dep
                 // - check to see if it is instantiated
                 // - if not instantiate it
@@ -78,7 +79,10 @@ module.exports = (function(installer, _) {
                 // - add model to dba
                 if (model.deps.hasMany) {
                     _(model.deps.hasMany).each(function(dep, localName) {
+
                         if (!hype.dba.hasModel(dep)) {
+
+                            console.log("Need to load model " + dep);
                             loadModel(dep, Models[dep], hype);
                         }
                         model.schema[localName] = [hype.dba.getModel(dep)];
@@ -98,7 +102,6 @@ module.exports = (function(installer, _) {
                 hype.dba.addModel(name, model.schema);
 
             } else {
-
                 hype.dba.addModel(name, model.schema);
             }
         }
