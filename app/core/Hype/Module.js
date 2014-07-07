@@ -106,20 +106,35 @@ module.exports = function(Hype) {
             }
 
             // Install if the dbVersion is less than our configVersion
-            if (dbVersion < configVersion) {
-                Hype.debug("Preparing scripts to install for " + self.name);
+            if (dbVersion < configVersion || dbVersion > configVersion) {
 
                 fs.readdir(folderPath, function(err, files) {
-                    var scriptFileVersion;
+                    var scriptFileVersion,
+                        rFiles = files.reverse();
+                    // Reading files
+
+                    Hype.debug("Checking upgrades on " + self.name);
                     for(var f in files) {
                         scriptFileVersion = getLatestVersion([files[f]]);
 
-                        if (scriptFileVersion <= configVersion && scriptFileVersion > dbVersion) {
+                        // Check for an upgrade
+                        if (dbVersion < configVersion && scriptFileVersion <= configVersion && scriptFileVersion > dbVersion) {
                             Hype.debug("Installing file " + files[f]);
                             installFile = require(folderPath + '/' + files[f])(Hype);
                             installFile.up();
                         }
-                        
+                    }
+
+                    Hype.debug("Checking downgrades on " + self.name);
+                    for(var f in files) {
+                        scriptFileVersion = getLatestVersion([files[f]]);
+
+                        // Check for a downgrade
+                        if (dbVersion > configVersion && scriptFileVersion > configVersion) {
+                            Hype.debug("Uninstalling file " + files[f]);
+                            installFile = require(folderPath + '/' + files[f])(Hype);
+                            installFile.down();
+                        }
                     }
                 });
 
@@ -141,15 +156,11 @@ module.exports = function(Hype) {
             Hype.log("Checking updates for " + this.name + " v" + this.version);
 
             //Check latest file version
-            Hype.debug("Checking latest scripts in " + folderPath);
             files = fs.readdirSync(folderPath);
             fileVersion = getLatestVersion(files);
 
             // Config version
             configVersion = getLatestVersion([this.version]);
-
-            // Check latest db version
-            Hype.debug("Checking latest version in database");
 
             // @todo - Running into an async problem right here, will need to fix
             installModel.find({ 'module': this.name }, function(err, settings) {
