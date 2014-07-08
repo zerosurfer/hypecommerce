@@ -27,7 +27,7 @@
     "ecommerce"
   ],
   "scripts": {
-    "start": "node app/core/bootstrap.js",
+    "start": "node app/bootstrap.js",
     "hyperion": "./hyperion.js"
   },
   "dependencies": {

@@ -13,8 +13,8 @@ var	fs = require('fs'),
 	path = require('path'),
 	express = require('express'),
 	app = express(),
-	server = require('./Hype/Server')(app),
-	hype = require('./Hype')(app);
+	server = require('./core/Hype/Server')(app),
+	hype = require('./core/Hype')(app);
 
 module.exports = (function() {
 	"use strict";
