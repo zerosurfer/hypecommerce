@@ -7,7 +7,7 @@
  * @copyright   Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license     http://www.hypejs.com/license
  */
- 
+
 var _ = require('underscore'),
     Models = {},
     installer = require('./Installer');
@@ -101,6 +101,7 @@ module.exports = (function(installer, _) {
                             loadModel(dep, Models[dep], hype);
                         }
                         // @kurt - idk why but this really doesn't like not being an array
+                        // @tom - we will have to see, if thats the case, then we can get rid of hasOne/hasMany, its doing the same thing, i will investigate
                         model.schema[localName] = [hype.dba.getModel(dep)];
                     });
                 }
