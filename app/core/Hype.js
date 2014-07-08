@@ -16,7 +16,7 @@ var	fs = require('fs'),
 	inst = false,
 	Hype,
 	Modules = {},
-	HypeConfig = require('./config');
+	HypeConfig = require('./../config');
 
 module.exports = function(app) {
 
