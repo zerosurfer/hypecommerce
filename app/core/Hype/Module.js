@@ -7,7 +7,7 @@
  * @copyright   Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license     http://www.hypejs.com/license
  */
- 
+
 var _ = require('underscore'),
     crypto = require('crypto'),
     fs = require('fs'),
@@ -18,16 +18,16 @@ module.exports = function(Hype) {
 
     var HypeModule = function(name, plugin, config, filepath) {
         this.name = name;
-        this._enabled = config.enabled || false;
         this.models = (config.models) ? config.models : undefined;
-        this.filepath = filepath;
         this.routes = (config.routes) ? config.routes : undefined;
         this.scripts = (config.scripts) ? config.scripts : undefined;
         this.instance = undefined;
         this._started = false;
+        this._enabled = config.enabled || false;
         this.creator = config.main;
-        this.plugin = plugin;
         this.version = config.version;
+        this.filepath = filepath;
+        this.plugin = plugin;
 
         return this;
     };
@@ -35,7 +35,7 @@ module.exports = function(Hype) {
     HypeModule.prototype.start = function() {
         var md5Hash = crypto.createHash('md5');
         this.instance = this.creator(this.plugin, Hype, _);
-        
+
         // Assign an id
         this.id = md5Hash.update(this.getData()).digest('hex');
 
@@ -165,7 +165,7 @@ module.exports = function(Hype) {
             // @todo - Running into an async problem right here, will need to fix
             installModel.find({ 'module': this.name }, function(err, settings) {
                 dbVersion = (settings[0]) ? getLatestVersion([settings[0].version]) : 0;
-                
+
                 // Attempt to install the module based on the fileVersion, dbVersion, and configVersion
                 determineInstallAction(fileVersion, dbVersion, configVersion);
             });

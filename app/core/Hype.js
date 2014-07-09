@@ -70,6 +70,7 @@ module.exports = function(app) {
 
 		fs.readdirSync(filepath).forEach(function(file) {
 			// Skip hidden folders and files
+			// @tom - nice catch!!
 			if (file.indexOf('.') !== 0) {
 				/**
 				 * loop over plugins
@@ -101,10 +102,13 @@ module.exports = function(app) {
 					name = config.name;
 
 				// if main path for interface is not set log and return
-				if (!config.main) {
+				// starting to think we should't force this, maybe my plugin doesn't have an interface???
+				/*
+				if (!config.creator) {
 					self.log('No main file for plugin: ' + name);
 					return;
 				}
+				*/
 
 				self.log("Adding plugin: " + name);
 
