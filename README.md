@@ -17,9 +17,9 @@ You can find full documentation, code examples, support, and more on our website
 
 This framework is dependent on several node.js libraries. You will need to run `npm install` before running Hype Commerce.
 
-We plan to be the #1 used eCommerce framework in the world through our ease-of-use, framework robustness, and hyper-fast performance. We strive to be the **de facto** eCommerce framework of choice for businesses of all sizes.
+We plan to be the #1 used eCommerce framework in the world through our ease-of-use, framework robustness, and hyper-fast performance. We strive to be the *de facto* eCommerce framework of choice for businesses of all sizes.
 
-We value highly optimized and well-tested code. We believe that code is an art, and that we're creating a masterpiece over time. Our code is revolutionizing the eCommerce market and we want everyone to help.
+We value highly optimized and well-tested code. We believe that code is an art, and that we're creating a masterpiece over time. Our code is revolutionizing the eCommerce market and we want everyone to be a part of it.
 
 
 ## Contributing

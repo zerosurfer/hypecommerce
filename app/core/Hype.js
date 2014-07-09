@@ -28,14 +28,14 @@ module.exports = function(app) {
 			// Holds current environment
 			inst.env = HypeConfig.environment;
 
-			// Holds the default theme
-			inst.theme = null;
-
-			// Holds the default theme
-			inst.themePath = null;
-
 			// Holds the configuration
 			inst.configuration = HypeConfig.server[this.env];
+
+			// Holds the default theme
+			inst.theme = inst.configuration.theme;
+
+			// Holds the default theme
+			inst.themePath = path.resolve('app/themes/' + inst.theme);
 
 			// Log enabled
 			inst.logEnabled = inst.configuration.log;

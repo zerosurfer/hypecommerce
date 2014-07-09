@@ -13,10 +13,10 @@ module.exports = {
 	install: "Fri, 06 Jun 2014 12:30:23 +0000",		// May delete this line
 	secret: "8e7be24bb81205f20befd8e65e21a596",		// Encryption string
 	environment: "development",						// Runtime environment
-	theme: "ractive",								// Default theme
 	
 	server: {
 		development: {
+			theme: "ractive",
 			url: "http://127.0.0.1/",
 			port: 4973, // "HYPE" on a phone keypad =)
 			log: true,
@@ -50,6 +50,7 @@ module.exports = {
 		},
 
 		staging: {
+			theme: "ractive",
 			url: "http://staging.hypecommerce.com/",
 			port: 5000,
 			admin: "admin",
@@ -80,6 +81,7 @@ module.exports = {
 		},
 
 		production: {
+			theme: "ractive",
 			url: "http://www.hypecommerce.com/",
 			port: 80,
 			db: {

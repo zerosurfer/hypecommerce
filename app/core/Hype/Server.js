@@ -16,6 +16,7 @@ module.exports = function(Hype) {
 	Server = function() {
 		this.start = function(app, express, Hype) {
 			var self = this,
+				Admin = require('./Admin')(Hype),
 				r,
 				route,
 				routeMethod,
@@ -41,49 +42,48 @@ module.exports = function(Hype) {
 				Hype.log("Done setting routes");
 			};
 
-			app.configure(function(){
-				app.use(express.cookieParser());
-				app.settings.env = Hype.env || 'development';
-				app.use(app.router);
-				app.use(express.favicon());
-				app.use(express.logger("dev"));
-				app.engine('html', require('ejs').renderFile);
-				app.set('views', Hype.themePath);
+			app.use(express.cookieParser());
+			app.settings.env = Hype.env || 'development';
+			app.use(express.favicon());
+			app.use(express.logger("dev"));
+			app.engine('html', require('ejs').renderFile);
+			app.set('views', Hype.themePath);
 
-				// Render the theme path
-				app.get('/', function (req, res) {
-					res.render(Hype.themePath + '/index.html');
-				});
-
-				// Add the admin routes
-				// These should be required from ./admin.js
-				// app.get('/' + Hype.configuration.admin, Hype.Admin.requiredAuth(), Hype.Admin.index);
-				// app.get('/' + Hype.configuration.admin + '/login', Hype.Admin.login);
-				// app.post('/' + Hype.configuration.admin + '/login', Hype.Admin.loginPost);
-				// app.use(express.static(__dirname + '/admin/static'));
-
-				// This requires the Hype object which we don't have yet
-				readAndSetRoutes();
-
-				// Setup a custom 404 page
-				app.use(function(req, res, next){
-					res.status(404);
-
-					// respond with html page
-					if (req.accepts('html')) {
-						res.render(Hype.themePath + '/404.html', { url: req.url });
-						return;
-					}
-
-					// respond with json
-					if (req.accepts('json')) {
-						res.send({ error: 'Not found' });
-						return;
-					}
-				});
-
-				app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
+			// Render the theme path
+			console.log(Hype.configuration);
+			app.get('/', function (req, res) {
+				res.render('index.html');
 			});
+
+			// Add the admin routes
+			// These should be required from ./admin.js
+			app.get('/' + Hype.configuration.admin, Admin.index);
+			app.get('/' + Hype.configuration.admin + '/login', Admin.login);
+			app.post('/' + Hype.configuration.admin + '/login', Admin.loginPost);
+			app.use(express.static(__dirname + '/admin/static'));
+
+			// This requires the Hype object which we don't have yet
+			readAndSetRoutes();
+
+			// Setup a custom 404 page fallback
+			app.use(function(req, res, next){
+				res.status(404);
+
+				// respond with html page
+				if (req.accepts('html')) {
+					res.render(Hype.themePath + '/404.html', { url: req.url });
+					return;
+				}
+
+				// respond with json
+				if (req.accepts('json')) {
+					res.send({ error: 'Not found' });
+					return;
+				}
+			});
+
+			app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
+
 
 			Hype.log("Starting server");
 			app.listen(Hype.configuration.port, function() {
