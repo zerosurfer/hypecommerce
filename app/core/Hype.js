@@ -101,15 +101,6 @@ module.exports = function(app) {
 					config = require(pluginPath + '/plugin.js'),
 					name = config.name;
 
-				// if main path for interface is not set log and return
-				// starting to think we should't force this, maybe my plugin doesn't have an interface???
-				/*
-				if (!config.creator) {
-					self.log('No main file for plugin: ' + name);
-					return;
-				}
-				*/
-
 				self.log("Adding plugin: " + name);
 
 				var hypePlugin = new HypePlugin(); // instantiate plugin

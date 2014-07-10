@@ -7,7 +7,7 @@
  * @copyright	Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license		http://www.hypejs.com/license
  */
- 
+
 var	fs = require('fs'),
 	url = require('url'),
 	path = require('path'),
@@ -28,9 +28,9 @@ module.exports = (function() {
 	hype.loadPlugins(path.resolve('./app/core/Plugins'));
 
 	// Load third-party plugins
-	fs.readdirSync(path.resolve('./app/plugins'), function(file) {
-		hype.loadPlugins(path.resolve('./app/plugins/' + file));
-	});
+	//fs.readdirSync(path.resolve('./app/plugins'), function(file) {
+	//	hype.loadPlugins(path.resolve('./app/plugins/' + file));
+	//});
 
 	// Start Hype
 	hype.start();

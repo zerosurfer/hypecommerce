@@ -7,7 +7,7 @@ module.exports = {
     main: require('./lib/cart'),
     models: require('./lib/models'),
     routes: require('./lib/routes'),
-    scripts: './lib/install',   // @kurt - auto-assume this will always be a folder, or should we write
-                                // something like scripts: './lib/scripts/*' ? - it's assuming right now
+    scripts: './lib/install',   // @tom - from the way it looks like you are loading i would say its safe to force a folder here
+                                // it will help keep third party plugins in line and organized
     version: '0.0.0.1'
 };
