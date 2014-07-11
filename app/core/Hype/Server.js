@@ -50,7 +50,6 @@ module.exports = function(Hype) {
 			app.set('views', Hype.themePath);
 
 			// Render the theme path
-			console.log(Hype.configuration);
 			app.get('/', function (req, res) {
 				res.render('index.html');
 			});
