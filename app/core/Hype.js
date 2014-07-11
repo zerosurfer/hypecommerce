@@ -10,19 +10,24 @@
 
 // Load necessary modules/files
 var	fs = require('fs'),
-	when = require('when'),
 	path = require('path'),
 	_ = require('underscore'),
+	HypeConfig = require('./../config'),
 	inst = false,
-	Hype,
 	Modules = {},
-	HypeConfig = require('./../config');
+	Hype;
 
 module.exports = function(app) {
 
+	/**
+	 * The one, this is Hype. Set a few necessary (mostly) environment variables
+	 * and get ready to rock
+	 * 
+	 * @return
+	 */
 	Hype = function() {
 		if (!inst) {
-			// Start the instance
+			// State the instance
 			inst = this;
 
 			// Holds current environment
@@ -49,17 +54,28 @@ module.exports = function(app) {
 			// Holds routes
 			inst.routes = {};
 
+			// Is installed
 			inst.installed = false;
 		}
 
 		return inst;
 	};
 
-	// require function to call a plugin instance ?? maybe change instance ??
+	/**
+	 * Require a module
+	 *
+	 * @deprecated
+	 */
 	Hype.prototype.require = function(name) {
 		return (Modules[name] && Modules[name].is('enabled') && Modules[name].is('started')) ? Modules[name].instance : undefined;
 	};
 
+	/**
+	 * Load all plugins in a directory based on plugin.js and wrap it in a module
+	 *
+	 * @param	String	filepath
+	 * @return	Hype
+	 */
 	Hype.prototype.loadPlugins = function(filepath) {
 
 		var HypePlugin = require('./Hype/Plugin')(this),
@@ -68,48 +84,39 @@ module.exports = function(app) {
 
 		this.log('Loading plugins from ' + filepath);
 
+		// Read the directory
 		fs.readdirSync(filepath).forEach(function(file) {
 			// Skip hidden folders and files
-			// @tom - nice catch!!
 			if (file.indexOf('.') !== 0) {
-				/**
-				 * loop over plugins
-				 * read plugin config from `plugin.json`
-				 * all other files go in to a lib dir
-				 * load plugin
-				 *
-				 * Example:
-				 *
-				 * plugins
-				 * - MyPlugin
-				 *   - plugin.json
-				 *   - lib
-				 *     - MyPlugin.js
-				 *     - Helper.js
-				 *     - Models.js
-				 *     - etc
-				 * - SomeOtherPlugin
-				 *   - plugin.json
-				 *   - lib
-				 *     - SomeOtherPlugin.js
-				 *     - Helper.js
-				 *     - Models.js
-				 *     - etc
-				 */
 
 				var pluginPath = filepath + '/' + file,
-					config = require(pluginPath + '/plugin.js'),
-					name = config.name;
+					config,
+					name;
 
-				self.log("Adding plugin: " + name);
+				if(fs.existsSync(pluginPath + '/plugin.js')) {
+					var config = require(pluginPath + '/plugin.js'),
+						name = config.name,
+						hypePlugin;
 
-				var hypePlugin = new HypePlugin(); // instantiate plugin
-
-				Modules[name] = new HypeModule(name, hypePlugin, config, filepath + '/' + file);
+					self.log("Adding plugin: " + name);
+					// Instantiate the plugin
+					hypePlugin = new HypePlugin();
+					// Add the plugin to a protected module
+					Modules[name] = new HypeModule(name, hypePlugin, config, filepath + '/' + file);
+				} else {
+					self.log("Skipping plugin: " + name + " (plugin.js not found)");
+				}
 			}
 		});
+
+		return this;
 	};
 
+	/**
+	 * Run the initializer and start each module
+	 *
+	 * @return	Hype
+	 */
 	Hype.prototype.start = function() {
 		var initializer = require('./Hype/Initializer');
 
@@ -121,8 +128,16 @@ module.exports = function(app) {
 		});
 
 		initializer.init(Modules, this, app);
+
+		return this;
 	};
 
+	/**
+	 * Connect to the MongoDB server
+	 *
+	 * @todo	Use an abstraction layer to connect to any desired db
+	 * @return	Hype
+	 */
 	Hype.prototype.connect = function() {
 		// @todo, abstract into Hype/Database class that picks appropriate DatabaseAdapter
 		this.log("Establishing database connection with MongoDB");
@@ -135,7 +150,7 @@ module.exports = function(app) {
 	}
 
 	/**
-	 * Logging
+	 * Log
 	 *
 	 * @param	string	message;	Message to log
 	 * @param	string	priority;	debug|info|warn|error|log
