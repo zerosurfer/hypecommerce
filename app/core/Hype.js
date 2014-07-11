@@ -8,7 +8,6 @@
  * @license		http://www.hypejs.com/license
  */
 
-// Load necessary modules/files
 var	fs = require('fs'),
 	path = require('path'),
 	_ = require('underscore'),
