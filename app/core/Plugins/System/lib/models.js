@@ -1,4 +1,26 @@
 module.exports = {
+
+    /**
+     * Attribute
+     *
+     * @var String label
+     * @var String code
+     * @var String value
+     * @var Store store
+     */
+    Attribute: {
+        schema: {
+            label: String,
+            code: String,
+            value: String
+        },
+        deps: {
+            hasOne: {
+                store: 'Store'
+            }
+        }
+    },
+
     /**
      * Config
      *
@@ -36,6 +58,57 @@ module.exports = {
             version: String,
             createdAt: Date,
             updatedAt: Date
+        }
+    },
+
+    /**
+     * Language
+     *
+     * @var String code
+     * @var String label
+     * @var Date createdAt
+     */
+    Language: {
+        schema: {
+            code: String,
+            label: String,
+            createdAt: Date
+        }
+    },
+
+    /**
+     * Currency
+     *
+     * @var String code
+     * @var String label
+     * @var String symbol
+     * @var Date createdAt
+     */
+    Currency: {
+        schema: {
+            code: String,
+            label: String,
+            symbol: String,
+            createdAt: Date
+        }
+    },
+
+    /**
+     * Permission
+     *
+     * @var String code
+     * @var String label
+     * @var String symbol
+     * @var Date createdAt
+     */
+    Permission: {
+        schema: {
+            label: String,
+            read: Boolean,
+            write: Boolean,
+            execute: Boolean,
+            symbol: String,
+            createdAt: Date
         }
     }
 };

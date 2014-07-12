@@ -1,26 +1,5 @@
 module.exports = {
     /**
-     * Attribute
-     *
-     * @var String label
-     * @var String code
-     * @var String value
-     * @var Store store
-     */
-    Attribute: {
-        schema: {
-            label: String,
-            code: String,
-            value: String
-        },
-        deps: {
-            hasOne: {
-                store: 'Store'
-            }
-        }
-    },
-
-    /**
      * Store
      *
      * @var String name
@@ -66,6 +45,12 @@ module.exports = {
             theme: String,
             createdAt: Date,
             updatedAt: Date
+        },
+        deps: {
+            hasOne: {
+                language: 'Language',
+                currency: 'Currency'
+            }
         }
     }
 };
