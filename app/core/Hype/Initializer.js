@@ -16,6 +16,8 @@ module.exports = (function(installer, _) {
     "use strict";
 
     var initModels = function(modules, hype) {
+        var supermodels = {};
+
         _(modules).each(function(module) {
             // Have an instance of each raw model
             if (module.is('started')) {
@@ -28,17 +30,32 @@ module.exports = (function(installer, _) {
             }
         });
 
-        // Recursively load all the models
+        // Join all instances of "extend" properties to form a supermodel
         _(modules).each(function(module) {
             if (module.is('started')) {
                 if (module.models) {
-                    // Load the model schema
                     _(module.models).each(function(model, modelName) {
-                        // Instanstiate the model
-                        loadModel(modelName, model, hype);
+                        if (supermodels[modelName] !== undefined && model.schema !== undefined) {
+                            // Loop through the extend and add the attribtues
+                            // @todo make this a lot better, triple nested foreach loop
+                            _(model.schema).each(function(attribute, attributeName) {
+                                supermodels[modelName].schema[attributeName] = attribute;
+                            });
+
+                            // @kurt - Check it out, extending our models for schema
+                            // @todo - Make models extendable (hasMany, hasOne)
+                            //if (modelName === 'Order') console.log(supermodels[modelName]);
+                        } else {
+                            supermodels[modelName] = model;
+                        }
                     });
                 }
             }
+        });
+
+        // Recursively load all the models
+        _(supermodels).each(function(model, modelName) {
+            loadModel(modelName, model, hype);
         });
     };
 

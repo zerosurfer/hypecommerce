@@ -28,9 +28,9 @@ module.exports = (function() {
 	hype.loadPlugins(path.resolve('./app/core/Plugins'));
 
 	// Load third-party plugins
-	//fs.readdirSync(path.resolve('./app/plugins'), function(file) {
-	//	hype.loadPlugins(path.resolve('./app/plugins/' + file));
-	//});
+	fs.readdirSync(path.resolve('./app/plugins')).forEach(function(file) {;
+		hype.loadPlugins(path.resolve('./app/plugins/' + file));
+	});
 
 	// Start Hype
 	hype.start();
