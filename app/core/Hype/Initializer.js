@@ -35,16 +35,33 @@ module.exports = (function(installer, _) {
             if (module.is('started')) {
                 if (module.models) {
                     _(module.models).each(function(model, modelName) {
-                        if (supermodels[modelName] !== undefined && model.schema !== undefined) {
+                        if (supermodels[modelName] !== undefined) {
                             // Loop through the extend and add the attribtues
                             // @todo make this a lot better, triple nested foreach loop
-                            _(model.schema).each(function(attribute, attributeName) {
-                                supermodels[modelName].schema[attributeName] = attribute;
-                            });
+                            
+                            // Extend all schema attributes
+                            if (model.schema !== undefined) {
+                                _(model.schema).each(function(attribute, attributeName) {
+                                    supermodels[modelName].schema[attributeName] = attribute;
+                                });
+                            }
+
+                            if (model.deps !== undefined) {
+                                if (model.deps.hasOne !== undefined) {
+                                    _(model.deps.hasOne).each(function(attribute, attributeName) {
+                                        supermodels[modelName].deps.hasOne[attributeName] = attribute;
+                                    });
+                                }
+
+                                if (model.deps.hasMany !== undefined) {
+                                    _(model.deps.hasMany).each(function(attribute, attributeName) {
+                                        supermodels[modelName].deps.hasMany[attributeName] = attribute;
+                                    });
+                                }
+                            }
 
                             // @kurt - Check it out, extending our models for schema
-                            // @todo - Make models extendable (hasMany, hasOne)
-                            //if (modelName === 'Order') console.log(supermodels[modelName]);
+                            // if (modelName === 'Order') console.log(supermodels[modelName]);
                         } else {
                             supermodels[modelName] = model;
                         }
