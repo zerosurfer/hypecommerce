@@ -96,9 +96,11 @@ module.exports = {
     /**
      * Permission
      *
-     * @var String code
-     * @var String label
-     * @var String symbol
+     * @var String labek
+     * @var String read
+     * @var String write
+     * @var String execute
+     * @var String path
      * @var Date createdAt
      */
     Permission: {
@@ -107,7 +109,7 @@ module.exports = {
             read: Boolean,
             write: Boolean,
             execute: Boolean,
-            symbol: String,
+            path: String,
             createdAt: Date
         }
     }

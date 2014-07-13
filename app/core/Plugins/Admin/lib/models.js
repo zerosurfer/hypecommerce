@@ -2,9 +2,10 @@ module.exports = {
     /**
      * Admin User
      *
-     * @var Customer customer
-     * @var Store store
-     * @var Item items
+     * @var String username
+     * @var String password
+     * @var String firstname
+     * @var String lastname
      * @var Date createdAt
      * @var Date updatedAt
      */
@@ -18,14 +19,28 @@ module.exports = {
             updatedAt: Date
         },
         deps: {
+            hasOne: {
+                group: 'AdminGroup'
+            },
             hasMany: {
                 attributes: 'Attribute'
             }
         }
     },
+
+    /**
+     * Admin Group
+     *
+     * @var String label
+     * @var Permission permissions
+     * @var Date createdAt
+     * @var Date updatedAt
+     */
     AdminGroup: {
         schema: {
-            label: String
+            label: String,
+            createdAt: Date,
+            updatedAt: Date
         },
         deps: {
             hasMany: {
