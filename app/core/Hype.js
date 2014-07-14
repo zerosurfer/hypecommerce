@@ -1,20 +1,6 @@
 /**
  * Hype Commerce
  *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Hype Commerce Creative Commons License that is bundled with
- * this package in the file LICENSE.txt. It is also available through the world-wide-web at this
- * URL {@link http://www.hypecommerce.com/license}. If you did not receive a copy of the license
- * and are unable to obtain it through the world-wide-web, please send an email to
- * {@link mailto:license@hypecommerce.com} so we can send you a copy immediately.
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade Hype Commerce to newer versions in the
- * future. If you wish to customize Hype Commerce for your needs please refer to
- * {@link http://www.hypecommerce.com/} for more information.
- *
  * @package		Hype
  * @version		0.0.1.0
  * @author		Hype Commerce Team <team@hypejs.com>
@@ -22,34 +8,44 @@
  * @license		http://www.hypejs.com/license
  */
 
-// Load necessary modules/files
 var	fs = require('fs'),
-	when = require('when'),
 	path = require('path'),
 	_ = require('underscore'),
+	HypeConfig = require('./../config'),
 	inst = false,
-	Hype,
 	Modules = {},
-	HypeConfig = require('./config');
+	Hype;
 
 module.exports = function(app) {
 
+	/**
+	 * The one, this is Hype. Set a few necessary (mostly) environment variables
+	 * and get ready to rock
+	 * 
+	 * @return
+	 */
 	Hype = function() {
 		if (!inst) {
-			// Start the instance
+			// State the instance
 			inst = this;
 
 			// Holds current environment
 			inst.env = HypeConfig.environment;
 
-			// Holds the default theme
-			inst.theme = null;
-
-			// Holds the default theme
-			inst.themePath = null;
-
 			// Holds the configuration
 			inst.configuration = HypeConfig.server[this.env];
+
+			// Holds the default theme
+			inst.theme = inst.configuration.theme;
+
+			// Holds the default theme
+			inst.themePath = path.resolve('app/themes/' + inst.theme);
+
+			// Log enabled
+			inst.logEnabled = inst.configuration.log;
+
+			// Debug enabled
+			inst.debugEnabled = inst.configuration.debug;
 
 			// database adapter
 			inst.dba = require('./DatabaseAdapters/Mongo');
@@ -57,65 +53,69 @@ module.exports = function(app) {
 			// Holds routes
 			inst.routes = {};
 
+			// Is installed
 			inst.installed = false;
 		}
 
 		return inst;
 	};
 
-	// require function to call a plugin instance ?? maybe change instance ??
+	/**
+	 * Require a module
+	 *
+	 * @deprecated
+	 */
 	Hype.prototype.require = function(name) {
 		return (Modules[name] && Modules[name].is('enabled') && Modules[name].is('started')) ? Modules[name].instance : undefined;
 	};
 
+	/**
+	 * Load all plugins in a directory based on plugin.js and wrap it in a module
+	 *
+	 * @param	String	filepath
+	 * @return	Hype
+	 */
 	Hype.prototype.loadPlugins = function(filepath) {
 
-		var HypePlugin = require('./Hype/Plugin')(Hype),
-			HypeModule = require('./Hype/Module')(Hype);
+		var HypePlugin = require('./Hype/Plugin')(this),
+			HypeModule = require('./Hype/Module')(this),
+			self = this;
 
+		this.log('Loading plugins from ' + filepath);
+
+		// Read the directory
 		fs.readdirSync(filepath).forEach(function(file) {
+			// Skip hidden folders and files
+			if (file.indexOf('.') !== 0) {
 
-			/**
-			 * loop over plugins
-			 * read plugin config from `plugin.json`
-			 * all other files go in to a lib dir
-			 * load plugin
-			 *
-			 * Example:
-			 *
-			 * plugins
-			 * - MyPlugin
-			 *   - plugin.json
-			 *   - lib
-			 *     - MyPlugin.js
-			 *     - Helper.js
-			 *     - Models.js
-			 *     - etc
-			 * - SomeOtherPlugin
-			 *   - plugin.json
-			 *   - lib
-			 *     - SomeOtherPlugin.js
-			 *     - Helper.js
-			 *     - Models.js
-			 *     - etc
-			 */
+				var pluginPath = filepath + '/' + file,
+					config,
+					name;
 
-			var pluginPath = filepath + '/' + file,
-				config = require(pluginPath + '/plugin.js'),
-				name = config.name;
+				if(fs.existsSync(pluginPath + '/plugin.js')) {
+					var config = require(pluginPath + '/plugin.js'),
+						name = config.name,
+						hypePlugin;
 
-			// if main path for interface is not set log and return
-			if (!config.creator) {
-				Hype.log('No main file for plugin: ' + name);
-				return;
+					self.log("Adding plugin: " + name);
+					// Instantiate the plugin
+					hypePlugin = new HypePlugin();
+					// Add the plugin to a protected module
+					Modules[name] = new HypeModule(name, hypePlugin, config, filepath + '/' + file);
+				} else {
+					self.log("Skipping plugin: " + name + " (plugin.js not found)");
+				}
 			}
-
-			var hypePlugin = new HypePlugin(); // instantiate plugin
-
-			Modules[name] = new HypeModule(hypePlugin, config);
 		});
+
+		return this;
 	};
 
+	/**
+	 * Run the initializer and start each module
+	 *
+	 * @return	Hype
+	 */
 	Hype.prototype.start = function() {
 		var initializer = require('./Hype/Initializer');
 
@@ -127,148 +127,76 @@ module.exports = function(app) {
 		});
 
 		initializer.init(Modules, this, app);
-	};
-
-	/**
-	 * Logging
-	 *
-	 * @param	string	message;	Message to log
-	 * @param	string	priority;	DEBUG|INFO|WARN|ERROR
-	 * @return	Hype
-	 */
-	Hype.prototype.log = function(message, priority) {
-		var date, timestamp;
-
-		if (priority === undefined) {
-			priority = 'info';
-		}
-
-		// Add a timestamp
-		date = new Date();
-		timestamp = '[' +  date.toUTCString() + '] ';
-		message = timestamp + message;
-
-		console[priority](message);
 
 		return this;
 	};
 
 	/**
-	 * Installs a module's install scripts up until the specified version number in index.js
+	 * Connect to the MongoDB server
 	 *
-	 * @todo	This function is bad ... just horribly hacked together, we'll eventually need
-	 *			to take a look at this and move it's functionality to seperate functions that
-	 * 			can be easily interpretted
+	 * @todo	Use an abstraction layer to connect to any desired db
+	 * @return	Hype
 	 */
-
-	var installScript = function() {
-		var self = this,
-			loaded = when.defer();
-
-		self.log("Checking for new installation scripts");
-
-		// Run the installer on a script
-		var installVersion = function(module, script, version) {
-			var Install = require(script);
-			var install = new Install(self);
-			// Run the script
-			if (typeof(install.up) !== undefined) {
-				install.up();
-
-				// Mark the db as updated
-
-				// Attempt to find something
-				var InstallSetting = self.models.setting;
-				InstallSetting.Db.findOneAndUpdate(
-					{ 'path' : "module/" + module + "/install" },
-					{ 'value': version.replace('.js', '') },
-					{ 'upsert': true },
-					function(err, doc) {
-						// executed query
-					}
-				);
-
-			}
-
-		}
-		// Run the uninstaller on a script
-		// @todo uninstall something when the version is lower
-		var uninstallVersion = function(script) {
-			var Install = require(script);
-			var install = new Install();
-
-			if (typeof(install.down) !== undefined) {
-				install.down();
-			}
-		}
-
-		// Need to read the loaded version numbers
-		var instanstiatedVersions = {};
-		var moduleCount = 0;
-		var dbVersions = {};
-		var modules = {};
-
-		// Find all db versions
-		var Setting = this.Model.setting;
-		Setting.Db.find({ 'path': /install/ }, function(err, settings) {
-			for (var setting in settings) {
-				dbVersions[settings[setting].path] = settings[setting];
-			}
-			// Find all loaded version
-			for (var namespace in self.Module) {
-				for (var module in self.Module[namespace]) {
-					var modulePath = "module/" + namespace + "/" + module + "/install";
-					instanstiatedVersions[modulePath] = self.Module[namespace][module];
-					modules[modulePath] = namespace + "/" + module;
-					moduleCount++;
-				}
-			}
-
-			var j = 0;
-			// Compare the differences
-			for (var instPath in instanstiatedVersions) {
-				var instVersion = instanstiatedVersions[instPath].version.replace(/\./g, "");
-				var needToInstall = false;
-
-				// Check the db path
-				var dbVersion = (dbVersions[instPath] !== undefined) ? dbVersions[instPath].value.replace(/\./g, "") : 0;
-				if (dbVersions[instPath] === undefined) {
-					self.log("Found new module: " + instanstiatedVersions[instPath].name + " (Version: " + instanstiatedVersions[instPath].version + ")");
-					needToInstall = true;
-				} else {
-					var dbVersion = dbVersions[instPath].value.replace(/\./g, "");
-					if (dbVersion < instVersion) {
-						needToInstall = true;
-					}
-				}
-
-				if (needToInstall) {
-					// Read the versions we need
-					var dir = path.resolve('app/plugins') + "/" + modules[instPath] + "/install";
-					var items = fs.readdirSync(dir);
-					for (var item in items) {
-						var scriptVersion = items[item].replace(/\./g, "").replace('js', '');
-						if (scriptVersion > dbVersion && scriptVersion <= instVersion) {
-							//module, script, version, setting
-							installVersion(modules[instPath], dir + "/" + items[item], items[item]);
-						}
-					}
-				}
-
-				if (j + 1 == moduleCount) {
-					loaded.resolve();
-				}
-
-				j++;
-			}
-			//loaded.resolve();
-
-			self.log("Done checking for new installation scripts");
-
-		});
-
-		return loaded.promise;
+	Hype.prototype.connect = function() {
+		// @todo, abstract into Hype/Database class that picks appropriate DatabaseAdapter
+		this.log("Establishing database connection with MongoDB");
+		this.dba.connect(
+			this.configuration.db['mongo'].host + ':' + this.configuration.db['mongo'].port,
+			this.configuration.db['mongo'].username,
+			this.configuration.db['mongo'].password,
+			this.configuration.db['mongo'].dbname
+		);
 	}
+
+	/**
+	 * Log
+	 *
+	 * @param	string	message;	Message to log
+	 * @param	string	priority;	debug|info|warn|error|log
+	 * @return	Hype
+	 */
+	Hype.prototype.log = function(message, priority) {
+		var date, timestamp;
+
+		if (this.logEnabled) {
+			if (priority === undefined) {
+				priority = 'info';
+			}
+
+			// Add a timestamp
+			date = new Date();
+			timestamp = '[' +  date.toUTCString() + '] ';
+			message = timestamp + message;
+
+			console[priority](message);
+		}
+		return this;
+	};
+
+	/**
+	 * More intrusive logging
+	 *
+	 * @param	string	message;	Message to log
+	 * @param	string	priority;	debug|info|warn|error|log
+	 * @return	Hype
+	 */
+	Hype.prototype.debug = function(message, priority) {
+		var date, timestamp;
+
+		if (this.debugEnabled) {
+			if (priority === undefined) {
+				priority = 'info';
+			}
+
+			// Add a timestamp
+			date = new Date();
+			timestamp = '[' +  date.toUTCString() + '] ';
+			message = timestamp + message;
+
+			console[priority](message);
+		}
+		return this;
+	};
 
 	return new Hype();
 };

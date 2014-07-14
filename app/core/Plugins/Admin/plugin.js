@@ -1,12 +1,12 @@
 module.exports = {
-    name: 'Category',
-    enabled: false,
+    name: 'Admin',
+    enabled: true,
     depends: {
         'core': '>=1.0.0.0'
     },
-    creator: require('./lib/example'),
+    main: require('./lib/admin'),
     models: require('./lib/models'),
     routes: require('./lib/routes'),
-    //scripts: require('./lib/scripts'),
+    //scripts: './lib/install',
     version: '0.0.0.1'
 };

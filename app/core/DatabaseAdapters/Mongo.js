@@ -1,31 +1,14 @@
 /**
  * Hype Commerce
  *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Hype Commerce Creative Commons License that is bundled with
- * this package in the file LICENSE.txt. It is also available through the world-wide-web at this
- * URL {@link http://www.hypecommerce.com/license}. If you did not receive a copy of the license
- * and are unable to obtain it through the world-wide-web, please send an email to
- * {@link mailto:license@hypecommerce.com} so we can send you a copy immediately.
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade Hype Commerce to newer versions in the
- * future. If you wish to customize Hype Commerce for your needs please refer to
- * {@link http://www.hypecommerce.com/} for more information.
- *
  * @package		Hype
  * @version		0.0.1.0
- * @author		Hype Commerce Team <team@hypecommerce.com>
- * @copyright	Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypecommerce.com/)
- * @license		http://www.hypecommerce.com/license
+ * @author		Hype Commerce Team <team@hypejs.com>
+ * @copyright	Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
+ * @license		http://www.hypejs.com/license
  */
 
-// Load necessary modules/files
 var	mongoose = require('mongoose'),
-	//Log = require('./../log'),
-	when = require('when'),
 	inst = false,
 	ModelCollection = {},
 	SchemaCollection = {},
@@ -42,14 +25,14 @@ MongoDba = function() {
 		// Holds the db connection
 		inst.db = null;
 
-		// Holds models
-
-
 		// Holds singletons
 		inst.singletonCollection = [];
 
 		// Holds Schemas
 		inst.schemaCollection = [];
+
+		// Holds models being processed
+		inst._processing = [];
 	}
 	return inst;
 }
@@ -86,6 +69,20 @@ MongoDba.prototype.getModel = function(model) {
 MongoDba.prototype.getSchema = function(model) {
 	return SchemaCollection[model];
 };
+
+MongoDba.prototype.startProcessing = function(model) {
+	this._processing[model] = true;
+	return this;
+}
+
+MongoDba.prototype.stopProcessing = function(model) {
+	this._processing[model] = undefined;
+	return this;
+}
+
+MongoDba.prototype.isProcessing = function(model) {
+	return (this._processing[model] === undefined) ? false : true;
+}
 
 module.exports = new MongoDba();
 

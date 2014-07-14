@@ -27,7 +27,8 @@
     "ecommerce"
   ],
   "scripts": {
-    "start": "node app/core/bootstrap.js"
+    "start": "node app/bootstrap.js",
+    "hyperion": "./hyperion.js"
   },
   "dependencies": {
     "express": "3.12.1",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "grunt": "~0.4.1",
+    "commander": "*",
     "grunt-contrib-jshint": "~0.3.0",
     "grunt-contrib-concat": "~0.1.3",
     "grunt-contrib-uglify": "~0.2.0",
