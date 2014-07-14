@@ -6,7 +6,7 @@ module.exports = {
     },
     main: require('./lib/customer'),
     models: require('./lib/models'),
-    routes: require('./lib/routes'),
+    //routes: require('./lib/routes'),
     scripts: './lib/install',
     version: '0.0.0.1'
 };

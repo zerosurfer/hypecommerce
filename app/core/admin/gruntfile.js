@@ -50,6 +50,4 @@ module.exports = function(grunt) {
     grunt.registerTask('default', ['sass', 'jshint:beforeConcat', 'jasmine', 'concat', 'jshint:afterConcat']);
     grunt.registerTask('test', ['jasmine']);
     grunt.registerTask('build', ['sass', 'concat']);
-
-
 };

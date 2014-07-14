@@ -21,7 +21,7 @@ module.exports = function(app) {
 	/**
 	 * The one, this is Hype. Set a few necessary (mostly) environment variables
 	 * and get ready to rock
-	 * 
+	 *
 	 * @return
 	 */
 	Hype = function() {
@@ -93,9 +93,14 @@ module.exports = function(app) {
 					name;
 
 				if(fs.existsSync(pluginPath + '/plugin.js')) {
-					var config = require(pluginPath + '/plugin.js'),
-						name = config.name,
-						hypePlugin;
+					var config = require(pluginPath + '/plugin.js');
+
+					if (typeof config === 'function') {
+						config = config(self);
+					}
+
+					var name = config.name,
+					hypePlugin;
 
 					self.log("Adding plugin: " + name);
 					// Instantiate the plugin

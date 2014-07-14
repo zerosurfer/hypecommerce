@@ -7,14 +7,19 @@
  * @copyright	Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license		http://www.hypejs.com/license
  */
- 
+
 var Server,
 	_ = require('underscore');
 
 module.exports = function(Hype) {
-	
+
 	Server = function() {
-		this.start = function(app, express, Hype) {
+		this.start = function(app, express, passport, Hype) {
+			var MongoStore = require('connect-mongo')(express);
+
+			// set up passport auth
+			require('./PassportAuth')(Hype, app, passport);
+
 			var self = this,
 				Admin = require('./Admin')(Hype),
 				r,
@@ -48,6 +53,16 @@ module.exports = function(Hype) {
 			app.use(express.logger("dev"));
 			app.engine('html', require('ejs').renderFile);
 			app.set('views', Hype.themePath);
+			app.use(express.json());       // to support JSON-encoded bodies
+			app.use(express.urlencoded());
+			app.use(express.session({
+				store: new MongoStore({
+					db: Hype.dba
+				}),
+				secret: Hype.configuration.secret
+			}));
+			app.use(passport.initialize());
+			app.use(passport.session());
 
 			// Render the theme path
 			app.get('/', function (req, res) {
@@ -90,6 +105,6 @@ module.exports = function(Hype) {
 			});
 		}
 	}
-	
+
 	return new Server();
 }

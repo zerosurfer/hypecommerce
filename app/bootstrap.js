@@ -13,6 +13,7 @@ var	fs = require('fs'),
 	path = require('path'),
 	express = require('express'),
 	app = express(),
+	passport = require('passport')
 	server = require('./core/Hype/Server')(app),
 	hype = require('./core/Hype')(app);
 
@@ -36,7 +37,7 @@ module.exports = (function() {
 	hype.start();
 
 	// Start the server
-	server.start(app, express, hype);
+	server.start(app, express, passport, hype);
 
 	hype.log('Successfully launched your Hype Commerce store');
 })();

@@ -12,7 +12,8 @@ var	mongoose = require('mongoose'),
 	inst = false,
 	ModelCollection = {},
 	SchemaCollection = {},
-	MongoDba;
+	MongoDba,
+	_ = require('underscore');
 
 MongoDba = function() {
 	if (!inst) {
@@ -47,13 +48,32 @@ MongoDba.prototype.connect = function(host, username, password, dbname) {
 
 };
 
-MongoDba.prototype.addModel = function (model, schema) {
+MongoDba.prototype.addModel = function (modelName, model) {
 	//Log.log("Adding " + model + " to Mongo");
 
-	var mSchema = new mongoose.Schema(schema);
-	var mModel = mongoose.model(model, mSchema);
-	SchemaCollection[model] = mSchema;
-	ModelCollection[model] = mModel;
+	var mSchema = new mongoose.Schema(model.schema);
+
+	// add extra methods
+	if (model.methods) {
+		mSchema.methods = model.methods;
+	}
+
+	// add virtual properties
+	if (model.virtuals) {
+		_(model.virtuals).each(function(virtual, key) {
+			if (virtual.get) {
+				mSchema.virtual(key).get(virtual.get);
+			}
+
+			if (virtual.set) {
+				mSchema.virtual(key).set(virtual.set);
+			}
+		});
+	}
+
+	var mModel = mongoose.model(modelName, mSchema);
+	SchemaCollection[modelName] = mSchema;
+	ModelCollection[modelName] = mModel;
 
 	return mModel;
 }

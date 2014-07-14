@@ -38,7 +38,7 @@ module.exports = (function(installer, _) {
                         if (supermodels[modelName] !== undefined) {
                             // Loop through the extend and add the attribtues
                             // @todo make this a lot better, triple nested foreach loop
-                            
+
                             // Extend all schema attributes
                             if (model.schema !== undefined) {
                                 _(model.schema).each(function(attribute, attributeName) {
@@ -85,21 +85,21 @@ module.exports = (function(installer, _) {
     };
 
     var initRoutes = function(modules, hype, app) {
-        // _(modules).each(function(module) {
-        //     if (module.is('started')) {
-        //         if (module.routes) {
-        //             var routes = module.routes(hype);
-        //             // console.log(routes);
-        //             _(routes).each(function(route, routeName) {
-        //                 // log the route addition
-        //                 hype.log('Adding ' + route.method.toUpperCase() + ' route: ' + routeName)
+        _(modules).each(function(module) {
+            if (module.is('started')) {
+                if (module.routes) {
+                    var routes = module.routes(hype);
+                    // console.log(routes);
+                    _(routes).each(function(route, routeName) {
+                        // log the route addition
+                        hype.log('Adding ' + route.method.toUpperCase() + ' route: ' + routeName)
 
-        //                 // using array notation to call the appropriate method
-        //                 app[route.method.toLowerCase()](routeName, route.callback);
-        //             });
-        //         }
-        //     }
-        // });
+                        // using array notation to call the appropriate method
+                        app[route.method.toLowerCase()](routeName, route.callback);
+                    });
+                }
+            }
+        });
     };
 
     // Recursively load the models into mongoose
@@ -139,12 +139,9 @@ module.exports = (function(installer, _) {
                         model.schema[localName] = [hype.dba.getModel(dep)];
                     });
                 }
-
-                hype.dba.addModel(name, model.schema);
-
-            } else {
-                hype.dba.addModel(name, model.schema);
             }
+
+            hype.dba.addModel(name, model);
 
             hype.dba.stopProcessing(name);
         }
