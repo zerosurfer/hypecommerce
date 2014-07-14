@@ -42,6 +42,9 @@ module.exports = {
                 customer: 'Customer',
                 shippingAddress: 'Address',
                 billingAddress: 'Address'
+            },
+            hasMany: {
+                items: 'Item'
             }
         }
     },
