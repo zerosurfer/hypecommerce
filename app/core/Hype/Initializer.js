@@ -90,12 +90,15 @@ module.exports = (function(installer, _) {
                 if (module.routes) {
                     var routes = module.routes(hype);
                     // console.log(routes);
-                    _(routes).each(function(route, routeName) {
-                        // log the route addition
-                        hype.log('Adding ' + route.method.toUpperCase() + ' route: ' + routeName)
+                    _(routes).each(function(methods, route) {
 
-                        // using array notation to call the appropriate method
-                        app[route.method.toLowerCase()](routeName, route.callback);
+                        _(methods).each(function(method, methodType) {
+                            // log the route addition
+                            hype.log('Adding ' + methodType.toUpperCase() + ' route: ' + route);
+
+                            // using array notation to call the appropriate method
+                            app[methodType.toLowerCase()](route, method);
+                        });
                     });
                 }
             }

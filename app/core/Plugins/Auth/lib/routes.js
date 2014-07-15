@@ -2,9 +2,8 @@ module.exports = function(Hype) {
     var auth = Hype.require('Auth');
 
     return {
-        '/auth/login': {
-            method: 'post',
-            callback: function(req, res, next) {
+        '/admin/auth/login': {
+            post: function(req, res, next) {
               passport.authenticate('local', function(err, user, info) {
                 if (err) { return next(err); }
                 if (!user) { return res.redirect('/login'); }
@@ -13,25 +12,43 @@ module.exports = function(Hype) {
                   return res.redirect('/users/' + user.username);
                 });
               })(req, res, next);
+            },
+            get: function(req, res) {
+                res.redirect('/admin');
             }
         },
-        '/auth/logout': {
-            method: 'get',
-            callback: function(res, req) {
+        '/admin/auth/logout': {
+            get: function(req, res) {
                 auth.logout();
-                res.redirect('/dashboard');
+                res.redirect('/admin/login');
             }
         },
-        '/auth/isLoggedIn': {
-            method: 'get',
-            callback: function(res, req) {
-                auth.isLoggedIn();
+        '/admin/auth/isLoggedIn': {
+            get: function(req, res) {
+                //return (req.user) ? res.json()
             }
         },
-        '/auth/register': {
-            method: 'get',
-            callback: function(res, req) {
-                auth.register();
+        '/admin/auth/register': {
+           post: function(req, res) {
+                var data = {
+                    email: req.body.email,
+                    username: req.body.username,
+                    password: req.body.password
+                };
+
+                auth.register(data).done(function(user) {
+                    req.logIn(user, function(err) {
+
+                        if (err) { return res.json(400, err); }
+
+                        return res.json(200, user);
+                    });
+                });
+            }
+        },
+        'admin/auth/update': {
+            put: function(res, req) {
+
             }
         }
     }
