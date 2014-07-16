@@ -29,24 +29,6 @@ module.exports = function(Hype) {
 
 			Hype.log('Preparing the server');
 
-			var readAndSetRoutes = function() {
-
-				Hype.log("Setting initial routes");
-
-				_(Hype.routes).each(function(route, routeName) {
-
-					// routeName is the object key, route is the object value
-
-					// log the route addition
-					Hype.log('Adding ' + route.method[0].toUppercase + route.method.slice(1) + ' route: ' + routeName)
-
-					// using array notation to call the appropriate method
-					app[route.method](routeName, route.callback);
-				});
-
-				Hype.log("Done setting routes");
-			};
-
 			app.use(express.cookieParser());
 			app.settings.env = Hype.env || 'development';
 			app.use(express.favicon());
@@ -75,9 +57,6 @@ module.exports = function(Hype) {
 			app.get('/' + Hype.configuration.admin + '/login', Admin.login);
 			app.post('/' + Hype.configuration.admin + '/login', Admin.loginPost);
 			app.use(express.static(__dirname + '/admin/static'));
-
-			// This requires the Hype object which we don't have yet
-			readAndSetRoutes();
 
 			// Setup a custom 404 page fallback
 			app.use(function(req, res, next){

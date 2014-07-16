@@ -50,9 +50,6 @@ module.exports = function(app) {
 			// database adapter
 			inst.dba = require('./DatabaseAdapters/Mongo');
 
-			// Holds routes
-			inst.routes = {};
-
 			// Is installed
 			inst.installed = false;
 		}
@@ -63,7 +60,8 @@ module.exports = function(app) {
 	/**
 	 * Require a module
 	 *
-	 * @deprecated
+	 * @param	String	name
+	 * @return	Boolean|undefined
 	 */
 	Hype.prototype.require = function(name) {
 		return (Modules[name] && Modules[name].is('enabled') && Modules[name].is('started')) ? Modules[name].instance : undefined;
