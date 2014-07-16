@@ -90,15 +90,30 @@ module.exports = function(app) {
 					config,
 					name;
 
+				// Configure the plugin
 				if(fs.existsSync(pluginPath + '/plugin.js')) {
-					var config = require(pluginPath + '/plugin.js');
+					var config = require(pluginPath + '/plugin.js'),
+						name = config.name,
+						hypePlugin,
+						admin,
+						adminName;
 
 					if (typeof config === 'function') {
 						config = config(self);
 					}
 
-					var name = config.name,
-						hypePlugin;
+					// Configure the admin
+					if(fs.existsSync(pluginPath + '/admin.js')) {
+						admin = require(pluginPath + '/admin.js'),
+						adminName = admin.name;
+
+						if (typeof admin === 'function') {
+							admin = admin(self);
+						}
+
+						// Add the admin to config
+						config.admin = admin;
+					}
 
 					self.log("Adding plugin: " + name);
 					// Instantiate the plugin
