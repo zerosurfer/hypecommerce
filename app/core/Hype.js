@@ -98,7 +98,7 @@ module.exports = function(app) {
 					}
 
 					var name = config.name,
-					hypePlugin;
+						hypePlugin;
 
 					self.log("Adding plugin: " + name);
 					// Instantiate the plugin

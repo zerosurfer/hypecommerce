@@ -87,8 +87,24 @@ module.exports = (function(installer, _) {
     var initRoutes = function(modules, hype, app) {
         _(modules).each(function(module) {
             if (module.is('started')) {
+                // Add the regular routes
                 if (module.routes) {
                     var routes = module.routes(hype);
+                    // console.log(routes);
+                    _(routes).each(function(methods, route) {
+
+                        _(methods).each(function(method, methodType) {
+                            // log the route addition
+                            hype.log('Adding ' + methodType.toUpperCase() + ' route: ' + route);
+
+                            // using array notation to call the appropriate method
+                            app[methodType.toLowerCase()](route, method);
+                        });
+                    });
+                }
+                // Add the admin routes
+                if (module.admin && module.admin.routes) {
+                    var routes = module.admin.routes(hype);
                     // console.log(routes);
                     _(routes).each(function(methods, route) {
 

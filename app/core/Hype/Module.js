@@ -28,6 +28,7 @@ module.exports = function(Hype) {
         this.version = config.version;
         this.filepath = filepath;
         this.plugin = plugin;
+        this.admin = (config.admin) ? config.admin : undefined;
 
         return this;
     };
