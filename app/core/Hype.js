@@ -35,6 +35,9 @@ module.exports = function(app) {
 			// Holds the configuration
 			inst.configuration = HypeConfig.server[this.env];
 
+			// Holds the encryption secret
+			inst.secret = HypeConfig.secret;
+
 			// Holds the default theme
 			inst.theme = inst.configuration.theme;
 

@@ -41,8 +41,9 @@ module.exports = function(Hype) {
 				store: new MongoStore({
 					db: Hype.dba
 				}),
-				secret: Hype.configuration.secret
+				secret: Hype.secret
 			}));
+			console.log(Hype.secret);
 			app.use(passport.initialize());
 			app.use(passport.session());
 
