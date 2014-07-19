@@ -6,7 +6,8 @@ module.exports = {
      */
     Order: {
         schema: {
-            subscription: Boolean
+            subscription: Boolean,
+            newSomething: Number,
         },
         deps: {
             hasOne: {

@@ -9,10 +9,9 @@
  */
 
 var _ = require('underscore'),
-    Models = {},
-    installer = require('./Installer');
+    Models = {};
 
-module.exports = (function(installer, _) {
+module.exports = (function(_) {
     "use strict";
 
     var initModels = function(modules, hype) {
@@ -61,7 +60,7 @@ module.exports = (function(installer, _) {
                             }
 
                             // @kurt - Check it out, extending our models for schema
-                            // if (modelName === 'Order') console.log(supermodels[modelName]);
+                            //if (modelName === 'Order') console.log(supermodels[modelName]);
                         } else {
                             supermodels[modelName] = model;
                         }
@@ -173,4 +172,4 @@ module.exports = (function(installer, _) {
             initRoutes(modules, hype, app);
         }
     };
-})(installer, _);
+})(_);

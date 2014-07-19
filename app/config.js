@@ -21,7 +21,7 @@ module.exports = {
 			port: 4973, // "HYPE" on a phone keypad =)
 			log: true,
 			debug: true,
-			admin: "supersecretarea", // url for the admin
+			admin: "admin.{url}", // url for the admin
 			nodes: 2, // for clustering
 			db: {
 				type: "mongo",
@@ -34,6 +34,7 @@ module.exports = {
 				}
 			},
 			https: {
+				admin: 'admin.{url}',
 				port: 4443
 			},
 			session: {

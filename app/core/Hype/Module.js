@@ -150,7 +150,6 @@ module.exports = function(Hype) {
             }
         }
 
-
         // Check for new installations
         if (this.scripts) {
             // Get the latest version
