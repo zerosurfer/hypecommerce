@@ -24,7 +24,7 @@ var HypeAdmin,
  		},
 
  		this.index = function(req, res) {
- 			res.render(path.resolve('app/core/admin/dashboard.html'));
+ 			res.render(path.resolve('app/admin/index.html'));
  		},
 
  		this.login = function(req, res) {

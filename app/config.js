@@ -21,7 +21,7 @@ module.exports = {
 			port: 4973, // "HYPE" on a phone keypad =)
 			log: true,
 			debug: true,
-			admin: "admin.{url}", // url for the admin
+			admin: "/admin", // url for the admin
 			nodes: 2, // for clustering
 			db: {
 				type: "mongo",

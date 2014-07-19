@@ -54,9 +54,11 @@ module.exports = function(Hype) {
 
 			// Add the admin routes
 			// These should be required from ./admin.js
-			app.get('/' + Hype.configuration.admin, Admin.index);
-			app.get('/' + Hype.configuration.admin + '/login', Admin.login);
-			app.post('/' + Hype.configuration.admin + '/login', Admin.loginPost);
+			console.log(Hype.configuration.admin);
+
+			app.get(Hype.configuration.admin, Admin.index);
+			app.get(Hype.configuration.admin + '/login', Admin.login);
+			app.post(Hype.configuration.admin + '/login', Admin.loginPost);
 			app.use(express.static(__dirname + '/admin/static'));
 
 			// Setup a custom 404 page fallback
