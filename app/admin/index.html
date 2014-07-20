@@ -17,16 +17,24 @@
     <link href="admin/static/dist/css/sb-admin.css" rel="stylesheet">
 </head>
 <body>
-    <section id="admin">
-        <header id="header">
-        </header>
-        <aside id="sidebar">
-        </aside>
-        <section id="dashboard">
+    <div id="wrapper">
+        <section id="admin-app">
+        
+            <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0">
+                <header id="hype-admin-header">
+                </header>
+                <aside id="hype-admin-sidebar">
+                </aside>
+            </nav>
+
+            <section id="hype-admin-dashboard">
+            </section>
+
+            <footer id="hype-admin-footer">
+            </footer>
+
         </section>
-        <footer id="footer">
-        </footer>
-    </section>
+    </div>
     <script data-main="admin/static/main" src="admin/static/components/requirejs/require.js"></script>
     <script src="admin/static/components/jquery/dist/jquery.min.js"></script>
     <script src="admin/static/components/bootstrap/dist/js/bootstrap.min.js"></script>

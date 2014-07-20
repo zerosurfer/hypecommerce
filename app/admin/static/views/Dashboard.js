@@ -7,7 +7,7 @@ define([
 	'use strict';
 
 	return Marionette.CompositeView.extend({
-		template: templates.todosCompositeView,
+		template: templates.dashboardView,
 
 		itemView: WidgetView,
 
@@ -22,11 +22,11 @@ define([
 		// },
 
 		initialize: function () {
-			this.listenTo(this.collection, 'all', this.updateToggleCheckbox, this);
+			//this.listenTo(this.collection, 'all', this.updateToggleCheckbox, this);
 		},
 
 		onRender: function () {
-			this.updateToggleCheckbox();
+			//this.updateToggleCheckbox();
 		},
 
 		updateToggleCheckbox: function () {

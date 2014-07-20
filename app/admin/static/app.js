@@ -18,18 +18,21 @@ define([
 	};
 
 	var header = new Header();
+	var sidebar = new Sidebar();
 	var main = new Dashboard(viewOptions);
 	var footer = new Footer();
 
 	app.addRegions({
-		header: '#header',
-		main: '#main',
-		footer: '#footer'
+		header: '#hype-admin-header',
+		main: '#hype-admin-dashboard',
+		sidebar: '#hype-admin-sidebar',
+		footer: '#hype-admin-footer'
 	});
 
 	app.addInitializer(function () {
 		app.header.show(header);
-		//app.main.show(main);
+		app.sidebar.show(sidebar);
+		app.main.show(main);
 		//app.footer.show(footer);
 
 		//todoList.fetch();
