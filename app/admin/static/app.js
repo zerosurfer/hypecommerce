@@ -27,13 +27,13 @@ define([
 		footer: '#footer'
 	});
 
-	// app.addInitializer(function () {
-	// 	app.header.show(header);
-	// 	app.main.show(main);
-	// 	app.footer.show(footer);
+	app.addInitializer(function () {
+		app.header.show(header);
+		//app.main.show(main);
+		//app.footer.show(footer);
 
-	// 	todoList.fetch();
-	// });
+		//todoList.fetch();
+	});
 
 	// app.listenTo(todoList, 'all', function () {
 	// 	app.main.$el.toggle(todoList.length > 0);

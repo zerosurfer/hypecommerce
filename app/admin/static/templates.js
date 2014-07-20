@@ -6,7 +6,7 @@ define(function (require) {
 		// widgetView: require('tpl!templates/widgetView.tmpl'),
 		// dashboardView: require('tpl!templates/dashboardView.tmpl'),
 		// footer: require('tpl!templates/footer.tmpl'),
-		// header: require('tpl!templates/header.tmpl'),
+		header: require('tpl!templates/header.tmpl'),
 		// sidebar: require('tpl!templates/sidebar.tmpl')
 	};
 });
