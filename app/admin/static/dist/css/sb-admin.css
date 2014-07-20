@@ -112,11 +112,15 @@ body {
 }
 
 .fa.arrow:before {
-    content: "\f104";
+    content: "\f105";
 }
 
 .active > a > .fa.arrow:before {
     content: "\f107";
+}
+
+.nav-second-level li > a .label {
+    float:right;
 }
 
 .nav-second-level li,

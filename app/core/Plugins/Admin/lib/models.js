@@ -83,6 +83,7 @@ module.exports = {
      * @var String title
      * @var String message
      * @var Number priority
+     * @var String code
      * @var Boolean read
      * @var Boolean archived
      * @var Date readAt
@@ -94,6 +95,7 @@ module.exports = {
             title: String,
             message: String,
             priority: Number, // 0 = low, 1 = medium, 2 = high, default: 1
+            code: String, // will be a font-awesome class for icons (if desired)
             read: Boolean,
             archived: Boolean,
             readAt: Date,
