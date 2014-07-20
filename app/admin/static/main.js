@@ -30,7 +30,7 @@ require([
 	'backbone',
 	'routers/index',
 	'controllers/index',
-	'views/app'
+	//'views/app'
 ], function (app, Backbone, Router, Controller) {
 	'use strict';
 
@@ -39,6 +39,4 @@ require([
 	new Router({ controller: Controller });
 
 	Backbone.history.start();
-
-	new AppView;
 });

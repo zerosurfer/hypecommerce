@@ -2,29 +2,30 @@
 
 define([
 	'marionette',
-	//'collections/TodoList',
-	//'views/Header',
-	//'views/TodoListCompositeView',
-	//'views/Footer'
-], function (Marionette) {
+	'collections/Widgets',
+	'views/Header',
+	'views/Sidebar',
+	'views/Dashboard',
+	'views/Footer'
+], function (Marionette, Widgets, Header, Sidebar, Dashboard, Footer) {
 	'use strict';
 
 	var app = new Marionette.Application();
-	// var todoList = new TodoList();
+	var widgets = new Widgets();
 
-	// var viewOptions = {
-	// 	collection: todoList
-	// };
+	var viewOptions = {
+		collection: widgets
+	};
 
-	// var header = new Header(viewOptions);
-	// var main = new TodoListCompositeView(viewOptions);
-	// var footer = new Footer(viewOptions);
+	var header = new Header();
+	var main = new Dashboard(viewOptions);
+	var footer = new Footer();
 
-	// app.addRegions({
-	// 	header: '#header',
-	// 	main: '#main',
-	// 	footer: '#footer'
-	// });
+	app.addRegions({
+		header: '#header',
+		main: '#main',
+		footer: '#footer'
+	});
 
 	// app.addInitializer(function () {
 	// 	app.header.show(header);
