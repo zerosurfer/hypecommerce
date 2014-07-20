@@ -1,5 +1,5 @@
-define(['backbone'], function(Backbone) {
-  var App = Backbone.View.extend({
+define(['backbone','marionette'], function(Backbone, Marionette) {
+  var App = Marionette.View.extend({
     initialize: function() {
       console.log( 'Wahoo!' );
     }
