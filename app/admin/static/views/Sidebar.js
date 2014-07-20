@@ -1,8 +1,9 @@
 /*global define */
 define([
 	'marionette',
-	'templates'
-], function (Marionette, templates) {
+	'templates',
+	'jquery'
+], function (Marionette, templates, $) {
 	'use strict';
 
 	return Marionette.ItemView.extend({
@@ -15,7 +16,7 @@ define([
 		// events: {
 		// 	'keypress #new-todo': 'onInputKeypress'
 		// },
-
+		
 		// onInputKeypress: function (event) {
 		// 	var ENTER_KEY = 13;
 		// 	var todoText = this.ui.input.val().trim();

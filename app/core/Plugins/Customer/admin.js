@@ -9,11 +9,16 @@
  */
 
 module.exports = {
-    routes: require('./lib/admin/routes'),
-    // @kurt	Include a folder of widgets? Curious how we can tie backbone into something like this
-    //			these of course would be the drag-n-drop widgets on the dashboard
-    widgets: './lib/admin/widgets',
-
-    
-
+    routes: require("./lib/admin/routes"),
+    widgets: "./lib/admin/widgets",
+    menu: {
+    	customer: {
+    		label: "Customers",
+    		icon: "\f118", // fa-smile-o (could also be an image)
+    		url: "/customers",
+    		// children: {
+    			
+    		// }
+    	}
+    }
 };

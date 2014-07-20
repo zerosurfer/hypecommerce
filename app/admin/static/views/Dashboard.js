@@ -26,6 +26,8 @@ define([
 		},
 
 		onRender: function () {
+			$('.navbar-static-side').css({ height: ($(window).height() - 75) + 'px' });
+			$('#side-menu').metisMenu();
 			//this.updateToggleCheckbox();
 		},
 
