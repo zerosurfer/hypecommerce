@@ -53,6 +53,10 @@ module.exports = function(app) {
 			// database adapter
 			inst.dba = require('./DatabaseAdapters/Mongo');
 
+			// locale instance
+			inst.locale = require('./Hype/Locale')(Hype);
+			console.log(inst.locale);
+
 			// Is installed
 			inst.installed = false;
 		}
