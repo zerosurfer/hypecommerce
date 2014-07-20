@@ -38,6 +38,10 @@ MongoDba = function() {
 	return inst;
 }
 
+MongoDba.prototype.getConnectionDb = function() {
+	return this.connection.connection.db;
+}
+
 MongoDba.prototype.connect = function(host, username, password, dbname) {
 	var self = this;
 

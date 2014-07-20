@@ -38,14 +38,13 @@ module.exports = function(Hype) {
 			app.set('views', Hype.themePath);
 			app.use(express.json());       // to support JSON-encoded bodies
 			app.use(express.urlencoded());
-			console.log(Hype.dba);
+
 			app.use(express.session({
 				store: new MongoStore({
-					db: Hype.dba
+					db: Hype.dba.getConnectionDb()
 				}),
 				secret: Hype.secret
 			}));
-			console.log(Hype.secret);
 			app.use(passport.initialize());
 			app.use(passport.session());
 
