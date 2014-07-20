@@ -10,12 +10,13 @@
  */
 
 module.exports = {
-    routes: require("./lib/admin/routes"),
-    widgets: "./lib/admin/widgets",
-    pages: "./lib/admin/pages",
+    // routes: require("./lib/admin/routes"),
+    // widgets: "./lib/admin/widgets",
+    // pages: "./lib/admin/pages",
     menu: {
     	customer: {
     		label: "Customers",
+            sort: 30,
     		icon: "\f118", // fa-smile-o (could also be an image)
     		url: "/customers",
     		// children: {
