@@ -24,7 +24,8 @@ module.exports = {
         },
         deps: {
             hasOne: {
-                group: 'AdminGroup'
+                group: 'AdminGroup',
+                dashboard: 'Dashboard'
             },
             hasMany: {
                 attributes: 'Attribute'
@@ -74,6 +75,24 @@ module.exports = {
             hasMany: {
                 permissions: 'Permission'
             }
+        }
+    },
+
+    /**
+     * Admin Dashboard
+     *
+     * @var Boolean developer
+     * @var String workspace
+     * @var Widget widgets
+     * @var Date createdAt
+     * @var Date updatedAt
+     */
+    Dashboard: {
+        schema: {
+            developer: Boolean,
+            workspace: String, // json encoded layout of widgets (including sizes, position, etc)
+            createdAt: Date,
+            updatedAt: Date
         }
     },
 

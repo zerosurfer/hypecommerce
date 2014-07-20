@@ -155,6 +155,9 @@ body {
 }
 
 @media(max-height:600px) and (max-width:767px) {
+    .navbar-static-side {
+        height:0px;
+    }
     .sidebar-collapse {
         max-height: 300px;
         overflow-y: scroll;
@@ -162,6 +165,9 @@ body {
 }
 
 @media(max-height:400px) and (max-width:767px) {
+    .navbar-static-side {
+        height:0px;
+    }
     .sidebar-collapse {
         max-height: 200px;
         overflow-y: scroll;
