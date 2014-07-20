@@ -29,7 +29,6 @@ module.exports = function(Hype) {
 				routeCallback;
 
 			Hype.log('Preparing the server');
-
 			app.use(express.cookieParser());
 			app.settings.env = Hype.env || 'development';
 			app.use(express.favicon());
@@ -38,6 +37,8 @@ module.exports = function(Hype) {
 			app.set('views', Hype.themePath);
 			app.use(express.json());       // to support JSON-encoded bodies
 			app.use(express.urlencoded());
+			app.use(Hype.configuration.admin + '/static', express.static(path.resolve(__dirname + '/../../admin/static')));
+			app.use(Hype.configuration.admin + '/scripts', express.static(path.resolve(__dirname + '/../../admin/scripts')));
 
 			app.use(express.session({
 				store: new MongoStore({
@@ -55,7 +56,8 @@ module.exports = function(Hype) {
 
 			// Render the admin path
 			//app.use(express.static(path.resolve(__dirname  + '../../..' + '/admin/static')));
-			app.use(express.static('static'));
+			
+
 			app.get(Hype.configuration.admin, function (req, res) {
 				res.render(path.resolve(__dirname  + '../../..' + '/admin/index.html'));
 			});
