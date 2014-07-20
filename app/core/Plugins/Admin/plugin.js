@@ -6,6 +6,7 @@ module.exports = {
     },
     main: require('./lib/admin'),
     models: require('./lib/models'),
+    locale: './lib/locale',
     //routes: require('./lib/routes'),
     //scripts: './lib/install',
     version: '0.0.0.1'

@@ -75,5 +75,34 @@ module.exports = {
                 permissions: 'Permission'
             }
         }
-    }
+    },
+
+    /**
+     * Admin Event Message
+     *
+     * @var String title
+     * @var String message
+     * @var Number priority
+     * @var Boolean read
+     * @var Boolean archived
+     * @var Date readAt
+     * @var Date createdAt
+     * @var AdminUser user
+     */
+     AdminMessage: {
+        schema: {
+            title: String,
+            message: String,
+            priority: Number, // 0 = low, 1 = medium, 2 = high, default: 1
+            read: Boolean,
+            archived: Boolean,
+            readAt: Date,
+            createdAt: Date,
+        },
+        deps: {
+            hasOne: {
+                user: 'AdminUser'
+            }
+        }
+     }
 };
