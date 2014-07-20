@@ -154,7 +154,7 @@ module.exports = (function(_) {
                         }
                         // @kurt - idk why but this really doesn't like not being an array
                         // @tom - we will have to see, if thats the case, then we can get rid of hasOne/hasMany, its doing the same thing, i will investigate
-                        model.schema[localName] = [hype.dba.getModel(dep)];
+                        model.schema[localName] = hype.dba.getModel(dep);
                     });
                 }
             }

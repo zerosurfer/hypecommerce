@@ -38,6 +38,7 @@ module.exports = function(Hype) {
 			app.set('views', Hype.themePath);
 			app.use(express.json());       // to support JSON-encoded bodies
 			app.use(express.urlencoded());
+			console.log(Hype.dba);
 			app.use(express.session({
 				store: new MongoStore({
 					db: Hype.dba
@@ -54,7 +55,8 @@ module.exports = function(Hype) {
 			});
 
 			// Render the admin path
-
+			//app.use(express.static(path.resolve(__dirname  + '../../..' + '/admin/static')));
+			app.use(express.static('static'));
 			app.get(Hype.configuration.admin, function (req, res) {
 				res.render(path.resolve(__dirname  + '../../..' + '/admin/index.html'));
 			});
@@ -64,6 +66,7 @@ module.exports = function(Hype) {
 			// app.get(Hype.configuration.admin, Admin.index);
 			// app.get(Hype.configuration.admin + '/login', Admin.login);
 			// app.post(Hype.configuration.admin + '/login', Admin.loginPost);
+
 
 			// Setup a custom 404 page fallback
 			app.use(function(req, res, next){
@@ -82,8 +85,8 @@ module.exports = function(Hype) {
 				}
 			});
 
-			app.use(Hype.configuration.admin + '/static', express.static(path.resolve(__dirname  + '../../..' + '/admin/static')));
 			app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
+
 
 			Hype.log("Starting server");
 			app.listen(Hype.configuration.port, function() {
