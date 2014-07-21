@@ -14,8 +14,15 @@ var _ = require('underscore'),
 module.exports = (function(_) {
     "use strict";
 
-    var initModels = function(modules, hype) {
-        var supermodels = {};
+    var initModels = function(modules, Hype) {
+        var supermodels = {},
+            supermenu = {
+                menu: {}
+            };
+
+        var deep = function(a, b) {
+            return (_.isObject(a) && _.isObject(b)) ? _.extend(a, b, deep) : b;
+        };
 
         _(modules).each(function(module) {
             // Have an instance of each raw model
@@ -32,6 +39,7 @@ module.exports = (function(_) {
         // Join all instances of "extend" properties to form a supermodel
         _(modules).each(function(module) {
             if (module.is('started')) {
+                // Load the models
                 if (module.models) {
                     _(module.models).each(function(model, modelName) {
                         if (supermodels[modelName] !== undefined) {
@@ -66,16 +74,38 @@ module.exports = (function(_) {
                         }
                     });
                 }
+
+                // Build the menu object
+                // The menu should sit on the Admin class so that the endpoint has access to it
+                if (module.admin && module.admin.menu) {
+                    _(module.admin.menu).each(function(contents, menu) {
+                        if (!supermenu.menu[menu]) {
+                            supermenu.menu[menu] = contents;
+                        } else {
+                            _(contents).each(function(value, key) {
+                                if (!supermenu.menu[menu][key]) {
+                                    supermenu.menu[menu][key] = value;
+                                } else {
+                                    // Go one deeper, as to not overwrite children
+                                    // @todo optimization
+                                    _(value).each(function(v, k) {
+                                        supermenu.menu[menu][key][k] = v;
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
             }
         });
 
         // Recursively load all the models
         _(supermodels).each(function(model, modelName) {
-            loadModel(modelName, model, hype);
+            loadModel(modelName, model, Hype);
         });
     };
 
-    var initScripts = function(modules, hype) {
+    var initScripts = function(modules, Hype) {
        _(modules).each(function(module) {
             if (module.is('started')) {
                 module.install();
@@ -83,18 +113,18 @@ module.exports = (function(_) {
         });
     };
 
-    var initRoutes = function(modules, hype, app) {
+    var initRoutes = function(modules, Hype, app) {
         _(modules).each(function(module) {
             if (module.is('started')) {
                 // Add the regular routes
                 if (module.routes) {
-                    var routes = module.routes(hype);
+                    var routes = module.routes(Hype);
                     // console.log(routes);
                     _(routes).each(function(methods, route) {
 
                         _(methods).each(function(method, methodType) {
                             // log the route addition
-                            hype.log('Adding ' + methodType.toUpperCase() + ' route: ' + route);
+                            Hype.log('Adding ' + methodType.toUpperCase() + ' route: ' + route);
 
                             // using array notation to call the appropriate method
                             app[methodType.toLowerCase()](route, method);
@@ -103,13 +133,13 @@ module.exports = (function(_) {
                 }
                 // Add the admin routes
                 if (module.admin && module.admin.routes) {
-                    var routes = module.admin.routes(hype);
+                    var routes = module.admin.routes(Hype);
                     // console.log(routes);
                     _(routes).each(function(methods, route) {
 
                         _(methods).each(function(method, methodType) {
                             // log the route addition
-                            hype.log('Adding ' + methodType.toUpperCase() + ' route: ' + route);
+                            Hype.log('Adding ' + methodType.toUpperCase() + ' route: ' + route);
 
                             // using array notation to call the appropriate method
                             app[methodType.toLowerCase()](route, method);
@@ -121,14 +151,14 @@ module.exports = (function(_) {
     };
 
     // Recursively load the models into mongoose
-    var loadModel = function(name, model, hype) {
+    var loadModel = function(name, model, Hype) {
 
-        if (!hype.dba.hasModel(name)) {
+        if (!Hype.dba.hasModel(name)) {
 
-            hype.debug("Adding model: " + name);
+            Hype.debug("Adding model: " + name);
 
             // Set that we're processing the model
-            hype.dba.startProcessing(name);
+            Hype.dba.startProcessing(name);
 
             // if model has dependencies
             if (model.deps) {
@@ -140,34 +170,34 @@ module.exports = (function(_) {
                 // - add model to dba
                 if (model.deps.hasMany) {
                     _(model.deps.hasMany).each(function(dep, localName) {
-                        if (!hype.dba.hasModel(dep) && !hype.dba.isProcessing(dep)) {
-                            loadModel(dep, Models[dep], hype);
+                        if (!Hype.dba.hasModel(dep) && !Hype.dba.isProcessing(dep)) {
+                            loadModel(dep, Models[dep], Hype);
                         }
-                        model.schema[localName] = [hype.dba.getModel(dep)];
+                        model.schema[localName] = [Hype.dba.getModel(dep)];
                     });
                 }
 
                 if (model.deps.hasOne) {
                     _(model.deps.hasOne).each(function(dep, localName) {
-                        if (!hype.dba.hasModel(dep) && !hype.dba.isProcessing(dep)) {
-                            loadModel(dep, Models[dep], hype);
+                        if (!Hype.dba.hasModel(dep) && !Hype.dba.isProcessing(dep)) {
+                            loadModel(dep, Models[dep], Hype);
                         }
-                        model.schema[localName] = [hype.dba.getModel(dep)];
+                        model.schema[localName] = [Hype.dba.getModel(dep)];
                     });
                 }
             }
 
-            hype.dba.addModel(name, model);
+            Hype.dba.addModel(name, model);
 
-            hype.dba.stopProcessing(name);
+            Hype.dba.stopProcessing(name);
         }
     };
 
     return {
-        init: function(modules, hype, app) {
-            initModels(modules, hype);
-            initScripts(modules, hype);
-            initRoutes(modules, hype, app);
+        init: function(modules, Hype, app) {
+            initModels(modules, Hype);
+            initScripts(modules, Hype);
+            initRoutes(modules, Hype, app);
         }
     };
 })(_);
