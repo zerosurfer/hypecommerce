@@ -38,6 +38,6 @@ module.exports = (function() {
 
 	// Start the server
 	server.start(app, express, passport, hype);
-
+	
 	hype.log('Successfully launched your Hype Commerce store');
 })();
