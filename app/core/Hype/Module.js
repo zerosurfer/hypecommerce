@@ -100,7 +100,6 @@ module.exports = function(Hype) {
 
         var determineInstallAction = function(fileVersion, dbVersion, configVersion) {
             var installFile;
-            //console.log("File: %s, Db: %s, Config: %s", fileVersion, dbVersion, configVersion);
 
             if (dbVersion == configVersion) {
                 Hype.debug("Nothing to install for " + self.name);

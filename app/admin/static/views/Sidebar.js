@@ -9,25 +9,23 @@ define([
 	return Marionette.ItemView.extend({
 		template: templates.sidebar,
 
-		// ui: {
-		// 	input: '#new-todo'
-		// },
+		ui: {
+			input: '#side-menu li'
+		},
 
-		// events: {
-		// 	'keypress #new-todo': 'onInputKeypress'
-		// },
+		events: {
+			'click #side-menu li': 'onClickMenu'
+		},
 		
-		// onInputKeypress: function (event) {
-		// 	var ENTER_KEY = 13;
-		// 	var todoText = this.ui.input.val().trim();
+		onClickMenu: function (e) {
+			e.preventDefault();
+			
+			// Change the view to the right click
+			var target = $(e.currentTarget).children('a').attr('href');
+			if (!$(e.currentTarget).hasClass('active')) {
+				console.log(target);
+			}
 
-		// 	if (event.which === ENTER_KEY && todoText) {
-		// 		this.collection.create({
-		// 			title: todoText
-		// 		});
-
-		// 		this.ui.input.val('');
-		// 	}
-		// }
+		}
 	});
 });
