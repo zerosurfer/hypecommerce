@@ -1,12 +1,14 @@
 /*global define */
 define([
-	'app'
-], function (app) {
+	'app',
+	'marionette'
+], function (app, Marionette) {
 	'use strict';
-
+	
 	return {
-		// setFilter: function (param) {
-		// 	app.vent.trigger('todoList:filter', param && param.trim() || '');
-		// }
+
+		testOrders: function() {
+			alert('hi');
+		}
 	};
 });
