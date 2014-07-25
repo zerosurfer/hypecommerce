@@ -8,7 +8,9 @@
  * @license     http://www.hypejs.com/license
  */
  
-var _ = require('underscore');
+var _ = require('underscore')
+    events = require('events'),
+    emitter = new events.EventEmitter();
 
 module.exports = function(Hype) {
     "use strict";
@@ -20,12 +22,13 @@ module.exports = function(Hype) {
         return this;
     };
 
-    HypePlugin.prototype.listen = function() {
-
+    HypePlugin.prototype.listen = function(event, callback) {
+        emitter.on(event, callback);
     };
 
-    HypePlugin.prototype.notify = function() {
 
+    HypePlugin.prototype.notify = function(event, arg) {
+        emitter.emit(event, arg);
     }
 
     return HypePlugin;

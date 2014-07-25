@@ -20,11 +20,7 @@ define([
 		onClickMenu: function (e) {
 			e.preventDefault();
 			
-			// Change the view to the right click
-			var target = $(e.currentTarget).children('a').attr('href');
-			if (!$(e.currentTarget).hasClass('active')) {
-				console.log(target);
-			}
+			console.log(this.ui.input);
 
 		}
 	});

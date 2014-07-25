@@ -1,7 +1,6 @@
 module.exports = {
     name: 'ExampleExtend',
-
-
+    
     // This is all optional meta data used for module reading
     description: 'An example module to see how extending models behaves',
     author: 'Thomas Lackemann',
