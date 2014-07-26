@@ -13,6 +13,7 @@ var	mongoose = require('mongoose'),
 	ModelCollection = {},
 	SchemaCollection = {},
 	MongoDba,
+	Schema = mongoose.Schema;
 	_ = require('underscore');
 
 MongoDba = function() {
@@ -55,7 +56,7 @@ MongoDba.prototype.connect = function(host, username, password, dbname) {
 MongoDba.prototype.addModel = function (modelName, model) {
 	//Log.log("Adding " + model + " to Mongo");
 
-	var mSchema = new mongoose.Schema(model.schema);
+	var mSchema = new Schema(model.schema);
 
 	// add extra methods
 	if (model.methods) {

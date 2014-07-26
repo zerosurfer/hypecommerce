@@ -9,6 +9,7 @@
  */
 
 var _ = require('underscore'),
+    mongoose = require('mongoose'),
     Models = {};
 
 module.exports = (function(_) {
@@ -173,7 +174,8 @@ module.exports = (function(_) {
                         if (!Hype.dba.hasModel(dep) && !Hype.dba.isProcessing(dep)) {
                             loadModel(dep, Models[dep], Hype);
                         }
-                        model.schema[localName] = [Hype.dba.getModel(dep)];
+                        model.schema[localName] = { type : mongoose.Schema.ObjectId, ref : dep };
+                        // model.schema[localName] = Hype.dba.getModel(dep)];
                     });
                 }
 
@@ -182,7 +184,8 @@ module.exports = (function(_) {
                         if (!Hype.dba.hasModel(dep) && !Hype.dba.isProcessing(dep)) {
                             loadModel(dep, Models[dep], Hype);
                         }
-                        model.schema[localName] = [Hype.dba.getModel(dep)];
+                        model.schema[localName] = { type : mongoose.Schema.ObjectId, ref : dep };
+                        // model.schema[localName] = [Hype.dba.getModel(dep)];
                     });
                 }
             }

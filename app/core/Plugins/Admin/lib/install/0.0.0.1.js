@@ -104,7 +104,6 @@ module.exports = function(Hype) {
 				if (i < permissions.length) {
 					Hype.log("Creating permission " + e.label);
 					// Create the new permission
-					console.log(PermissionSchema);
 					tmpSchema = new PermissionSchema(e);
 					// Add the model to the models object for later use
 					models[e.label] = tmpSchema.save();
