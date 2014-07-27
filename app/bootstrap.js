@@ -43,27 +43,18 @@ module.exports = (function() {
 	server.start(app, express, passport, Hype);
 
 	// // Some testing
-	// PermissionModel = Hype.dba.getModel('Permission');
-	// p = new PermissionModel({
-	// 	'label' : 'Sales',
-	// 	'read' : true,
-	// 	'write': true,
-	// 	'execute': true,
-	// 	'path': 'modules/sales/*'
-	// });
 
-	// p.save(function(err) {
-	// 	var AdminGroup = Hype.dba.getModel('AdminGroup');
-	// 	var group = new AdminGroup({
-	// 		'label' : 'Superusers',
-	// 		'permissions': [
-	// 			p._id
-	// 		]
- //        });
-	// 	group.save(function() {
+			// var Permission = Hype.dba.getModel('Permission'),
+			// 	AdminGroup = Hype.dba.getModel('AdminGroup'),
+			// 	PermissionCollection,
+			// 	AdminGroupCollection;
 
-	// 	});
-	// })
+			// Permission.find(function(err, results) {
+			// 	for (var i = 0; i < results.length; i++) {
+			// 		results[i].remove();
+			// 	}
+			// })
+
 	
 	Hype.log('Successfully launched your Hype Commerce store');
 })();

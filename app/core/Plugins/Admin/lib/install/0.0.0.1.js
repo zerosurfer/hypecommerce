@@ -61,6 +61,7 @@ module.exports = function(Hype) {
 			];
 
 			// Setup our groups
+			// permissionStr will populate the right models in "permissions" property and unset itself
 			groups = [
 				{
 					'label' : 'Superusers',
@@ -128,6 +129,7 @@ module.exports = function(Hype) {
 
 				if (j < groups.length) {
 					Hype.log("Creating group " + e.label);
+
 					// Create the permissions property if it doesn't exist
 					if (e.permissions === undefined) {
 						e.permissions = [];
@@ -144,7 +146,7 @@ module.exports = function(Hype) {
 					        delete e[key];
 					    }
 					}
-					console.log(e);
+
 					// Create the new group
 					tmpModel = new AdminGroup(e);
 					tmpModel.save(function(err) {
@@ -169,6 +171,25 @@ module.exports = function(Hype) {
 
 		this.down = function() {
 			Hype.log("Uninstalling Admin 0.0.0.1");
+
+			var Permission = Hype.dba.getModel('Permission'),
+				AdminGroup = Hype.dba.getModel('AdminGroup'),
+				PermissionNames = ["Sales", "Product", "Cms", "Category"],
+				AdminGroupNames = ["Superusers", "Marketing", "Sales", "Developer"];
+
+			Permission.find(function(err, results) {
+				for (var i = 0; i < results.length; i++) {
+					results[i].remove();
+				}
+			});
+
+			AdminGroup.find(function(err, results) {
+				for (var i = 0; i < results.length; i++) {
+					results[i].remove();
+				}
+			});
+
+			Hype.log("Finished uninstalling Admin 0.0.0.1");
 		}
 	}
 	
