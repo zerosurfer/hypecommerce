@@ -44,8 +44,8 @@ module.exports = (function() {
 
 	// // Some testing
 
-			// var Permission = Hype.dba.getModel('Permission'),
-			// 	AdminGroup = Hype.dba.getModel('AdminGroup'),
+			// var Permission = Hype.Db.getModel('Permission'),
+			// 	AdminGroup = Hype.Db.getModel('AdminGroup'),
 			// 	PermissionCollection,
 			// 	AdminGroupCollection;
 

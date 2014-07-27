@@ -13,7 +13,11 @@ var HypeAdmin,
 
  module.exports = function(Hype) {
  	HypeAdmin = function() {
+ 		var _menu = {};
 
+ 		this.addMenu = function(menu) {
+ 			this._menu = menu;
+ 		}
  		/**
  		 * Check if we're logged in
  		 *
@@ -35,7 +39,7 @@ var HypeAdmin,
 
  		}
 
-
+ 		return this;
  	}
 
  	return new HypeAdmin();

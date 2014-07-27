@@ -41,8 +41,32 @@ module.exports = {
                 store: 'Store'
             }
         }
-    }
+    },
 
-    // Slider
-    // Slide
+    Slider: {
+        schema: {
+            name: String,
+            code: String,
+            createdAt: Date,
+            updatedAt: Date
+        },
+        deps: {
+            hasMany: {
+                slides: 'Slide'
+            }
+        }
+    },
+
+    Slide: {
+        schema: {
+            name: String,
+            filepath: String,
+            content: String,
+            order: Number,
+            metaDescription: String,
+            metaTags: String,
+            createdAt: Date,
+            updatedAt: Date
+        }
+    }
 };

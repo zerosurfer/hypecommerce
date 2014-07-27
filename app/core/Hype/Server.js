@@ -15,14 +15,13 @@ var Server,
 module.exports = function(Hype) {
 
 	Server = function() {
-		this.start = function(app, express, passport, Hype) {
+		this.start = function(app, express, passport, Hype, Admin) {
 			var MongoStore = require('connect-mongo')(express);
 
 			// set up passport auth
 			require('./PassportAuth')(Hype, app, passport);
 
 			var self = this,
-				Admin = require('./Admin')(Hype),
 				r,
 				route,
 				routeMethod,
@@ -42,7 +41,7 @@ module.exports = function(Hype) {
 
 			app.use(express.session({
 				store: new MongoStore({
-					db: Hype.dba.getConnectionDb()
+					db: Hype.Db.getConnectionDb()
 				}),
 				secret: Hype.secret
 			}));
@@ -54,20 +53,12 @@ module.exports = function(Hype) {
 				res.render('index.html');
 			});
 
-			// Render the admin path
-			//app.use(express.static(path.resolve(__dirname  + '../../..' + '/admin/static')));
-			
-
+			// Setup to use the admin
 			app.get(Hype.configuration.admin, function (req, res) {
 				res.render(path.resolve(__dirname  + '../../..' + '/admin/index.html'));
 			});
 
-			// Add the admin routes
-			// These should be required from ./admin.js
-			// app.get(Hype.configuration.admin, Admin.index);
-			// app.get(Hype.configuration.admin + '/login', Admin.login);
-			// app.post(Hype.configuration.admin + '/login', Admin.loginPost);
-
+			// console.log(Hype.Admin.menu.configuration);
 
 			// Setup a custom 404 page fallback
 			app.use(function(req, res, next){

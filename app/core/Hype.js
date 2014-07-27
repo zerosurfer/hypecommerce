@@ -51,11 +51,12 @@ module.exports = function(app) {
 			inst.debugEnabled = inst.configuration.debug;
 
 			// database adapter
-			inst.dba = require('./DatabaseAdapters/Mongo');
+			inst.Db = require('./Database/Mongo');
+
+			inst.Admin = {};
 
 			// locale instance
 			inst.locale = require('./Hype/Locale')(Hype);
-			console.log(inst.locale);
 
 			// Is installed
 			inst.installed = false;
@@ -165,7 +166,7 @@ module.exports = function(app) {
 	Hype.prototype.connect = function() {
 		// @todo, abstract into Hype/Database class that picks appropriate DatabaseAdapter
 		this.log("Establishing database connection with MongoDB");
-		this.dba.connect(
+		this.Db.connect(
 			this.configuration.db['mongo'].host + ':' + this.configuration.db['mongo'].port,
 			this.configuration.db['mongo'].username,
 			this.configuration.db['mongo'].password,

@@ -20,8 +20,8 @@ module.exports = function(Hype) {
 
 			// Get the admin module to listen for events
 			var admin = Hype.require('Admin'),
-				Permission = Hype.dba.getModel('Permission'),
-				AdminGroup = Hype.dba.getModel('AdminGroup'),
+				Permission = Hype.Db.getModel('Permission'),
+				AdminGroup = Hype.Db.getModel('AdminGroup'),
 				permissions = [],
 				groups = [],
 				models = {}, // store all the returned mongoose models
@@ -172,8 +172,8 @@ module.exports = function(Hype) {
 		this.down = function() {
 			Hype.log("Uninstalling Admin 0.0.0.1");
 
-			var Permission = Hype.dba.getModel('Permission'),
-				AdminGroup = Hype.dba.getModel('AdminGroup'),
+			var Permission = Hype.Db.getModel('Permission'),
+				AdminGroup = Hype.Db.getModel('AdminGroup'),
 				PermissionNames = ["Sales", "Product", "Cms", "Category"],
 				AdminGroupNames = ["Superusers", "Marketing", "Sales", "Developer"];
 

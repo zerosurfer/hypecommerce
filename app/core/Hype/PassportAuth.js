@@ -7,7 +7,7 @@ var LocalStrategy = require('passport-local').Strategy;
 module.exports = function(hype, app, passport) {
     "use strict";
 
-    var AccountModel = hype.dba.getModel('AdminUser');
+    var AccountModel = hype.Db.getModel('AdminUser');
 
     passport.serializeUser(function(user, done) {
         done(null, user._id);

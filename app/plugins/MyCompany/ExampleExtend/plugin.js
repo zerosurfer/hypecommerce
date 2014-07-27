@@ -8,7 +8,7 @@ module.exports = {
     image: __dirname + '/lib/icon.jpg',
     license: 'MIT',
 
-    enabled: true,
+    enabled: false,
     depends: {
         'core': '>=1.0.0.0'
     },

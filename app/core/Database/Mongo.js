@@ -73,7 +73,7 @@ MongoDba.prototype.loadModel = function(name, model, Hype) {
             // - if not instantiate it
             // - get the model
             // - update the current schema
-            // - add model to dba
+            // - add model to db
             if (model.deps.hasMany) {
                 _(model.deps.hasMany).each(function(dep, localName) {
                     if (!self.hasModel(dep) && !self.isProcessing(dep)) {

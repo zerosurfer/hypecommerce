@@ -71,7 +71,7 @@ module.exports = function(Hype) {
             self = this,
             fileVersion,
             dbVersion,
-            installModel = Hype.dba.getModel('Install'),
+            installModel = Hype.Db.getModel('Install'),
             configVersion;
 
         var getLatestVersion = function(arr) {

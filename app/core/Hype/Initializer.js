@@ -29,7 +29,7 @@ module.exports = (function(_) {
                 //console.log(module);
                 if (module.models) {
                     _(module.models).each(function(model, modelName) {
-                        Hype.dba.addRawModel(model, modelName);
+                        Hype.Db.addRawModel(model, modelName);
                     });
                 }
             }
@@ -98,12 +98,13 @@ module.exports = (function(_) {
             }
         });
 
-
-                console.log(supermenu);
+        // console.log(supermenu);
+        // Add the supermenu to the Admin
+        Hype.Admin.menu = supermenu.menu;
 
         // Recursively load all the models
         _(supermodels).each(function(model, modelName) {
-            Hype.dba.loadModel(modelName, model, Hype);
+            Hype.Db.loadModel(modelName, model, Hype);
         });
     };
 
