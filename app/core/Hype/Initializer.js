@@ -8,9 +8,7 @@
  * @license     http://www.hypejs.com/license
  */
 
-var _ = require('underscore'),
-    mongoose = require('mongoose'),
-    Models = {};
+var _ = require('underscore');
 
 module.exports = (function(_) {
     "use strict";
@@ -31,7 +29,7 @@ module.exports = (function(_) {
                 //console.log(module);
                 if (module.models) {
                     _(module.models).each(function(model, modelName) {
-                        Models[modelName] = model;
+                        Hype.dba.addRawModel(model, modelName);
                     });
                 }
             }
@@ -102,7 +100,7 @@ module.exports = (function(_) {
 
         // Recursively load all the models
         _(supermodels).each(function(model, modelName) {
-            loadModel(modelName, model, Hype);
+            Hype.dba.loadModel(modelName, model, Hype);
         });
     };
 
@@ -149,51 +147,6 @@ module.exports = (function(_) {
                 }
             }
         });
-    };
-
-    // Recursively load the models into mongoose
-    var loadModel = function(name, model, Hype) {
-
-        if (!Hype.dba.hasModel(name)) {
-
-            Hype.debug("Adding model: " + name);
-
-            // Set that we're processing the model
-            Hype.dba.startProcessing(name);
-
-            // if model has dependencies
-            if (model.deps) {
-                // for each dep
-                // - check to see if it is instantiated
-                // - if not instantiate it
-                // - get the model
-                // - update the current schema
-                // - add model to dba
-                if (model.deps.hasMany) {
-                    _(model.deps.hasMany).each(function(dep, localName) {
-                        if (!Hype.dba.hasModel(dep) && !Hype.dba.isProcessing(dep)) {
-                            loadModel(dep, Models[dep], Hype);
-                        }
-                        model.schema[localName] = { type : mongoose.Schema.ObjectId, ref : dep };
-                        // model.schema[localName] = Hype.dba.getModel(dep)];
-                    });
-                }
-
-                if (model.deps.hasOne) {
-                    _(model.deps.hasOne).each(function(dep, localName) {
-                        if (!Hype.dba.hasModel(dep) && !Hype.dba.isProcessing(dep)) {
-                            loadModel(dep, Models[dep], Hype);
-                        }
-                        model.schema[localName] = { type : mongoose.Schema.ObjectId, ref : dep };
-                        // model.schema[localName] = [Hype.dba.getModel(dep)];
-                    });
-                }
-            }
-
-            Hype.dba.addModel(name, model);
-
-            Hype.dba.stopProcessing(name);
-        }
     };
 
     return {

@@ -35,6 +35,9 @@ MongoDba = function() {
 
 		// Holds models being processed
 		inst._processing = [];
+
+		// Holds raw models from the config
+		inst._rawModels = {};
 	}
 	return inst;
 }
@@ -51,6 +54,51 @@ MongoDba.prototype.connect = function(host, username, password, dbname) {
 		self.db = mongoose.connection.db;
 	});
 
+};
+
+// Recursively load the models into mongoose
+MongoDba.prototype.loadModel = function(name, model, Hype) {
+	var self = this;
+    if (!self.hasModel(name)) {
+
+        Hype.debug("Adding model: " + name);
+
+        // Set that we're processing the model
+        self.startProcessing(name);
+
+        // if model has dependencies
+        if (model.deps) {
+            // for each dep
+            // - check to see if it is instantiated
+            // - if not instantiate it
+            // - get the model
+            // - update the current schema
+            // - add model to dba
+            if (model.deps.hasMany) {
+                _(model.deps.hasMany).each(function(dep, localName) {
+                    if (!self.hasModel(dep) && !self.isProcessing(dep)) {
+                        self.loadModel(dep, self.getRawModel(dep), Hype);
+                    }
+                    model.schema[localName] = { type : mongoose.Schema.Types.ObjectId, ref : dep };
+                    // model.schema[localName] = self.getModel(dep)];
+                });
+            }
+
+            if (model.deps.hasOne) {
+                _(model.deps.hasOne).each(function(dep, localName) {
+                    if (!self.hasModel(dep) && !self.isProcessing(dep)) {
+                        self.loadModel(dep, self.getRawModel(dep), Hype);
+                    }
+                    model.schema[localName] = { type : mongoose.Schema.Types.ObjectId, ref : dep };
+                    // model.schema[localName] = [self.getModel(dep)];
+                });
+            }
+        }
+
+        self.addModel(name, model);
+
+        self.stopProcessing(name);
+    }
 };
 
 MongoDba.prototype.addModel = function (modelName, model) {
@@ -81,6 +129,14 @@ MongoDba.prototype.addModel = function (modelName, model) {
 	ModelCollection[modelName] = mModel;
 
 	return mModel;
+}
+
+MongoDba.prototype.addRawModel = function(model, modelName) {
+	this._rawModels[modelName] = model;
+}
+
+MongoDba.prototype.getRawModel = function(modelName) {
+	return this._rawModels[modelName];
 }
 
 MongoDba.prototype.hasModel = function(model) {
