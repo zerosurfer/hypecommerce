@@ -87,15 +87,6 @@ module.exports = {
             icon: "\f0ad",
             url: "/configuration",
             children: {
-                admin: {
-                    label: "Admin",
-                    tags: [
-                        "admin", "users", "groups", "permissions", "access", "control"
-                    ],
-                    sort: 100,
-                    icon: "\f023",
-                    url: "/configuration/admin"
-                },
                 security: {
                     label: "Security",
                     tags: [
@@ -104,6 +95,15 @@ module.exports = {
                     sort: 200,
                     icon: "\f0e3",
                     url: "/configuration/security"
+                },
+                appearance: {
+                    label: "Appearance",
+                    tags: [
+                        "appearance", "themes", "colors", "configuration", "icons", "fonts"
+                    ],
+                    sort: 200,
+                    icon: "\f0e3",
+                    url: "/configuration/appearance"
                 },
                 developer: {
                     label: "Developer",
@@ -122,6 +122,12 @@ module.exports = {
                     sort: 130,
                     icon: "\f11e",
                     url: "/configuration/stores"
+                },
+                paymentMethods: {
+                    label: "Payment Methods",
+                    sort: 130,
+                    icon: "\f11e",
+                    url: "/configuration/paymentMethods"
                 },
                 system: {
                     label: "System Settings",

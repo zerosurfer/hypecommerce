@@ -98,6 +98,9 @@ module.exports = (function(_) {
             }
         });
 
+
+                console.log(supermenu);
+
         // Recursively load all the models
         _(supermodels).each(function(model, modelName) {
             Hype.dba.loadModel(modelName, model, Hype);

@@ -17,11 +17,33 @@ module.exports = {
     	customer: {
     		label: "Customers",
             sort: 30,
+            tags: [
+                "manage", "customers", "attributes"
+            ],
     		icon: "\f118", // fa-smile-o (could also be an image)
     		url: "/customers",
-    		// children: {
-
-    		// }
-    	}
+    	},
+        configuration: {
+            children: {
+                customerGroups: {
+                    label: "Customer Groups",
+                    tags: [
+                        "groups", "permissions", "customer"
+                    ],
+                    sort: 200,
+                    icon: "\f0e3",
+                    url: "/customer/groups"
+                },
+                customerAttributes: {
+                    label: "Customer Attributes",
+                    tags: [
+                        "groups", "attributes", "customer"
+                    ],
+                    sort: 200,
+                    icon: "\f0e3",
+                    url: "/customer/attributes"
+                },
+            }
+        }
     }
 };
