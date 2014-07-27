@@ -79,7 +79,7 @@ MongoDba.prototype.loadModel = function(name, model, Hype) {
                     if (!self.hasModel(dep) && !self.isProcessing(dep)) {
                         self.loadModel(dep, self.getRawModel(dep), Hype);
                     }
-                    model.schema[localName] = { type : mongoose.Schema.Types.ObjectId, ref : dep };
+                    model.schema[localName] = [{ type : Schema.Types.ObjectId, ref : dep }];
                     // model.schema[localName] = self.getModel(dep)];
                 });
             }
@@ -89,7 +89,7 @@ MongoDba.prototype.loadModel = function(name, model, Hype) {
                     if (!self.hasModel(dep) && !self.isProcessing(dep)) {
                         self.loadModel(dep, self.getRawModel(dep), Hype);
                     }
-                    model.schema[localName] = { type : mongoose.Schema.Types.ObjectId, ref : dep };
+                    model.schema[localName] = { type : Schema.Types.ObjectId, ref : dep };
                     // model.schema[localName] = [self.getModel(dep)];
                 });
             }

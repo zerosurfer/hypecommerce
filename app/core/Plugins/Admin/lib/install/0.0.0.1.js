@@ -20,8 +20,8 @@ module.exports = function(Hype) {
 
 			// Get the admin module to listen for events
 			var admin = Hype.require('Admin'),
-				PermissionSchema = Hype.dba.getSchema('Permission'),
-				GroupSchema = Hype.dba.getSchema('AdminGroup'),
+				Permission = Hype.dba.getModel('Permission'),
+				AdminGroup = Hype.dba.getModel('AdminGroup'),
 				permissions = [],
 				groups = [],
 				models = {}, // store all the returned mongoose models
@@ -64,7 +64,7 @@ module.exports = function(Hype) {
 			groups = [
 				{
 					'label' : 'Superusers',
-					'permissions': [
+					'permissionStr': [
 						'Category',
 						'Cms',
 						'Product',
@@ -73,7 +73,7 @@ module.exports = function(Hype) {
 	            },
 	            {
 					'label' : 'Marketing',
-					'permissions': [
+					'permissionStr': [
 						'Category',
 						'Cms',
 						'Product'
@@ -81,14 +81,14 @@ module.exports = function(Hype) {
 	            },
 	            {
 					'label' : 'Sales',
-					'permissions': [
+					'permissionStr': [
 						'Product',
 						'Sales'
 					]
 	            },
 	            {
 					'label' : 'Developer',
-					'permissions': [
+					'permissionStr': [
 						'Category',
 						'Cms',
 						'Product',
@@ -99,17 +99,21 @@ module.exports = function(Hype) {
 			
 			// Listen to create a permission
 			admin.listen('createPermission', function(e) {
-				var tmpSchema;
+				var tmpModel;
 				// Create the new permission
 				if (i < permissions.length) {
 					Hype.log("Creating permission " + e.label);
 					// Create the new permission
-					tmpSchema = new PermissionSchema(e);
+					tmpModel = new Permission(e);
 					// Add the model to the models object for later use
-					models[e.label] = tmpSchema.save();
+					tmpModel.save(function(err) {
+						if (err) return handleError(err);
 
-					i++;
-					admin.notify('createPermission', permissions[i]);
+						models[e.label] = tmpModel;
+
+						i++;
+						admin.notify('createPermission', permissions[i]);
+					});
 
 				} else {
 					admin.notify('createGroup', groups[j]);
@@ -118,23 +122,35 @@ module.exports = function(Hype) {
 
 			// Listen to create a group
 			admin.listen('createGroup', function(e) {
-				var tmpSchema,
+				var tmpModel,
+					label,
 					p;
 
 				if (j < groups.length) {
 					Hype.log("Creating group " + e.label);
-
+					// Create the permissions property if it doesn't exist
+					if (e.permissions === undefined) {
+						e.permissions = [];
+					}
 					// Add the permissions based on the strings
-					for(p = 0; p < e.permissions.length; p++) {
-						e.permissions[p] = models[e.permissions[p]]._id;
+					for(p = 0; p < e.permissionStr.length; p++) {
+						label = e.permissionStr[p];
+						// Push the new model on
+						e.permissions.push(models[label]._id);
 					}
 
+					for (var key in e) {
+					    if (key == 'permissionStr') {
+					        delete e[key];
+					    }
+					}
+					console.log(e);
 					// Create the new group
-					tmpSchema = new GroupSchema(e);
-					tmpSchema.save();
-
-					j++;
-					admin.notify('createGroup', groups[j]);
+					tmpModel = new AdminGroup(e);
+					tmpModel.save(function(err) {
+						j++;
+						admin.notify('createGroup', groups[j]);
+					});
 				} else {
 					admin.notify('finished');
 				}

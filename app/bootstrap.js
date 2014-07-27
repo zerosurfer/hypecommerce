@@ -15,29 +15,55 @@ var	fs = require('fs'),
 	app = express(),
 	passport = require('passport')
 	server = require('./core/Hype/Server')(app),
-	hype = require('./core/Hype')(app);
+	Hype = require('./core/Hype')(app);
 
 module.exports = (function() {
+	var PermissionModel,
+		p;
+
 	"use strict";
 
-	hype.log('Preparing for launch');
+	Hype.log('Preparing for launch');
 
 	// Connect to mongo
-	hype.connect();
+	Hype.connect();
 
 	// Load core plugins
-	hype.loadPlugins(path.resolve('./app/core/Plugins'));
+	Hype.loadPlugins(path.resolve('./app/core/Plugins'));
 
 	// Load third-party plugins
 	fs.readdirSync(path.resolve('./app/plugins')).forEach(function(file) {;
-		hype.loadPlugins(path.resolve('./app/plugins/' + file));
+		Hype.loadPlugins(path.resolve('./app/plugins/' + file));
 	});
 
 	// Start Hype
-	hype.start();
+	Hype.start();
 
 	// Start the server
-	server.start(app, express, passport, hype);
+	server.start(app, express, passport, Hype);
+
+	// // Some testing
+	// PermissionModel = Hype.dba.getModel('Permission');
+	// p = new PermissionModel({
+	// 	'label' : 'Sales',
+	// 	'read' : true,
+	// 	'write': true,
+	// 	'execute': true,
+	// 	'path': 'modules/sales/*'
+	// });
+
+	// p.save(function(err) {
+	// 	var AdminGroup = Hype.dba.getModel('AdminGroup');
+	// 	var group = new AdminGroup({
+	// 		'label' : 'Superusers',
+	// 		'permissions': [
+	// 			p._id
+	// 		]
+ //        });
+	// 	group.save(function() {
+
+	// 	});
+	// })
 	
-	hype.log('Successfully launched your Hype Commerce store');
+	Hype.log('Successfully launched your Hype Commerce store');
 })();
