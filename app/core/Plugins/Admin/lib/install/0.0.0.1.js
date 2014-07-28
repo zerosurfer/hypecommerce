@@ -99,7 +99,7 @@ module.exports = function(Hype) {
 			];
 			
 			// Listen to create a permission
-			admin.listen('createPermission', function(e) {
+			admin.listen('admin:createPermission', function(e) {
 				var tmpModel;
 				// Create the new permission
 				if (i < permissions.length) {
@@ -113,16 +113,16 @@ module.exports = function(Hype) {
 						models[e.label] = tmpModel;
 
 						i++;
-						admin.notify('createPermission', permissions[i]);
+						admin.notify('admin:createPermission', permissions[i]);
 					});
 
 				} else {
-					admin.notify('createGroup', groups[j]);
+					admin.notify('admin:createGroup', groups[j]);
 				}
 			});
 
 			// Listen to create a group
-			admin.listen('createGroup', function(e) {
+			admin.listen('admin:createGroup', function(e) {
 				var tmpModel,
 					label,
 					p;
@@ -151,7 +151,7 @@ module.exports = function(Hype) {
 					tmpModel = new AdminGroup(e);
 					tmpModel.save(function(err) {
 						j++;
-						admin.notify('createGroup', groups[j]);
+						admin.notify('admin:createGroup', groups[j]);
 					});
 				} else {
 					admin.notify('finished');
@@ -165,7 +165,7 @@ module.exports = function(Hype) {
 			// Kick off the installer
 			// Recursively creates permissions until all are complete, then kicks off
 			// an event to recursively create the user groups
-			admin.notify('createPermission', permissions[i]);
+			admin.notify('admin:createPermission', permissions[i]);
 
 		},
 

@@ -88,6 +88,7 @@ module.exports = {
         schema: {
             code: String,
             label: String,
+            decimals: Number,
             symbol: String,
             createdAt: Date
         }

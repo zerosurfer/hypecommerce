@@ -16,8 +16,8 @@ module.exports = {
             updatedAt: Date
         },
         deps: {
-            hasOne: {
-                view: 'View'
+            hasMany: {
+                views: 'View'
             }
         }
     },
@@ -27,10 +27,7 @@ module.exports = {
      *
      * @var String name
      * @var String description
-     * @var String shortDescription
-     * @var String metaDescription
-     * @var String metaTags
-     * @var String theme
+     * @var String code
      * @var Date createdAt
      * @var Date updatedAt
      * @var View view
@@ -39,10 +36,7 @@ module.exports = {
         schema: {
             name: String,
             description: String,
-            shortDescription: String,
-            metaDescription: String,
-            metaTags: String,
-            theme: String,
+            code: String,
             createdAt: Date,
             updatedAt: Date
         },
