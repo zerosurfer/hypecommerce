@@ -58,7 +58,7 @@ module.exports = function(Hype) {
 				res.render(path.resolve(__dirname  + '../../..' + '/admin/index.html'));
 			});
 
-			// console.log(Hype.Admin.menu.configuration);
+			//console.log(Hype.Admin.menu.configuration);
 
 			// Setup a custom 404 page fallback
 			app.use(function(req, res, next){

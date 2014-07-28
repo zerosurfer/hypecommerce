@@ -16,8 +16,15 @@ var HypeAdmin,
  		var _menu = {};
 
  		this.addMenu = function(menu) {
- 			this._menu = menu;
- 		}
+
+ 			// sort the menu right away
+ 			this._menu = this.sortMenu(menu);
+ 		},
+
+ 		this.sortMenu = function(elements) {
+ 			return elements;
+ 		},
+
  		/**
  		 * Check if we're logged in
  		 *

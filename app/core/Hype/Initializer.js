@@ -100,13 +100,56 @@ module.exports = (function(_) {
 
         // console.log(supermenu);
         // Add the supermenu to the Admin
-        Hype.Admin.menu = supermenu.menu;
+        Hype.Admin.menu = sortMenu(supermenu.menu);
 
         // Recursively load all the models
         _(supermodels).each(function(model, modelName) {
             Hype.Db.loadModel(modelName, model, Hype);
         });
     };
+
+    var sortMenu = function(elements) {
+        var sortable = [],
+            sortedElements = {},
+            level = 0,
+            elem,
+            key,
+            position,
+            value,
+            e,
+            i;
+
+        // Get the sort values
+        for (e in elements) {
+            elem = elements[e];
+
+            // Check for children
+            if (elem.children !== undefined) {
+                elem.children = sortMenu(elem.children);
+            }
+
+            if (elem.sort === undefined) {
+                elem.sort = 9999;
+            }
+
+            sortable.push([e, elem.sort]);
+        }
+
+        // Sort the level
+        sortable.sort(function(a, b) { 
+            return a[1] - b[1];
+        });
+
+        // Rebuild the elements object
+        for(i = 0; i < sortable.length; i++) {
+            value = sortable[i];
+            position = value[1];
+            key = value[0];
+            sortedElements[key] = elements[key];
+        }
+
+        return sortedElements;
+    }
 
     var initScripts = function(modules, Hype) {
        _(modules).each(function(module) {
