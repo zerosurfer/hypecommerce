@@ -152,12 +152,115 @@ module.exports = (function(_) {
     }
 
     var initScripts = function(modules, Hype) {
+        var moduleInstalled = {};
+        console.log(modules);
+        // Sort the module dependencies
+        _(modules).each(function(module) {
+            if (module.is('started')) {
+                if (module.depends) {
+                    _(module.depends).each(function(version, depend) {
+
+                        hasVersion(depend, version, modules);
+                        
+                    });
+                }
+                
+            }
+        });
+
        _(modules).each(function(module) {
             if (module.is('started')) {
                 module.install();
             }
         });
     };
+
+    /**
+     * Determines if we have the right version loaded
+     *
+     * @param   String  module;     Name of the module
+     * @param   String  version;    Version number (1.0.0)
+     * @param   Array   modules;    The list of loaded modules
+     * @return  Boolean
+     */
+    var hasVersion = function(module, version, modules) {
+        var error,
+            moduleName,
+            tmpVersion,
+            rawVersionNumber,
+            comparison;
+
+        console.log(module);
+
+        // Get the raw version number without the periods
+        tmpVersion = version.replace(/\./g, '');
+
+        // Strip the comparator
+        comparison = function() {
+            var comparator = '',
+                i = 0;
+            for (i; i < tmpVersion.length; i++) {
+                if (isNaN(tmpVersion[i])) {
+                    comparator += tmpVersion[i];
+                } else {
+                    break;
+                }
+            }
+
+            return comparator;
+        }();
+        // Get raw the version
+        rawVersionNumber = function() {
+            var ver = '',
+                i = 0;
+            for (i; i < tmpVersion.length; i++) {
+                if (!isNaN(tmpVersion[i])) {
+                    ver += tmpVersion[i];
+                }
+            }
+            return ver;
+        }();
+
+        // First let's check to make sure we even have the module
+        moduleName
+
+        error  = "Your installation does not meet the minimum requirements. Looking for " + module + " version " + version;
+        throw error;
+    }
+
+    /**
+     * Determines if versions are greater than (equals), less than (equals), or the same (1.0.0 == 1.0.0.0)
+     *
+     * @param   String  version;        Version number (1.0.0)
+     * @param   String  compareVersion; Version number (1.0.0)
+     * @param   String  comparison
+     */
+    var compareVersions = function(version, compareVersion, comparison) {
+        if (comparison) {
+            switch (comparison) {
+                case '>=' :
+
+                    break;
+                case '>' :
+
+                    break;
+                case '=' :
+                case '==':
+
+                    break;
+                case '<=':
+
+                    break;
+                case '<':
+
+                    break;
+            }
+        }
+    }
+
+    var installModuleScripts = function(module) {
+
+    }
 
     var initRoutes = function(modules, Hype, app) {
         _(modules).each(function(module) {

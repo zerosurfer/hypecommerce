@@ -3,7 +3,7 @@
  *
  * @package		Hype
  * @module		Stripe
- * @version		0.0.1.0
+ * @version		1.0.0
  * @author		Hype Commerce Team <team@hypejs.com>
  * @copyright	Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license		http://www.hypejs.com/license
@@ -12,10 +12,17 @@
 module.exports = {
     name: 'Stripe',
     enabled: true,
+    version: '1.0.0',
+    description: 'Stripe payment gateway integration',
+    author: 'Thomas Lackemann',
+    copyright: '2014',
+    image: __dirname + '/lib/icon.jpg',
+    license: 'MIT',
     depends: {
-        'core': '>=1.0.0.0'
+        'Core': '>=1.0.0'
     },
     main: require('./lib/stripe'),
-    //models: require('./lib/models'),
-    version: '0.0.0.1'
+    // models: require('./lib/models'),
+    // routes: require('./lib/routes'),
+    // scripts: './lib/install'
 };
