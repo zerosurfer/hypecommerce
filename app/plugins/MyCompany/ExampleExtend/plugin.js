@@ -10,7 +10,7 @@ module.exports = {
 
     enabled: false,
     depends: {
-        'core': '>=1.0.0.0'
+        'System': '>=1.0.0.0'
     },
     main: require('./lib/extend'),
     models: require('./lib/models'),

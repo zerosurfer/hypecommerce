@@ -18,7 +18,7 @@ module.exports = {
     license: 'MIT',
     enabled: true,
     depends: {
-        'core': '>=1.0.0.0'
+        'System': '>=1.0.0.0'
     },
     main: require('./lib/ractive'),
     version: '0.0.0.1'

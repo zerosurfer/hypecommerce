@@ -55,6 +55,9 @@ module.exports = function(app) {
 
 			inst.Admin = {};
 
+			// Handle different types of errors
+			inst.Error = require('./Hype/Error');
+
 			// locale instance
 			inst.locale = require('./Hype/Locale')(Hype);
 

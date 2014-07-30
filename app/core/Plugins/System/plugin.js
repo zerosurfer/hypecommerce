@@ -19,7 +19,7 @@ module.exports = {
     image: __dirname + '/lib/icon.jpg',
     license: 'MIT',
     depends: {
-        'Core': '>=1.0.0'
+        'System': '>=1.0.0'
     },
     main: require('./lib/system'),
     models: require('./lib/models'),

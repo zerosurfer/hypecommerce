@@ -158,6 +158,7 @@ module.exports = (function(_) {
         _(modules).each(function(module) {
             if (module.is('started')) {
                 if (module.depends) {
+                    Hype.log("Checking dependencies for " + module.name);
                     _(module.depends).each(function(version, depend) {
 
                         hasVersion(depend, version, modules);
@@ -185,12 +186,9 @@ module.exports = (function(_) {
      */
     var hasVersion = function(module, version, modules) {
         var error,
-            moduleName,
             tmpVersion,
             rawVersionNumber,
             comparison;
-
-        console.log(module);
 
         // Get the raw version number without the periods
         tmpVersion = version.replace(/\./g, '');
@@ -222,10 +220,11 @@ module.exports = (function(_) {
         }();
 
         // First let's check to make sure we even have the module
-        moduleName
-
-        error  = "Your installation does not meet the minimum requirements. Looking for " + module + " version " + version;
-        throw error;
+        if (modules[module]) {
+        } else {
+            error = "Could not find module " + module;
+            throw error;
+        }
     }
 
     /**
