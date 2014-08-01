@@ -1,11 +1,18 @@
-module.exports = function(Example, Hype, _) {
-    var privateFunc = function() {
-        return 'is real';
-    };
+module.exports = function(Product, Hype, _) {
+    
+	var ProductModel = Hype.Db.getModel('Product');
 
-    Example.publicFunc = function() {
-        return 'The Hype ' + privateFunc();
-    };
+	Product.create = function(options) {
 
-    return Example;
+		console.log(Hype);
+		var product = new ProductModel(options);
+
+		product.save(function(err) {
+			if (!err) {
+				console.log('aww yeaa');
+			}
+		});
+	}
+
+    return Product;
 };

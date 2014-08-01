@@ -41,20 +41,9 @@ module.exports = (function() {
 
 	// Start the server
 	server.start(app, express, passport, Hype);
-
-	// // Some testing
-
-			// var Permission = Hype.Db.getModel('Permission'),
-			// 	AdminGroup = Hype.Db.getModel('AdminGroup'),
-			// 	PermissionCollection,
-			// 	AdminGroupCollection;
-
-			// Permission.find(function(err, results) {
-			// 	for (var i = 0; i < results.length; i++) {
-			// 		results[i].remove();
-			// 	}
-			// })
-
 	
 	Hype.log('Successfully launched your Hype Commerce store');
+
+	// Temporary testing
+	require('./super-cool-tests')(Hype);
 })();
