@@ -5,6 +5,7 @@ module.exports = {
     Product: {
         schema: {
             name: String,
+            type: { type: String, enum: ['configurable', 'grouped', 'simple', 'virtual', 'subscription'] },
             description: String,
             shortDescription: String,
             metaDescription: String,
@@ -43,8 +44,24 @@ module.exports = {
                 groupPrices: 'GroupPrice',
                 tierPrices: 'TierPrice',
                 tags: 'Tag',
+                swatches: 'Swatch',
                 images: 'Media'
             }
+        }
+    },
+
+    Swatch: {
+        schema: {
+            label: String,
+            color: String,
+            createdAt: Date,
+            updatedAt: Date
+        },
+        deps: {
+            hasOne: {
+                product: 'Product', // reference back to the simple product (swatches will be used on configurable products)
+                image: 'Media' // Optional
+            }      
         }
     },
 

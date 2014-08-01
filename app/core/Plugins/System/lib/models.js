@@ -49,6 +49,19 @@ module.exports = {
         }
     },
 
+    AttributeSet: {
+        schema: {
+            label: String,
+            createdAt: Date,
+            updatedAt: Date
+        },
+        deps: {
+            hasMany: {
+                attributes: 'Attribute'
+            }
+        }
+    },
+
     /**
      * Config
      *
