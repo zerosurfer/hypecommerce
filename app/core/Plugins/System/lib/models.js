@@ -12,11 +12,39 @@ module.exports = {
         schema: {
             label: String,
             code: String,
-            value: String
+            type: { type: String, enum: ['dropdown', 'text', 'textarea', 'date', 'boolean', 'select', 'multiselect', 'price', 'media', 'tax'] },
+            defaultValue: String,
+            unique: Boolean,
+            required: Boolean,
+            filterable: Boolean,
+            advanceSearch: Boolean,
+            validation: { type: String, enum: ['decimal', 'integer', 'email', 'url', 'string', 'az09string'] },
+            sort: Number,
+            createdAt: Date,
+            updatedAt: Date
         },
         deps: {
             hasOne: {
-                store: 'Store'
+                store: 'Store',
+                view: 'View'
+            },
+            hasMany: {
+
+            }
+        }
+    },
+
+    AttributeValue: {
+        schema: {
+            value: String,
+            createdAt: Date,
+            updatedAt: Date
+        },
+        deps: {
+            hasOne: {
+                attribute: 'Attribute',
+                store: 'Store',
+                view: 'View'
             }
         }
     },

@@ -33,10 +33,25 @@ module.exports = {
             updatedAt: Date
         },
         deps: {
+            hasOne: {
+                group: 'Group'
+            },
             hasMany: {
                 addresses: 'Address',
                 attributes: 'Attribute'
             }
+        }
+    },
+
+    /**
+     * Group
+     */
+    Group: {
+        schema: {
+            name: String,
+            description: String,
+            createdAt: Date,
+            updatedAt: Date
         }
     },
 
