@@ -13,9 +13,9 @@ module.exports = {
 	install: "Fri, 06 Jun 2014 12:30:23 +0000",		// May delete this line
 	secret: "8e7be24bb81205f20befd8e65e21a596",		// Encryption string
 	environment: "development",						// Runtime environment
+	debug: true,
+	log: true,
 	development: {
-		log: true,
-		debug: true,
 		db: {
 			type: "mongo",
 			mongo: {
@@ -39,17 +39,17 @@ module.exports = {
 			https: {
 				admin: 'admin.{url}',
 				port: 4443
-			}
-		},
-		session: {
-			storage: "redis",
-			redis: {
-				host: "localhost",
-				port: 6379,
-				db: "hype_development",
-				pass: "u2T2BvKcXXGk9pKXjfXw",
-				secret: "XMGnKPtQEuZbWYWLp5CZ",
-				cookie: { path: "/", maxAge: 3600000 }
+			},
+			session: {
+				storage: "redis",
+				redis: {
+					host: "localhost",
+					port: 6379,
+					db: "hype_development",
+					pass: "u2T2BvKcXXGk9pKXjfXw",
+					secret: "XMGnKPtQEuZbWYWLp5CZ",
+					cookie: { path: "/", maxAge: 3600000 }
+				}
 			}
 		}
 	},

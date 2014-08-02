@@ -23,13 +23,13 @@ module.exports = function(Hype) {
         this.Server;
         this.Admin = require('./Admin')(Hype);
         this.Db;
-        this.init = function(Db, Server) {
+        this.init = function(Server, Db) {
             Hype.listen('hype:server:complete', function() {
-                self._init(Db, Server);
+                self._init(Server, Db);
             })
         }
 
-        this._init = function(Db, Server) {
+        this._init = function(Server, Db) {
             // Load the necessary core plugin files
             Hype.log("Preparing to load core modules");
             this.loadPlugins(path.resolve('./app/core/Plugins'));

@@ -23,7 +23,8 @@
  * methods like Hype.log() and Hype.debug() - We won't actual start until the last step
  */
 
-var	Config = require('./config'),
+var	fs = require('fs'),
+	Config = (fs.existsSync(__dirname + '/config.js')) ? require('./config') : require('./config.default'),
 	Hype = require('./core/Hype')(Config),
 	Server = require('./core/Hype/Server')(Hype),
 	Db = require('./core/Hype/Database')(Hype),
@@ -38,7 +39,7 @@ module.exports = (function() {
 	// Start the server
 	Server.init(Config[Config.environment].server);
 	// Load the modules
-	Initializer.init(Db, Server);
+	Initializer.init(Server, Db);
 	// Boostrap Hype and blast off
 	Hype.init(Initializer);
 	// Silly tests

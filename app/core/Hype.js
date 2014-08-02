@@ -89,7 +89,7 @@ module.exports = function(Config) {
 	Hype.prototype.log = function(message, priority) {
 		var date, timestamp;
 
-		if (Config.environment == 'development' || Config.environment == 'staging') {
+		if (Config.log) {
 			if (priority === undefined) {
 				priority = 'info';
 			}
@@ -114,7 +114,7 @@ module.exports = function(Config) {
 	Hype.prototype.debug = function(message, priority) {
 		var date, timestamp;
 
-		if (Config.environment == 'development') {
+		if (Config.debug) {
 			if (priority === undefined) {
 				priority = 'info';
 			}
