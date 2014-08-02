@@ -12,7 +12,7 @@
 module.exports = {
     name: 'Cart',
     enabled: true,
-    version: '0.0.0',
+    version: '1.0.0',
     description: 'Shopping cart',
     author: 'Thomas Lackemann',
     copyright: '2014',

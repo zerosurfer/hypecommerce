@@ -41,20 +41,8 @@ module.exports = (function() {
 	Initializer.install();
 	// Boostrap Hype and blast off
 	Hype.init(Initializer);
-
 	// Silly tests
 	Hype.listen('hype:start', function() {
 		require('./super-cool-tests')(Hype);
 	});
 })();
-
-	// // Start Hype
-	// Hype.start();
-
-	// // Start the server
-	// server.start(app, express, passport, Hype);
-	
-	// Hype.log('Successfully launched your Hype Commerce store');
-
-	// // Temporary testing
-	// require('./super-cool-tests')(Hype);

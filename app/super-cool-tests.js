@@ -2,6 +2,7 @@ var Tests;
 
 module.exports = function(Hype) {
 	Tests = function() {
+		Hype.log("Running some really silly tests");
 		// var Product = Hype.require('Product');
 
 		// // Create a product
