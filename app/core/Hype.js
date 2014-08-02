@@ -41,6 +41,19 @@ module.exports = function(Config) {
         emitter.emit(event, arg);
     };
 
+    /**
+     * Bootstrap the system before initializing
+     *
+     *
+     */
+    Hype.prototype.init = function(Initializer) {
+    	var self = this;
+    	this.listen('hype:initializer:complete', function() {
+    		self.log("Initializing Hype Commerce v" + Config.version);
+    		self.notify('hype:start');
+    	});
+    };
+
 	/**
 	 * Log
 	 *

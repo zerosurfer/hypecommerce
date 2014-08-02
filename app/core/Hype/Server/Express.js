@@ -61,9 +61,14 @@ module.exports = function(Hype) {
 
 
 			Hype.log("Starting server");
-			app.listen(Config.port, function() {
-				Hype.notify('hype:server:complete');
-				Hype.log('Hype server listening on port ' + Config.port + ' in ' + 	 + ' mode');
+			Hype.notify('hype:server:complete');
+			
+		},
+
+		this.connect = function(Config) {
+			app.listen(Config.express.port, function() {
+				Hype.log('Your store is up and running!');
+				Hype.log('Access your store by navigating to ' + Config.express.url + ':' + Config.express.port + '/');
 			});
 		}
 

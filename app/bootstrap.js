@@ -20,34 +20,32 @@
  * 5) Start Hype
  *
  * We give Server and Db the initial Hype object so that it can grab some generic 
- * methods like Hype.log() and Hype.debug() - We won't actual init until the last step
- *
- *
- *
+ * methods like Hype.log() and Hype.debug() - We won't actual start until the last step
  */
 
-var	fs = require('fs'),
-	url = require('url'),
-	path = require('path'),
-	Config = require('./config'),
+var	Config = require('./config'),
 	Hype = require('./core/Hype')(Config),
 	Server = require('./core/Hype/Server')(Hype),
 	Db = require('./core/Hype/Database')(Hype);
-	//Modules = require('./core/Hype/Initializer')();
+	Initializer = require('./core/Hype/Initializer')(Hype);
 
 module.exports = (function() {
 	"use strict";
 	// Connect to the database adapter
 	Db.init(Config[Config.environment].db);
-
 	// Start the server
 	Server.init(Config[Config.environment].server);
-
 	// Load the modules
-	// Modules.load(Db, Server);
+	Initializer.init(Db, Server);
+	// Boostrap Hype
+	Hype.init(Initializer);
+	// Blast off (feed modules the fully loaded Hype object)
+	//Hype.start();
+})();
 
-	// Start Hype
-	// Hype.start(Modules);
+
+
+
 
 	// Hype.loadPlugins(path.resolve('./app/core/Plugins'));
 
@@ -66,4 +64,3 @@ module.exports = (function() {
 
 	// // Temporary testing
 	// require('./super-cool-tests')(Hype);
-})();

@@ -37,6 +37,10 @@ module.exports = function(Hype) {
 					break;
 			}
 
+			Hype.listen('hype:start', function() {
+				server.connect(Config);
+			});
+			
 			server.init(Config, Auth);
 		}
 	}

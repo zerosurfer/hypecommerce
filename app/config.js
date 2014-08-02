@@ -14,11 +14,8 @@ module.exports = {
 	secret: "8e7be24bb81205f20befd8e65e21a596",		// Encryption string
 	environment: "development",						// Runtime environment
 	development: {
-		url: "http://127.0.0.1/",
-		port: 4973, // "HYPE" on a phone keypad =)
 		log: true,
 		debug: true,
-		nodes: 2, // for clustering
 		db: {
 			type: "mongo",
 			mongo: {
@@ -33,13 +30,16 @@ module.exports = {
 			type: 'express',
 			admin: "/admin", // url for the admin
 			express: {
+				url: "http://localhost",
+				port: 4973, // "HYPE" on a phone keypad =)
+				nodes: 2, // for clustering
 				theme: "ractive" // theme is specific, since we're frontend agnostic, who says we even need one
 				// express options should go here
+			},
+			https: {
+				admin: 'admin.{url}',
+				port: 4443
 			}
-		},
-		https: {
-			admin: 'admin.{url}',
-			port: 4443
 		},
 		session: {
 			storage: "redis",
