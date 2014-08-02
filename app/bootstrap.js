@@ -31,14 +31,14 @@ var	Config = require('./config'),
 
 module.exports = (function() {
 	"use strict";
+	// Getting ready
+	Hype.log("Preparing Hype Commerce v" + Config.version);
 	// Connect to the database adapter
 	Db.init(Config[Config.environment].db);
 	// Start the server
 	Server.init(Config[Config.environment].server);
 	// Load the modules
 	Initializer.init(Db, Server);
-	// Make any necessary upgrades
-	Initializer.install();
 	// Boostrap Hype and blast off
 	Hype.init(Initializer);
 	// Silly tests

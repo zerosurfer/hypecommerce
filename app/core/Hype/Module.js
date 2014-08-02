@@ -104,6 +104,7 @@ module.exports = function(Hype) {
 
             if (dbVersion == configVersion) {
                 Hype.debug("Nothing to install for " + self.name);
+                Hype.notify('hype:module:install');
             }
 
             // Install if the dbVersion is less than our configVersion
@@ -144,6 +145,7 @@ module.exports = function(Hype) {
                      { 'version': self.version },
                      { 'upsert': true },
                      function(err, doc) {
+                        Hype.notify('hype:module:install', doc);
                          // executed query
                      }
                  );
@@ -169,6 +171,8 @@ module.exports = function(Hype) {
                 // Attempt to install the module based on the fileVersion, dbVersion, and configVersion
                 determineInstallAction(fileVersion, dbVersion, configVersion);
             });
+        } else {
+            Hype.notify('hype:module:install');
         }
     }
 

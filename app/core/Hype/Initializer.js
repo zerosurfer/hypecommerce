@@ -21,6 +21,7 @@ module.exports = function(Hype) {
         var Modules = {};
 
         this.Server;
+        this.Admin = require('./Admin')(Hype);
         this.Db;
         this.init = function(Db, Server) {
             Hype.listen('hype:server:complete', function() {
@@ -45,7 +46,7 @@ module.exports = function(Hype) {
             this.initModels(Db);
             // // Init routes
             // this.initRoutes();
-            Hype.notify('hype:initializer:complete');
+            this.install(Db);
         },
 
         this.install = function(Db) {
@@ -203,9 +204,7 @@ module.exports = function(Hype) {
                 }
             });
 
-            // console.log(supermenu);
-            // Add the supermenu to the Admin
-            //Hype.Admin.menu = sortMenu(supermenu.menu);
+            Hype.notify('hype:admin:menuLoaded', supermenu);
 
             // Recursively load all the models
             _(supermodels).each(function(model, modelName) {
@@ -215,68 +214,37 @@ module.exports = function(Hype) {
             Hype.notify('hype:initializer:loaded');
         };
 
-        var sortMenu = function(elements) {
-            var sortable = [],
-                sortedElements = {},
-                level = 0,
-                elem,
-                key,
-                position,
-                value,
-                e,
-                i;
+        this._initScripts = function(Db) {
+            var self = this,
+                count = 0,
+                installed = 0,
+                m;
 
-            // Get the sort values
-            for (e in elements) {
-                elem = elements[e];
-
-                // Check for children
-                if (elem.children !== undefined) {
-                    elem.children = sortMenu(elem.children);
+            // Sort the module dependencies
+            _(Modules).each(function(module) {
+                if (module.depends) {
+                    Hype.log("Checking dependencies for " + module.name + " v" + module.version);
+                    _(module.depends).each(function(version, depend) {
+                        hasVersion(depend, version);
+                    });
                 }
-
-                if (elem.sort === undefined) {
-                    elem.sort = 9999;
-                }
-
-                sortable.push([e, elem.sort]);
-            }
-
-            // Sort the level
-            sortable.sort(function(a, b) { 
-                return a[1] - b[1];
             });
 
-            // Rebuild the elements object
-            for(i = 0; i < sortable.length; i++) {
-                value = sortable[i];
-                position = value[1];
-                key = value[0];
-                sortedElements[key] = elements[key];
+            // Count how many modules we have and alert when we've installed all of them then alert complete
+            for (m in Modules) {
+                count++;
             }
 
-            return sortedElements;
-        }
+            Hype.listen('hype:module:install', function(module) {
+                installed++;
+                if (installed == count) {
+                    Hype.notify('hype:initializer:complete');
+                }
+            });
 
-        this._initScripts = function(Db) {
-            var self = this;
-            Hype.listen('hype:initializer:loaded', function() {
-                var moduleInstalled = {};
-                //console.log(modules);
-                // Sort the module dependencies
-                _(Modules).each(function(module) {
-                    if (module.depends) {
-                        Hype.log("Checking dependencies for " + module.name);
-                        _(module.depends).each(function(version, depend) {
-                            hasVersion(depend, version);
-                        });
-                    }
-                });
-
-               _(Modules).each(function(module) {
-                    module.install(Hype, self.Db);
-                });
-           });
+           _(Modules).each(function(module) {
+                module.install(Hype, self.Db);
+            });
         };
 
         /**

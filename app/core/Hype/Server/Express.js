@@ -4,21 +4,19 @@ var path = require('path'),
 
 module.exports = function(Hype) {
 	var Express = function() {
-		
 		var self = this,
 			r,
 			route,
 			routeMethod,
 			routeCallback;
 
-		this.init = function(Config, Auth) {
+		this.init = function(Config, Auth, Admin) {
 			// Setup express
 			app.use(express.cookieParser());
 			app.use(express.favicon());
 			app.use(express.logger("dev"));
 			app.engine('html', require('ejs').renderFile);
 
-			// 
 			app.set('views', Config.themePath);
 			app.use(express.json());
 			app.use(express.urlencoded());
@@ -38,31 +36,28 @@ module.exports = function(Hype) {
 				res.render(path.resolve(__dirname  + '../../../../admin/index.html'));
 			});
 
-			//console.log(Config.Admin.menu.configuration);
-
 			// Setup a custom 404 page fallback
 			app.use(function(req, res, next){
 				res.status(404);
-
 				// respond with html page
 				if (req.accepts('html')) {
 					res.render(Config.express.themePath + '/404.html', { url: req.url });
 					return;
 				}
-
 				// respond with json
 				if (req.accepts('json')) {
 					res.send({ error: 'Not found' });
 					return;
 				}
 			});
-
 			app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
-
-
 			Hype.log("Starting server");
-			Hype.notify('hype:server:complete');
 			
+			Hype.listen('hype:admin:menuLoaded', function(supermenu) {
+				Admin.addMenu(supermenu.menu);
+			})
+
+			Hype.notify('hype:server:complete');
 		},
 
 		this.connect = function(Config) {

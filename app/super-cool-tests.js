@@ -7,10 +7,10 @@ module.exports = function(Hype) {
 
 		// // Create a product
 		// Product.create({
-		// 	name: 'Dans a huge fag',
-		// 	shortDescription: 'he really is ',
-		// 	description: 'just one big fag',
-		// 	price: 0
+		// 	name: 'My test product',
+		// 	shortDescription: 'Quick test',
+		// 	description: 'I cannot believe this works!',
+		// 	price: 10.00
 		// });
 	};
 

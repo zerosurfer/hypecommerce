@@ -114,7 +114,7 @@ module.exports = function(Config) {
 	Hype.prototype.debug = function(message, priority) {
 		var date, timestamp;
 
-		if (this.debugEnabled) {
+		if (Config.environment == 'development') {
 			if (priority === undefined) {
 				priority = 'info';
 			}

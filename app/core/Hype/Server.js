@@ -10,6 +10,7 @@
 
 var Server,
 	Auth = require('./Auth'),
+	Admin = require('./Admin'),
 	_ = require('underscore');
 
 module.exports = function(Hype) {
@@ -41,7 +42,7 @@ module.exports = function(Hype) {
 				server.connect(Config);
 			});
 			
-			server.init(Config, Auth);
+			server.init(Config, Auth(Hype), Admin(Hype));
 		}
 	}
 
