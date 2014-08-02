@@ -36,7 +36,7 @@ module.exports = function(Hype) {
                 self.loadPlugins(path.resolve('./app/plugins/' + file));
             });
             // // Init models
-            // this.initModels();
+            this.initModels(Db);
             // // Init routes
             // this.initRoutes();
             Hype.notify('hype:initializer:complete');
@@ -84,6 +84,8 @@ module.exports = function(Hype) {
                             hypePlugin = new HypePlugin();
                             // Add the plugin to a protected module
                             Modules[name] = new HypeModule(name, hypePlugin, config, filepath + '/' + file);
+                            // Start the module right away
+                            Modules[name].start();
                         } else {
                             Hype.log("Skipping plugin " + name + " (not enabled)");
                         }
@@ -95,7 +97,7 @@ module.exports = function(Hype) {
         }
 
 
-        this.initModels = function() {
+        this.initModels = function(Db) {
             var supermodels = {},
                 supermenu = {
                     menu: {}
@@ -111,7 +113,7 @@ module.exports = function(Hype) {
                     //console.log(module);
                     if (module.models) {
                         _(module.models).each(function(model, modelName) {
-                            Db.addRawModel(model, modelName);
+                            Db.addRawModel(modelName, model);
                         });
                     }
                 }
@@ -186,7 +188,7 @@ module.exports = function(Hype) {
 
             // Recursively load all the models
             _(supermodels).each(function(model, modelName) {
-                Hype.Db.loadModel(modelName, model, Hype);
+                Db.loadModel(modelName, model);
             });
         };
 

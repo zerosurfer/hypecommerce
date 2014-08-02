@@ -43,17 +43,6 @@ module.exports = (function() {
 	//Hype.start();
 })();
 
-
-
-
-
-	// Hype.loadPlugins(path.resolve('./app/core/Plugins'));
-
-	// // Load third-party plugins
-	// fs.readdirSync(path.resolve('./app/plugins')).forEach(function(file) {;
-	// 	Hype.loadPlugins(path.resolve('./app/plugins/' + file));
-	// });
-
 	// // Start Hype
 	// Hype.start();
 

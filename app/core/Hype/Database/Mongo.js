@@ -62,15 +62,12 @@ module.exports = function(Hype) {
 	};
 
 	// Recursively load the models into mongoose
-	MongoDba.prototype.loadModel = function(name, model, Hype) {
+	MongoDba.prototype.loadModel = function(name, model) {
 		var self = this;
-	    if (!self.hasModel(name)) {
-
-	        Hype.debug("Adding model: " + name);
-
+	    if (!this.hasModel(name)) {
+	        Hype.log("Adding model " + name);
 	        // Set that we're processing the model
 	        self.startProcessing(name);
-
 	        // if model has dependencies
 	        if (model.deps) {
 	            // for each dep
@@ -79,23 +76,25 @@ module.exports = function(Hype) {
 	            // - get the model
 	            // - update the current schema
 	            // - add model to db
-	            if (model.deps.hasMany) {
-	                _(model.deps.hasMany).each(function(dep, localName) {
-	                    if (!self.hasModel(dep) && !self.isProcessing(dep)) {
-	                        self.loadModel(dep, self.getRawModel(dep), Hype);
-	                    }
-	                    model.schema[localName] = [{ type : Schema.Types.ObjectId, ref : dep }];
-	                    // model.schema[localName] = self.getModel(dep)];
-	                });
-	            }
 
 	            if (model.deps.hasOne) {
 	                _(model.deps.hasOne).each(function(dep, localName) {
 	                    if (!self.hasModel(dep) && !self.isProcessing(dep)) {
-	                        self.loadModel(dep, self.getRawModel(dep), Hype);
+	                        self.loadModel(dep, self.getRawModel(dep));
 	                    }
 	                    model.schema[localName] = { type : Schema.Types.ObjectId, ref : dep };
 	                    // model.schema[localName] = [self.getModel(dep)];
+	                });
+	            }
+
+	            if (model.deps.hasMany) {
+	                _(model.deps.hasMany).each(function(dep, localName) {
+	                    if (!self.hasModel(dep) && !self.isProcessing(dep)) {
+	                    	//console.log(self.getRawModel(dep));
+	                        self.loadModel(dep, self.getRawModel(dep));
+	                    }
+	                    model.schema[localName] = [{ type : Schema.Types.ObjectId, ref : dep }];
+	                    // model.schema[localName] = self.getModel(dep)];
 	                });
 	            }
 	        }
@@ -136,7 +135,7 @@ module.exports = function(Hype) {
 		return mModel;
 	}
 
-	MongoDba.prototype.addRawModel = function(model, modelName) {
+	MongoDba.prototype.addRawModel = function(modelName, model) {
 		this._rawModels[modelName] = model;
 	}
 
