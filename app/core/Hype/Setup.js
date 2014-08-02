@@ -7,19 +7,15 @@
  * @copyright	Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license		http://www.hypejs.com/license
  */
- 
-module.exports = {
-	version: "1.0.0",
-	environment: "setup",
-	log: true,
-	debug: true,
-	setup: {
-		server: {
-			type: 'express',
-			express: {
-				url: 'http://localhost',
-				port: 4973
-			}
+
+module.exports = function(Hype) {
+	var Setup;
+
+	Setup = function() {
+		this.init = function(Server) {
+			Hype.notify('hype:start');
 		}
 	}
+
+	return new Setup();
 }

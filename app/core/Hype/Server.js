@@ -18,13 +18,17 @@ module.exports = function(Hype) {
 	Server = function() {
 		var self = this;
 
-		this.init = function(Config) {
-			Hype.listen('hype:db:complete', function() {
-				self._init(Config);
-			})
+		this.init = function(Config, install) {
+			if (!install) {
+				Hype.listen('hype:db:complete', function() {
+					self._init(Config);
+				});
+			} else {
+				self._init(Config, install);
+			}
 		},
 
-		this._init = function(Config) {
+		this._init = function(Config, install) {
 			var server;
 
 			Hype.log('Determining server adapter');
@@ -42,7 +46,7 @@ module.exports = function(Hype) {
 				server.connect(Config);
 			});
 			
-			server.init(Config, Auth(Hype), Admin(Hype));
+			server.init(Config, Auth(Hype), Admin(Hype), install);
 		}
 	}
 
