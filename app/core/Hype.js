@@ -7,16 +7,11 @@
  * @copyright	Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license		http://www.hypejs.com/license 
  */
+var events = require('events'),
+    emitter = new events.EventEmitter();
 
-var	fs = require('fs'),
-	path = require('path'),
-	_ = require('underscore'),
-	HypeConfig = require('./../config'),
-	inst = false,
-	Modules = {},
-	Hype;
-
-module.exports = function(app) {
+module.exports = function(Config) {
+	var Hype;
 
 	/**
 	 * The one, this is Hype. Set a few necessary (mostly) environment variables
@@ -24,158 +19,27 @@ module.exports = function(app) {
 	 *
 	 * @return
 	 */
-	Hype = function() {
-		if (!inst) {
-			// State the instance
-			inst = this;
-
-			// Holds current environment
-			inst.env = HypeConfig.environment;
-
-			// Holds the configuration
-			inst.configuration = HypeConfig.server[this.env];
-
-			// Holds the encryption secret
-			inst.secret = HypeConfig.secret;
-
-			// Holds the default theme
-			inst.theme = inst.configuration.theme;
-
-			// Holds the default theme
-			inst.themePath = path.resolve('app/themes/' + inst.theme);
-
-			// Log enabled
-			inst.logEnabled = inst.configuration.log;
-
-			// Debug enabled
-			inst.debugEnabled = inst.configuration.debug;
-
-			// database adapter
-			inst.Db = require('./Database/Mongo');
-
-			inst.Admin = {};
-
-			// Handle different types of errors
-			inst.Error = require('./Hype/Error');
-
-			// locale instance
-			inst.locale = require('./Hype/Locale')(Hype);
-
-			// Is installed
-			inst.installed = false;
-		}
-
-		return inst;
-	};
+	Hype = function() {};
 
 	/**
-	 * Require a module
+	 * Event emit
 	 *
-	 * @param	String	name
-	 * @return	Boolean|undefined
+	 * @param String event
+	 * @param function callback
 	 */
-	Hype.prototype.require = function(name) {
-		return (Modules[name] && Modules[name].is('enabled') && Modules[name].is('started')) ? Modules[name].instance : undefined;
-	};
+	Hype.prototype.listen = function(event, callback) {
+        emitter.on(event, callback);
+    };
 
-	/**
-	 * Load all plugins in a directory based on plugin.js and wrap it in a module
+    /**
+	 * Notified of an emit
 	 *
-	 * @param	String	filepath
-	 * @return	Hype
+	 * @param String event
+	 * @param mixed arg
 	 */
-	Hype.prototype.loadPlugins = function(filepath) {
-
-		var HypePlugin = require('./Hype/Plugin')(this),
-			HypeModule = require('./Hype/Module')(this),
-			self = this;
-
-		this.log('Loading plugins from ' + filepath);
-
-		// Read the directory
-		fs.readdirSync(filepath).forEach(function(file) {
-			// Skip hidden folders and files
-			if (file.indexOf('.') !== 0) {
-
-				var pluginPath = filepath + '/' + file,
-					config,
-					name;
-
-				// Configure the plugin
-				if(fs.existsSync(pluginPath + '/plugin.js')) {
-					var config = require(pluginPath + '/plugin.js'),
-						name = config.name,
-						hypePlugin,
-						admin,
-						adminName;
-
-					if (typeof config === 'function') {
-						config = config(self);
-					}
-
-					// Configure the admin
-					if(fs.existsSync(pluginPath + '/admin.js')) {
-						admin = require(pluginPath + '/admin.js'),
-						adminName = admin.name;
-
-						if (typeof admin === 'function') {
-							admin = admin(self);
-						}
-
-						// Add the admin to config
-						config.admin = admin;
-					}
-
-					self.log("Adding plugin: " + name);
-					// Instantiate the plugin
-					hypePlugin = new HypePlugin();
-					// Add the plugin to a protected module
-					Modules[name] = new HypeModule(name, hypePlugin, config, filepath + '/' + file);
-				} else {
-					self.log("Skipping plugin: " + name + " (plugin.js not found)");
-				}
-			}
-		});
-
-		return this;
-	};
-
-	/**
-	 * Run the initializer and start each module
-	 *
-	 * @return	Hype
-	 */
-	Hype.prototype.start = function() {
-		var initializer = require('./Hype/Initializer');
-
-		_(Modules).each(function(module, moduleName) {
-
-			if (module.is('enabled')) {
-				module.start();
-			}
-		});
-
-		initializer.init(Modules, this, app);
-
-		return this;
-	};
-
-	/**
-	 * Connect to the MongoDB server
-	 *
-	 * @todo	Use an abstraction layer to connect to any desired db
-	 * @return	Hype
-	 */
-	Hype.prototype.connect = function() {
-		// @todo, abstract into Hype/Database class that picks appropriate DatabaseAdapter
-		this.log("Establishing database connection with MongoDB");
-		this.Db.connect(
-			this.configuration.db['mongo'].host + ':' + this.configuration.db['mongo'].port,
-			this.configuration.db['mongo'].username,
-			this.configuration.db['mongo'].password,
-			this.configuration.db['mongo'].dbname
-		);
-	}
+    Hype.prototype.notify = function(event, arg) {
+        emitter.emit(event, arg);
+    };
 
 	/**
 	 * Log
@@ -187,7 +51,7 @@ module.exports = function(app) {
 	Hype.prototype.log = function(message, priority) {
 		var date, timestamp;
 
-		if (this.logEnabled) {
+		if (Config.environment == 'development' || Config.environment == 'staging') {
 			if (priority === undefined) {
 				priority = 'info';
 			}
@@ -227,5 +91,114 @@ module.exports = function(app) {
 		return this;
 	};
 
+
+	// /**
+	//  * Require a module
+	//  *
+	//  * @param	String	name
+	//  * @return	Boolean|undefined
+	//  */
+	// Hype.prototype.require = function(name) {
+	// 	return (Modules[name] && Modules[name].is('enabled') && Modules[name].is('started')) ? Modules[name].instance : undefined;
+	// };
+
+	// /**
+	//  * Load all plugins in a directory based on plugin.js and wrap it in a module
+	//  *
+	//  * @param	String	filepath
+	//  * @return	Hype
+	//  */
+	// Hype.prototype.loadPlugins = function(filepath) {
+
+	// 	var HypePlugin = require('./Hype/Plugin')(this),
+	// 		HypeModule = require('./Hype/Module')(this),
+	// 		self = this;
+
+	// 	this.log('Loading plugins from ' + filepath);
+
+	// 	// Read the directory
+	// 	fs.readdirSync(filepath).forEach(function(file) {
+	// 		// Skip hidden folders and files
+	// 		if (file.indexOf('.') !== 0) {
+
+	// 			var pluginPath = filepath + '/' + file,
+	// 				config,
+	// 				name;
+
+	// 			// Configure the plugin
+	// 			if(fs.existsSync(pluginPath + '/plugin.js')) {
+	// 				var config = require(pluginPath + '/plugin.js'),
+	// 					name = config.name,
+	// 					hypePlugin,
+	// 					admin,
+	// 					adminName;
+
+	// 				if (typeof config === 'function') {
+	// 					config = config(self);
+	// 				}
+
+	// 				// Configure the admin
+	// 				if(fs.existsSync(pluginPath + '/admin.js')) {
+	// 					admin = require(pluginPath + '/admin.js'),
+	// 					adminName = admin.name;
+
+	// 					if (typeof admin === 'function') {
+	// 						admin = admin(self);
+	// 					}
+
+	// 					// Add the admin to config
+	// 					config.admin = admin;
+	// 				}
+
+	// 				self.log("Adding plugin: " + name);
+	// 				// Instantiate the plugin
+	// 				hypePlugin = new HypePlugin();
+	// 				// Add the plugin to a protected module
+	// 				Modules[name] = new HypeModule(name, hypePlugin, config, filepath + '/' + file);
+	// 			} else {
+	// 				self.log("Skipping plugin: " + name + " (plugin.js not found)");
+	// 			}
+	// 		}
+	// 	});
+
+	// 	return this;
+	// };
+
+	// /**
+	//  * Run the initializer and start each module
+	//  *
+	//  * @return	Hype
+	//  */
+	// Hype.prototype.start = function() {
+	// 	var initializer = require('./Hype/Initializer');
+
+	// 	_(Modules).each(function(module, moduleName) {
+
+	// 		if (module.is('enabled')) {
+	// 			module.start();
+	// 		}
+	// 	});
+
+	// 	initializer.init(Modules, this, app);
+
+	// 	return this;
+	// };
+
+	// /**
+	//  * Connect to the MongoDB server
+	//  *
+	//  * @todo	Use an abstraction layer to connect to any desired db
+	//  * @return	Hype
+	//  */
+	// Hype.prototype.connect = function() {
+	// 	// @todo, abstract into Hype/Database class that picks appropriate DatabaseAdapter
+	// 	this.log("Establishing database connection with MongoDB");
+	// 	this.Db.connect(
+	// 		this.configuration.db['mongo'].host + ':' + this.configuration.db['mongo'].port,
+	// 		this.configuration.db['mongo'].username,
+	// 		this.configuration.db['mongo'].password,
+	// 		this.configuration.db['mongo'].dbname
+	// 	);
+	// }
 	return new Hype();
 };

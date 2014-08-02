@@ -8,7 +8,7 @@
  * @license     http://www.hypejs.com/license
  */
  
-var _ = require('underscore')
+var _ = require('underscore'),
     events = require('events'),
     emitter = new events.EventEmitter();
 
