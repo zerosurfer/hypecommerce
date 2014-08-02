@@ -20,6 +20,8 @@ module.exports = function(Hype) {
         var self = this;
         var Modules = {};
 
+        this.Server;
+        this.Db;
         this.init = function(Db, Server) {
             Hype.listen('hype:server:complete', function() {
                 self._init(Db, Server);
@@ -35,6 +37,10 @@ module.exports = function(Hype) {
             fs.readdirSync(path.resolve('./app/plugins')).forEach(function(file) {;
                 self.loadPlugins(path.resolve('./app/plugins/' + file));
             });
+
+            this.Db = Db;
+            this.Server = Server;
+
             // // Init models
             this.initModels(Db);
             // // Init routes
@@ -94,8 +100,19 @@ module.exports = function(Hype) {
                     }
                 }
             });
-        }
+        },
 
+        this.getModules = function() {
+            return Modules;
+        },
+
+        this.getModule = function(module) {
+            return Modules[module];
+        },
+
+        this.requireModule = function(module, Hype) {
+            return Modules[module].init(Hype);
+        },
 
         this.initModels = function(Db) {
             var supermodels = {},

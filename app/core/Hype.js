@@ -19,7 +19,19 @@ module.exports = function(Config) {
 	 *
 	 * @return
 	 */
-	Hype = function() {};
+	Hype = function() {
+		this.initializer;
+	};
+
+	/**
+	 * Require a module
+	 *
+	 * @param	String	name
+	 * @return	Boolean|undefined
+	 */
+	Hype.prototype.require = function(name) {
+		return (this.initializer.getModule(name)) ? this.initializer.requireModule(name, this) : undefined;
+	};
 
 	/**
 	 * Event emit
@@ -50,9 +62,24 @@ module.exports = function(Config) {
     	var self = this;
     	this.listen('hype:initializer:complete', function() {
     		self.log("Initializing Hype Commerce v" + Config.version);
-    		self.notify('hype:start');
+
+    		// Bootstrap all the modules with the Hype object
+    		self.initializer = Initializer;
+    		self.Db = Initializer.Db;
+    		console.log(Initializer);
+    		self.Server = Initializer.Server;
+
+    		self.start();
     	});
     };
+
+    /**
+     * Feed all the modules the new hype object
+     *
+     */
+    Hype.prototype.start = function() {
+    	this.notify('hype:start');
+    }
 
 	/**
 	 * Log
@@ -103,17 +130,6 @@ module.exports = function(Config) {
 		}
 		return this;
 	};
-
-
-	// /**
-	//  * Require a module
-	//  *
-	//  * @param	String	name
-	//  * @return	Boolean|undefined
-	//  */
-	// Hype.prototype.require = function(name) {
-	// 	return (Modules[name] && Modules[name].is('enabled') && Modules[name].is('started')) ? Modules[name].instance : undefined;
-	// };
 
 	// /**
 	//  * Load all plugins in a directory based on plugin.js and wrap it in a module

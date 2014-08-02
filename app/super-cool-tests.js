@@ -12,6 +12,7 @@ module.exports = function(Hype) {
 // 	}
 // })
 	Tests = function() {
+		console.log('hi');
 		var Product = Hype.require('Product');
 
 		// Create a product

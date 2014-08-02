@@ -36,16 +36,11 @@ module.exports = function(Hype) {
 
     HypeModule.prototype.start = function() {
         var md5Hash = crypto.createHash('md5');
-        // We're going to set the instance with the "require" method;
-        //this.instance = this.creator(this.plugin, Hype, _);
-
-        // Assign an id
         this.id = md5Hash.update(this.getData()).digest('hex');
-
         this._started = true;
     };
 
-    HypeModule.prototype.require = function(Hype) {
+    HypeModule.prototype.init = function(Hype) {
         return this.creator(this.plugin, Hype);
     }
 

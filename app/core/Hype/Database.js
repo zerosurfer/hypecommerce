@@ -48,6 +48,13 @@ module.exports = function(Hype) {
 		return this.adapter.addRawModel(name, model)
 	}
 
+	Database.prototype.getModel = function(model) {
+		if (!this.adapter) {
+			throw "Database adapter not properly instanstiated";
+		}
+		return this.adapter.getModel(model);
+	}
+
 	Database.prototype.loadModel = function(name, model) {
 		if (!this.adapter) {
 			throw "Database adapter not properly instanstiated";
