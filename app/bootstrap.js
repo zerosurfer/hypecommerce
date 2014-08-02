@@ -37,6 +37,8 @@ module.exports = (function() {
 	Server.init(Config[Config.environment].server);
 	// Load the modules
 	Initializer.init(Db, Server);
+	// Make any necessary upgrades
+	Initializer.install();
 	// Boostrap Hype and blast off
 	Hype.init(Initializer);
 

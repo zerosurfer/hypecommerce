@@ -1,28 +1,16 @@
 var Tests;
 
 module.exports = function(Hype) {
-// var Permission = Hype.Db.getModel('Permission'),
-// 	AdminGroup = Hype.Db.getModel('AdminGroup'),
-// 	PermissionCollection,
-// 	AdminGroupCollection;
-
-// Permission.find(function(err, results) {
-// 	for (var i = 0; i < results.length; i++) {
-// 		results[i].remove();
-// 	}
-// })
 	Tests = function() {
-		console.log('hi');
-		var Product = Hype.require('Product');
+		// var Product = Hype.require('Product');
 
-		// Create a product
-		Product.create({
-			name: 'Test product',
-			shortDescription: 'Working',
-			description: 'It is really working'
-		});
-
-
+		// // Create a product
+		// Product.create({
+		// 	name: 'Dans a huge fag',
+		// 	shortDescription: 'he really is ',
+		// 	description: 'just one big fag',
+		// 	price: 0
+		// });
 	};
 
 	return new Tests();

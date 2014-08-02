@@ -66,7 +66,6 @@ module.exports = function(Config) {
     		// Bootstrap all the modules with the Hype object
     		self.initializer = Initializer;
     		self.Db = Initializer.Db;
-    		console.log(Initializer);
     		self.Server = Initializer.Server;
 
     		self.start();

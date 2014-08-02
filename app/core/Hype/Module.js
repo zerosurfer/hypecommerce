@@ -66,13 +66,13 @@ module.exports = function(Hype) {
         return this[data];
     }
 
-    HypeModule.prototype.install = function() {
+    HypeModule.prototype.install = function(Hype, Db) {
         var folderPath = path.resolve(this.filepath + '/' + this.scripts),
             files,
             self = this,
             fileVersion,
             dbVersion,
-            installModel = Hype.Db.getModel('Install'),
+            installModel = Db.getModel('Install'),
             configVersion;
 
         var getLatestVersion = function(arr) {

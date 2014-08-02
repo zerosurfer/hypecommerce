@@ -45,7 +45,7 @@ module.exports = {
                 tierPrices: 'TierPrice',
                 tags: 'Tag',
                 swatches: 'Swatch',
-                images: 'Media'
+                media: 'Media'
             }
         }
     },

@@ -48,6 +48,10 @@ module.exports = function(Hype) {
             Hype.notify('hype:initializer:complete');
         },
 
+        this.install = function(Db) {
+            this._initScripts(Db);
+        }
+
         this.loadPlugins = function(filepath) {
             var HypePlugin = require('./Plugin')(),
                 HypeModule = require('./Module')(),
@@ -207,6 +211,8 @@ module.exports = function(Hype) {
             _(supermodels).each(function(model, modelName) {
                 Db.loadModel(modelName, model);
             });
+
+            Hype.notify('hype:initializer:loaded');
         };
 
         var sortMenu = function(elements) {
@@ -252,29 +258,25 @@ module.exports = function(Hype) {
             return sortedElements;
         }
 
-        this.initScripts = function(modules, Hype) {
-            var moduleInstalled = {};
-            //console.log(modules);
-            // Sort the module dependencies
-            _(Modules).each(function(module) {
-                if (module.is('started')) {
+        this._initScripts = function(Db) {
+            var self = this;
+            Hype.listen('hype:initializer:loaded', function() {
+                var moduleInstalled = {};
+                //console.log(modules);
+                // Sort the module dependencies
+                _(Modules).each(function(module) {
                     if (module.depends) {
                         Hype.log("Checking dependencies for " + module.name);
                         _(module.depends).each(function(version, depend) {
-
-                            hasVersion(depend, version, Modules);
-                            
+                            hasVersion(depend, version);
                         });
                     }
-                    
-                }
-            });
+                });
 
-           _(Modules).each(function(module) {
-                if (module.is('started')) {
-                    module.install();
-                }
-            });
+               _(Modules).each(function(module) {
+                    module.install(Hype, self.Db);
+                });
+           });
         };
 
         /**
@@ -285,7 +287,7 @@ module.exports = function(Hype) {
          * @param   Array   modules;    The list of loaded modules
          * @return  Boolean
          */
-        var hasVersion = function(module, version, modules) {
+        var hasVersion = function(module, version) {
             var error,
                 tmpVersion,
                 rawVersionNumber,
@@ -321,7 +323,7 @@ module.exports = function(Hype) {
             }();
 
             // First let's check to make sure we even have the module
-            if (modules[module]) {
+            if (Modules[module]) {
             } else {
                 error = "Could not find module " + module;
                 throw error;
