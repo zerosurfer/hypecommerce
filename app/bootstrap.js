@@ -26,7 +26,7 @@
 var	Config = require('./config'),
 	Hype = require('./core/Hype')(Config),
 	Server = require('./core/Hype/Server')(Hype),
-	Db = require('./core/Hype/Database')(Hype);
+	Db = require('./core/Hype/Database')(Hype),
 	Initializer = require('./core/Hype/Initializer')(Hype);
 
 module.exports = (function() {

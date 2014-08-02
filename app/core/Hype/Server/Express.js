@@ -22,8 +22,8 @@ module.exports = function(Hype) {
 			app.set('views', Config.themePath);
 			app.use(express.json());
 			app.use(express.urlencoded());
-			app.use(Config.admin + '/static', express.static(path.resolve(__dirname + '/../../admin/static')));
-			app.use(Config.admin + '/scripts', express.static(path.resolve(__dirname + '/../../admin/scripts')));
+			app.use(Config.admin + '/static', express.static(path.resolve(__dirname + '/../../../admin/static')));
+			app.use(Config.admin + '/scripts', express.static(path.resolve(__dirname + '/../../../admin/scripts')));
 			// @kurt - these should be something like Auth.init() and it will call both of them
 			//app.use(passport.initialize());
 			//app.use(passport.session());
@@ -35,7 +35,7 @@ module.exports = function(Hype) {
 
 			// Setup to use the admin
 			app.get(Config.admin, function (req, res) {
-				res.render(path.resolve(__dirname  + '../../..' + '/admin/index.html'));
+				res.render(path.resolve(__dirname  + '../../../../admin/index.html'));
 			});
 
 			//console.log(Config.Admin.menu.configuration);

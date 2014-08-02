@@ -56,7 +56,6 @@ module.exports = function(Config) {
     /**
      * Bootstrap the system before initializing
      *
-     *
      */
     Hype.prototype.init = function(Initializer) {
     	var self = this;
