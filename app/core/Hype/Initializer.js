@@ -47,10 +47,15 @@ module.exports = function(Hype) {
             // // Init routes
             // this.initRoutes();
             this.install(Db);
+
+            Hype.notify('hype:initializer:complete');
         },
 
         this.install = function(Db) {
-            this._initScripts(Db);
+            var self = this;
+            Hype.listen('hype.init.complete', function() {
+                self._initScripts(Db);
+            });
         }
 
         this.loadPlugins = function(filepath) {
@@ -238,7 +243,7 @@ module.exports = function(Hype) {
             Hype.listen('hype:module:install', function(module) {
                 installed++;
                 if (installed == count) {
-                    Hype.notify('hype:initializer:complete');
+                    Hype.notify('hype.initializer.install.complete');
                 }
             });
 

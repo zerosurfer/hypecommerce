@@ -44,6 +44,8 @@ module.exports = (function() {
 		Initializer.init(Server, Db);
 		// Boostrap Hype and blast off
 		Hype.init(Initializer);
+		// Start Hype (installs modules and starts server)
+		Hype.start();
 		// Silly tests
 		Hype.listen('hype:start', function() {
 			require('./super-cool-tests')(Hype);

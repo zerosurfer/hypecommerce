@@ -16,12 +16,11 @@ module.exports = function(Hype) {
 			app.use(express.favicon());
 			app.use(express.logger("dev"));
 			app.engine('html', require('ejs').renderFile);
-
-			app.set('views', Config.themePath);
 			app.use(express.json());
 			app.use(express.urlencoded());
 
 			if (!install) {
+				app.set('views', Config.themePath);
 				app.use(Config.admin + '/static', express.static(path.resolve(__dirname + '/../../../admin/static')));
 				app.use(Config.admin + '/scripts', express.static(path.resolve(__dirname + '/../../../admin/scripts')));
 				// @kurt - these should be something like Auth.init() and it will call both of them
@@ -59,8 +58,10 @@ module.exports = function(Hype) {
 					Admin.addMenu(supermenu.menu);
 				});
 			} else {
+				app.set('views', 'app/setup');
+				app.use('/setup/', express.static(path.resolve(__dirname + '/../../../setup')));
 				app.get('/setup', function (req, res) {
-					res.render(path.resolve(__dirname + '/../../../setup/index.html'));
+					res.render('index.html');
 				});
 			}
 

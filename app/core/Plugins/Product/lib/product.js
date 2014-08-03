@@ -3,10 +3,12 @@ module.exports = function(Product, Hype) {
 
 	Product.create = function(options) {
 		var product = new ProductModel(options);
-		console.log("We got a new ProductModel " + product);
+		
+		Hype.notify('hype.product.create.before', product);
+
 		product.save(function(err) {
 			if (!err) {
-				console.log('aww yeaa');
+				Hype.notify('hype.product.create.saved', product);
 			}
 		});
 	}

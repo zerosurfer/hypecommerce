@@ -18,7 +18,7 @@ var HypeAdmin,
  		this.addMenu = function(menu) {
  			// sort the menu right away
  			this._menu = this.sortMenu(menu);
-            console.log(this._menu);
+            //console.log(this._menu);
  		},
 
  		this.sortMenu = function(elements) {

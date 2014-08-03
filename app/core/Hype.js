@@ -67,7 +67,7 @@ module.exports = function(Config) {
     		self.Db = Initializer.Db;
     		self.Server = Initializer.Server;
 
-    		self.start();
+    		self.notify('hype.init.complete');
     	});
     };
 
@@ -76,7 +76,10 @@ module.exports = function(Config) {
      *
      */
     Hype.prototype.start = function() {
-    	this.notify('hype:start');
+    	var self = this;
+    	this.listen('hype.initializer.install.complete', function() {
+    		self.notify('hype:start');
+    	});
     }
 
 	/**

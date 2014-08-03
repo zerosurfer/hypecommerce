@@ -112,7 +112,8 @@ module.exports = function(Hype) {
 
                 fs.readdir(folderPath, function(err, files) {
                     var scriptFileVersion,
-                        rFiles = files.reverse();
+                        rFiles = files.reverse(),
+                        upgradeDowngrade = false;
                     // Reading files
 
                     Hype.debug("Checking upgrades on " + self.name);
@@ -124,18 +125,22 @@ module.exports = function(Hype) {
                             Hype.debug("Installing file " + files[f]);
                             installFile = require(folderPath + '/' + files[f])(Hype);
                             installFile.up();
+                            // Flag as upgraded
+                            upgradeDowngrade = true;
                         }
                     }
 
-                    Hype.debug("Checking downgrades on " + self.name);
-                    for(var f in files) {
-                        scriptFileVersion = getLatestVersion([files[f]]);
+                    if (!upgradeDowngrade) {
+                        Hype.debug("Checking downgrades on " + self.name);
+                        for(var f in files) {
+                            scriptFileVersion = getLatestVersion([files[f]]);
 
-                        // Check for a downgrade
-                        if (dbVersion > configVersion && scriptFileVersion > configVersion) {
-                            Hype.debug("Uninstalling file " + files[f]);
-                            installFile = require(folderPath + '/' + files[f])(Hype);
-                            installFile.down();
+                            // Check for a downgrade
+                            if (dbVersion > configVersion && scriptFileVersion > configVersion) {
+                                Hype.debug("Uninstalling file " + files[f]);
+                                installFile = require(folderPath + '/' + files[f])(Hype);
+                                installFile.down();
+                            }
                         }
                     }
                 });
