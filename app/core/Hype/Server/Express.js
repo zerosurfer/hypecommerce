@@ -20,9 +20,9 @@ module.exports = function(Hype) {
 			app.use(express.urlencoded());
 
 			if (!install) {
-				app.set('views', Config.themePath);
-				app.use(Config.admin + '/static', express.static(path.resolve(__dirname + '/../../../admin/static')));
-				app.use(Config.admin + '/scripts', express.static(path.resolve(__dirname + '/../../../admin/scripts')));
+				app.set('views', path.resolve('./app/themes/' + Config.express.theme));
+				app.use(Config.admin + '/static/', express.static(path.resolve(__dirname + '/../../../admin/static')));
+				app.use(Config.admin + '/scripts/', express.static(path.resolve(__dirname + '/../../../admin/scripts')));
 				// @kurt - these should be something like Auth.init() and it will call both of them
 				//app.use(passport.initialize());
 				//app.use(passport.session());
@@ -36,13 +36,13 @@ module.exports = function(Hype) {
 				app.get(Config.admin, function (req, res) {
 					res.render(path.resolve(__dirname  + '../../../../admin/index.html'));
 				});
-
+				console.log(path.resolve('./app/themes/' + Config.express.theme + '/404.html'));
 				// Setup a custom 404 page fallback
 				app.use(function(req, res, next){
 					res.status(404);
 					// respond with html page
 					if (req.accepts('html')) {
-						res.render(Config.express.themePath + '/404.html', { url: req.url });
+						res.render(path.resolve('./app/themes/' + Config.express.theme + '/404.html'), { url: req.url });
 						return;
 					}
 					// respond with json
