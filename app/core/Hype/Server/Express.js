@@ -69,9 +69,10 @@ module.exports = function(Hype) {
 		},
 
 		this.connect = function(Config) {
-			app.listen(Config.express.port, function() {
+			var port = process.env.PORT || Config.express.port;
+			app.listen(port, function() {
 				Hype.log('Your store is up and running!');
-				Hype.log('Access your store by navigating to ' + Config.express.url + ':' + Config.express.port + '/');
+				Hype.log('Access your store by navigating to ' + Config.express.url + ':' + port + '/');
 			});
 		}
 
