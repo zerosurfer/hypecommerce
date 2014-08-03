@@ -28,7 +28,8 @@
   ],
   "scripts": {
     "start": "node app/bootstrap.js",
-    "hyperion": "./hyperion.js"
+    "hyperion": "./hyperion.js",
+    "postinstall": "cd app/admin && bower install"
   },
   "dependencies": {
     "express": "3.12.1",
