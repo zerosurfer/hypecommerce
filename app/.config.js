@@ -7,7 +7,7 @@
  * @copyright	Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license		http://www.hypejs.com/license
  */
- 
+
 module.exports = {
 	version: "1.0.0",								// Hype Version
 	install: "Fri, 06 Jun 2014 12:30:23 +0000",		// May delete this line
