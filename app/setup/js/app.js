@@ -2,23 +2,21 @@
 
 define([
 	'marionette',
-	'collections/TodoList',
 	'views/Header',
-	'views/TodoListCompositeView',
+	'views/Steps',
 	'views/Footer'
-], function (Marionette, TodoList, Header, TodoListCompositeView, Footer) {
+], function (Marionette, Header, Steps, Footer) {
 	'use strict';
 
 	var app = new Marionette.Application();
-	var todoList = new TodoList();
 
 	var viewOptions = {
-		collection: todoList
+		step: 'store'
 	};
 
-	var header = new Header(viewOptions);
-	var main = new TodoListCompositeView(viewOptions);
-	var footer = new Footer(viewOptions);
+	var header = new Header();
+	var main = new Steps(viewOptions);
+	var footer = new Footer();
 
 	app.addRegions({
 		header: '#header',

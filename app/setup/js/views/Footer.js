@@ -1,10 +1,8 @@
 /*global define */
 define([
 	'marionette',
-	'templates',
-	'views/ActiveCount',
-	'views/CompletedCount'
-], function (Marionette, templates, ActiveCount, CompletedCount) {
+	'templates'
+], function (Marionette, templates) {
 	'use strict';
 
 	return Marionette.Layout.extend({
@@ -24,8 +22,8 @@ define([
 		},
 
 		onRender: function () {
-			this.activeCount.show(new ActiveCount({ collection: this.collection }));
-			this.completedCount.show(new CompletedCount({ collection: this.collection }));
+			// this.activeCount.show(new ActiveCount({ collection: this.collection }));
+			// this.completedCount.show(new CompletedCount({ collection: this.collection }));
 		},
 
 		updateFilterSelection: function (filter) {
