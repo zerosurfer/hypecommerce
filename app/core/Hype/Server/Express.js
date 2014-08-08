@@ -73,7 +73,7 @@ module.exports = function(Hype) {
 
 					// Create the JSON config file
 					var config = {
-						hype: "1.0.0",
+						version: "1.0.0",
 						install: new Date(),
 						secret: md5Hash.update(Math.random() + ":" + install).digest('hex'),
 						environment: "hype",
