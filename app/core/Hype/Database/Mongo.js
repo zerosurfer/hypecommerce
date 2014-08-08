@@ -54,6 +54,7 @@ module.exports = function(Hype) {
 
 		//Log.log("Connecting to MongoDB on " + host + "/" + dbname);
 		this.connection = mongoose.connect('mongodb://' + host + '/' + dbname, function(error) {
+			if (error) throw error;
 			Hype.log("Successfully connected to the database");
 			Hype.notify('hype:db:complete');
 			self.db = mongoose.connection.db;
