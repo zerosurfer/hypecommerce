@@ -6,7 +6,7 @@ define([
 	'use strict';
 
 	return Marionette.ItemView.extend({
-		template: templates.header,
+		template: templates.breadcrumbs,
 
 		ui: {
 			input: '.setup-breadcrumbs li a'

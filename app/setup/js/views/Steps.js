@@ -7,47 +7,19 @@ define([
 	'views/Steps/Store',
 	'views/Steps/Plugins',
 	'views/Steps/Review',
-], function (Marionette, templates, DatabaseStep, ServerStep, StoreStep, PluginsStep, ReviewStep) {
+], function (Marionette, Templates, DatabaseStep, ServerStep, StoreStep, PluginsStep, ReviewStep) {
 	'use strict';
 
-	return Marionette.CompositeView.extend({
-		template: templates.steps,
+	return Marionette.Layout.extend({
+		template: Templates.steps,
 
-		itemView: StoreStep,
-
-		itemViewContainer: '#current-step',
-
-		// ui: {
-		// 	toggle: '#toggle-all'
-		// },
-
-		// events: {
-		// 	'click #toggle-all': 'onToggleAllClick'
-		// },
-
-		// initialize: function () {
-		// 	this.listenTo(this.collection, 'all', this.updateToggleCheckbox, this);
-		// },
+		regions: {
+			step: '#current-step'
+		},
 
 		onRender: function () {
 			console.log('updating the current step');
-			//this.updateToggleCheckbox();
+			this.step.show(new StoreStep());
 		},
-
-		// updateToggleCheckbox: function () {
-		// 	var allCompleted = this.collection.reduce(function (lastModel, thisModel) {
-		// 		return lastModel && thisModel.get('completed');
-		// 	}, true);
-
-		// 	this.ui.toggle.prop('checked', allCompleted);
-		// },
-
-		// onToggleAllClick: function (event) {
-		// 	var isChecked = event.currentTarget.checked;
-
-		// 	this.collection.each(function (todo) {
-		// 		todo.save({ completed: isChecked });
-		// 	});
-		// }
 	});
 });
