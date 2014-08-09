@@ -49,7 +49,7 @@ define([
 					Step = new ServerStep();
 					break;
 				case 'plugins' :
-					Step = new PluginStep();
+					Step = new PluginsStep();
 					break;
 				case 'review' :
 					Step = new ReviewStep();
