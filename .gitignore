@@ -4,3 +4,4 @@ node_modules
 *.sublime-*
 bower_components
 gitstats/*
+app/config.js
