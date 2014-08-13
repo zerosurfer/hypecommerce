@@ -64,6 +64,16 @@ var HypeAdmin,
             return sortedElements;
  		},
 
+        this.getMenu = function(toArray) {
+            var arr = [];
+            if (toArray) {
+                for(var i in this._menu) {
+                    arr.push(this._menu[i]);
+                }
+                return arr;
+            }
+            return this._menu;
+        }
  		/**
  		 * Check if we're logged in
  		 *

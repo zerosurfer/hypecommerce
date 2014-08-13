@@ -8,6 +8,7 @@ define([
 	return Backbone.Collection.extend({
 		model: MenuItem,
 		url: '/admin/api/menu',
+		
 		initialize: function(){
 			this.fetch();
 		}

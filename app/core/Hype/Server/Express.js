@@ -42,9 +42,7 @@ module.exports = function(Hype) {
 				// Test API call
 				app.get(Config.admin + '/api/menu', function(req, res) {
 					res.status(200);
-					res.send({
-						hello: 'world'
-					});
+					res.send(Admin.getMenu(true));
 				});
 
 				console.log(path.resolve('./app/themes/' + Config.express.theme + '/404.html'));
