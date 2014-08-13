@@ -38,6 +38,15 @@ module.exports = function(Hype) {
 				app.get(Config.admin, function (req, res) {
 					res.render(path.resolve(__dirname  + '../../../../admin/index.html'));
 				});
+				
+				// Test API call
+				app.get(Config.admin + '/api/menu', function(req, res) {
+					res.status(200);
+					res.send({
+						hello: 'world'
+					});
+				});
+
 				console.log(path.resolve('./app/themes/' + Config.express.theme + '/404.html'));
 				// Setup a custom 404 page fallback
 				app.use(function(req, res, next){

@@ -4,7 +4,7 @@ require.config({
 		jquery: 'components/jquery/dist/jquery',
 		underscore: 'components/underscore/underscore',
 		backbone: 'components/backbone/backbone',
-		marionette: 'components/marionette/lib/backbone.marionette',
+		marionette: 'components/backbone.marionette/lib/backbone.marionette',
 		tpl: 'lib/tpl'
 	},
 

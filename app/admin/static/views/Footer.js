@@ -1,11 +1,11 @@
-define(['backbone','marionette'], function(Backbone, Marionette) {
-	
-	var Footer = Marionette.View.extend({
-		initialize: function() {
-			
-			console.log( 'Wahoo!' );
-		}
-	});
+/*global define */
+define([
+	'marionette',
+	'templates'
+], function (Marionette, templates) {
+	'use strict';
 
-  return Footer;
+	return Marionette.ItemView.extend({
+		template: templates.footer
+	});
 });

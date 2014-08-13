@@ -1,6 +1,6 @@
 {
-  "name": "admin",
-  "version": "0.0.1",
+  "name": "hypecommerce-admin",
+  "version": "1.0.0",
   "description": "Hype Commerce admin section",
   "main": "admin.js",
   "moduleType": [
@@ -20,10 +20,10 @@
     "tests"
   ],
   "dependencies": {
-    "marionette": "latest",
-    "bootstrap": "latest",
-    "font-awesome": "latest",
-    "requirejs": "latest",
-    "jquery": "latest"
+    "requirejs": "~2.1.14",
+    "underscore": "~1.6.0",
+    "bootstrap": "~3.2.0",
+    "backbone.marionette": "~2.1.0",
+    "font-awesome": "latest"
   }
 }
