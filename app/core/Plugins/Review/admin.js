@@ -17,7 +17,7 @@ module.exports = {
             tags: [
                 "reviews", "product reviews", "ratings", "customer reviews"
             ],
-            sort: 10,
+            sort: 100,
     		icon: "\f075",
     		url: "/reviews"
     	}
