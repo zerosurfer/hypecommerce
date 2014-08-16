@@ -5,9 +5,9 @@ define([
 ], function (Marionette, Templates) {
 	'use strict';
 
-	return Marionette.ItemView.extend({
+	return Marionette.CompositeView.extend({
 		template: Templates.sidebarItem,
-
+		itemViewContainer: 'ul'
 		// ui: {
 		// 	input: '#new-todo'
 		// },
