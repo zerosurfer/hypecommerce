@@ -11,7 +11,7 @@ node app/boostrap
 
 ## Documentation
 
-You can find full documentation, code examples, support, and more on our website [http://docs.hypejs.com/](http://docs.hypejs.com/)
+You can find full documentation, code examples, support, and more on our website ~~[http://docs.hypejs.com/](http://docs.hypejs.com/)~~ [https://github.com/hypecommerce/hypecommerce/wiki](https://github.com/hypecommerce/hypecommerce/wiki)
 
 ## Organization & Philosophy
 
@@ -20,7 +20,7 @@ This framework is dependent on several node.js libraries. You will need to run `
 We plan to be the #1 used eCommerce framework in the world through our ease-of-use, framework robustness, and hyper-fast performance. We strive to be the *de facto* eCommerce framework of choice for businesses of all sizes.
 
 ## Contributing
-1. Check for open issues or open a fresh issue to start a discussion around a feature idea or a bug. There is a Contributor Friendly tag for issues that should be ideal for people who are not very familiar with the codebase yet.
+1. Check for open issues or open a fresh issue to start a discussion around a feature idea or a bug. There is a "Beginner Friendly" tag for issues that should be ideal for people who are not very familiar with the codebase yet.
 2. Fork the hypecommerce repository on Github to start making your changes.
 3. Write a test which shows that the bug was fixed or that the feature works as expected.
 4. Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to CONTRIBUTORS.txt
