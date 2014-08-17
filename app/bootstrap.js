@@ -34,7 +34,7 @@ var	fs = require('fs'),
 module.exports = (function() {
 	"use strict";
 	// Getting ready
-	Hype.log("Preparing Hype Commerce v" + Config.version);
+	Hype.log("Preparing Hype Commerce v" + Config.version, 'info');
 	if (fs.existsSync(__dirname + '/config.js')) {
 		// Connect to the database adapter
 		Db.init(Config[Config.environment].db);

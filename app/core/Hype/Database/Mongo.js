@@ -50,12 +50,11 @@ module.exports = function(Hype) {
 	MongoDba.prototype.start = function(host, username, password, dbname) {
 		var self = this;
 
-		Hype.log("Connecting to the database on " + host + "/" + dbname);
+		Hype.debug("Connecting to the database on " + host + "/" + dbname);
 
-		//Log.log("Connecting to MongoDB on " + host + "/" + dbname);
 		this.connection = mongoose.connect('mongodb://' + host + '/' + dbname, function(error) {
 			if (error) throw error;
-			Hype.log("Successfully connected to the database");
+			Hype.log("Successfully connected to the database", 'success');
 			Hype.notify('hype:db:complete');
 			self.db = mongoose.connection.db;
 		});
@@ -66,7 +65,7 @@ module.exports = function(Hype) {
 	MongoDba.prototype.loadModel = function(name, model) {
 		var self = this;
 	    if (!this.hasModel(name)) {
-	        Hype.log("Adding model " + name);
+	        Hype.debug("Adding model " + name);
 	        // Set that we're processing the model
 	        self.startProcessing(name);
 	        // if model has dependencies
@@ -107,7 +106,6 @@ module.exports = function(Hype) {
 	};
 
 	MongoDba.prototype.addModel = function (modelName, model) {
-		//Log.log("Adding " + model + " to Mongo");
 
 		var mSchema = new Schema(model.schema);
 

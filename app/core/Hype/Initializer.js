@@ -31,10 +31,10 @@ module.exports = function(Hype) {
 
         this._init = function(Server, Db) {
             // Load the necessary core plugin files
-            Hype.log("Preparing to load core modules");
+            Hype.debug("Preparing to load core modules");
             this.loadPlugins(path.resolve('./app/core/Plugins'));
             // Load any third-party plugin files
-            Hype.log("Preparing to load third-party modules");
+            Hype.debug("Preparing to load third-party modules");
             fs.readdirSync(path.resolve('./app/plugins')).forEach(function(file) {;
                 self.loadPlugins(path.resolve('./app/plugins/' + file));
             });
@@ -63,7 +63,7 @@ module.exports = function(Hype) {
                 HypeModule = require('./Module')(),
                 self = this;
 
-            Hype.log('Reading plugins from ' + filepath);
+            Hype.debug('Reading plugins from ' + filepath);
 
             // Read the directory
             fs.readdirSync(filepath).forEach(function(file) {
@@ -95,7 +95,7 @@ module.exports = function(Hype) {
                                 // Add the admin to config
                                 config.admin = admin;
                             }
-                            Hype.log("Adding plugin " + name + " v" + config.version);
+                            Hype.debug("Adding plugin " + name + " v" + config.version);
                             // Instantiate the plugin
                             hypePlugin = new HypePlugin();
                             // Add the plugin to a protected module
@@ -103,10 +103,10 @@ module.exports = function(Hype) {
                             // Start the module right away
                             Modules[name].start();
                         } else {
-                            Hype.log("Skipping plugin " + name + " (not enabled)");
+                            Hype.debug("Skipping plugin " + name + " (not enabled)");
                         }
                     } else {
-                        Hype.log("Skipping plugin " + name + " (plugin.js not found)");
+                        Hype.debug("Skipping plugin " + name + " (plugin.js not found)");
                     }
                 }
             });
@@ -228,7 +228,7 @@ module.exports = function(Hype) {
             // Sort the module dependencies
             _(Modules).each(function(module) {
                 if (module.depends) {
-                    Hype.log("Checking dependencies for " + module.name + " v" + module.version);
+                    Hype.debug("Checking dependencies for " + module.name + " v" + module.version);
                     _(module.depends).each(function(version, depend) {
                         hasVersion(depend, version);
                     });
@@ -348,7 +348,7 @@ module.exports = function(Hype) {
 
                             _(methods).each(function(method, methodType) {
                                 // log the route addition
-                                Hype.log('Adding ' + methodType.toUpperCase() + ' route: ' + route);
+                                Hype.debug('Adding ' + methodType.toUpperCase() + ' route: ' + route);
 
                                 // using array notation to call the appropriate method
                                 app[methodType.toLowerCase()](route, method);
@@ -363,7 +363,7 @@ module.exports = function(Hype) {
 
                             _(methods).each(function(method, methodType) {
                                 // log the route addition
-                                Hype.log('Adding ' + methodType.toUpperCase() + ' route: ' + route);
+                                Hype.debug('Adding ' + methodType.toUpperCase() + ' route: ' + route);
 
                                 // using array notation to call the appropriate method
                                 app[methodType.toLowerCase()](route, method);

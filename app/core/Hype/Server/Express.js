@@ -45,7 +45,6 @@ module.exports = function(Hype) {
 					res.send(Admin.getMenu(true));
 				});
 
-				console.log(path.resolve('./app/themes/' + Config.express.theme + '/404.html'));
 				// Setup a custom 404 page fallback
 				app.use(function(req, res, next){
 					res.status(404);
@@ -61,7 +60,7 @@ module.exports = function(Hype) {
 					}
 				});
 				app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
-				Hype.log("Starting server");
+				Hype.debug("Starting server");
 				
 				Hype.listen('hype:admin:menuLoaded', function(supermenu) {
 					Admin.addMenu(supermenu.menu);
@@ -138,8 +137,8 @@ module.exports = function(Hype) {
 		this.connect = function(Config) {
 			var port = process.env.PORT || Config.express.port;
 			app.listen(port, function() {
-				Hype.log('Your store is up and running!');
-				Hype.log('Access your store by navigating to ' + Config.express.url + ':' + port + '/');
+				Hype.log('Your store is up and running!', 'success');
+				Hype.log('Access your store by navigating to ' + Config.express.url + ':' + port + '/', 'info');
 			});
 		}
 
