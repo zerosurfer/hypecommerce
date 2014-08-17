@@ -1,7 +1,7 @@
 {
   "name": "HypeCommerce",
-  "version": "0.0.1",
-  "author": "Hyperion Team <hypecommerce@gmail.com>",
+  "version": "1.0.0",
+  "author": "Hype Commerce Team <team@hypejs.com>",
   "description": "A hyper-fast, scalable, multi-store ecommerce platform for rapid growth",
   "contributors": [
     {
@@ -28,7 +28,7 @@
   ],
   "scripts": {
     "start": "node app/bootstrap.js",
-    "hyperion": "./hyperion.js",
+    "test": "vows app/tests/*.js --spec",
     "postinstall": "cd app/admin && bower install; cd ../setup && bower install"
   },
   "dependencies": {
@@ -58,7 +58,8 @@
     "chai": "~1.6.1",
     "grunt-contrib-jst": "~0.5.0",
     "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-clean": "~0.4.1"
+    "grunt-contrib-clean": "~0.4.1",
+    "vows": "latest"
   },
   "license": "CC",
   "engines": {
