@@ -15,11 +15,11 @@ module.exports = function(Hype) {
  		this.adapter;
  	}
  	Database.prototype.init = function(Config) {
-		Hype.log("Determining the database adapter");
+		Hype.debug("Determining the database adapter");
 		switch (Config.type) {
 			case 'mongo':
 			case 'mongodb':
-				Hype.log("Loading adapter for MongoDb");
+				Hype.debug("Loading adapter for MongoDb");
 				this.adapter = require('./Database/Mongo')(Hype);
 				break;
 			case 'mariadb':

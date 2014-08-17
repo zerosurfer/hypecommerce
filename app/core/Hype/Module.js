@@ -159,7 +159,7 @@ module.exports = function(Hype) {
         // Check for new installations
         if (this.scripts) {
             // Get the latest version
-            Hype.log("Checking updates for " + this.name + " v" + this.version);
+            Hype.debug("Checking updates for " + this.name + " v" + this.version);
 
             //Check latest file version
             files = fs.readdirSync(folderPath);

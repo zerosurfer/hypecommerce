@@ -31,11 +31,11 @@ module.exports = function(Hype) {
 		this._init = function(Config, install) {
 			var server;
 
-			Hype.log('Determining server adapter');
+			Hype.debug('Determining server adapter');
 
 			switch (Config.type) {
 				case 'express':
-					Hype.log('Loading adapter for express.js');
+					Hype.debug('Loading adapter for express.js');
 					server = require('./Server/Express')(Hype);
 					break;
 				case 'sails':

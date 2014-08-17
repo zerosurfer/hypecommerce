@@ -8,7 +8,8 @@
  * @license		http://www.hypejs.com/license 
  */
 var events = require('events'),
-    emitter = new events.EventEmitter();
+    emitter = new events.EventEmitter(),
+    chalk = require('chalk');
 
 module.exports = function(Config) {
 	var Hype;
@@ -60,7 +61,7 @@ module.exports = function(Config) {
     Hype.prototype.init = function(Initializer) {
     	var self = this;
     	this.listen('hype:initializer:complete', function() {
-    		self.log("Initializing Hype Commerce v" + Config.version);
+    		self.log("Initializing Hype Commerce v" + Config.version, 'success');
 
     		// Bootstrap all the modules with the Hype object
     		self.initializer = Initializer;
@@ -94,15 +95,36 @@ module.exports = function(Config) {
 
 		if (Config.log) {
 			if (priority === undefined) {
-				priority = 'info';
+				priority = 'log';
 			}
 
 			// Add a timestamp
 			date = new Date();
 			timestamp = '[' +  date.toUTCString() + '] ';
-			message = timestamp + message;
+			
+			switch (priority) {
+				case 'log' :
+					message = chalk.white(message);
+					break;
+				case 'debug' :
+					message = chalk.dim(message);
+					break;
+				case 'warn' :
+					message = chalk.yellow(message);
+					break;
+				case 'info' :
+					message = chalk.magenta(message);
+					break;
+				case 'error' :
+					message = chalk.red(message);
+					break;
+				case 'success' :
+					message = chalk.green(message);
+					break;
+			}
 
-			console[priority](message);
+			message = timestamp + message;
+			console.log(message);
 		}
 		return this;
 	};
@@ -111,23 +133,13 @@ module.exports = function(Config) {
 	 * More intrusive logging
 	 *
 	 * @param	string	message;	Message to log
-	 * @param	string	priority;	debug|info|warn|error|log
 	 * @return	Hype
 	 */
-	Hype.prototype.debug = function(message, priority) {
+	Hype.prototype.debug = function(message) {
 		var date, timestamp;
 
 		if (Config.debug) {
-			if (priority === undefined) {
-				priority = 'info';
-			}
-
-			// Add a timestamp
-			date = new Date();
-			timestamp = '[' +  date.toUTCString() + '] ';
-			message = timestamp + message;
-
-			console[priority](message);
+			this.log(message, 'debug');
 		}
 		return this;
 	};
