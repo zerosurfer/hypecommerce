@@ -1,26 +1,44 @@
 # Hype Commerce
-A hyper-fast, modular, scalable, multi-store, enterprise ready, merchant friendly eCommerce framework built for rapid business growth
+Modern Commerce
 
 ## Installation
 
+### Requirements
+
+* node.js
+* MongoDB
+
+### Setup
+
 ```
+# Clone the repo
+git clone https://github.com/hypecommerce/hypecommerce.git hypecommerce
+
+# Switch to our new folder
+cd hypecommerce
+
+# Install dependencies
+npm install
+
+# Run it!
 npm start
--or-
-node app/boostrap
 ```
+
+### Configuration
+
+When you first start Hype Commerce, you will be prompted with an installation screen. Fill in your database credentials to continue with the installation process.
 
 ## Documentation
 
-You can find full documentation, code examples, support, and more on our website ~~[http://docs.hypejs.com/](http://docs.hypejs.com/)~~ [https://github.com/hypecommerce/hypecommerce/wiki](https://github.com/hypecommerce/hypecommerce/wiki)
+You can find full documentation, code examples, support, and more on the official GitHub repository wiki page at [https://github.com/hypecommerce/hypecommerce/wiki](https://github.com/hypecommerce/hypecommerce/wiki)
 
 ## Organization & Philosophy
 
-This framework is dependent on several node.js libraries. You will need to run `npm install` before running Hype Commerce.
-
-We plan to be the #1 used eCommerce framework in the world through our ease-of-use, framework robustness, and hyper-fast performance. We strive to be the *de facto* eCommerce framework of choice for businesses of all sizes.
+We're shaping the next-generation of eCommerce. We made Hype Commerce to be scalable, adaptable, and affordable for any business to get up and running. We hold our code to the highest standards. We value clean, well-documented, and high performing code.
 
 ## Contributing
-1. Check for open issues or open a fresh issue to start a discussion around a feature idea or a bug. There is a "Beginner Friendly" tag for issues that should be ideal for people who are not very familiar with the codebase yet.
+
+1. Check for open issues or open a fresh issue to start a discussion around a feature idea or a bug. There is a "beginner friendly" tag for issues that should be ideal for people who are not very familiar with the codebase yet.
 2. Fork the hypecommerce repository on Github to start making your changes.
 3. Write a test which shows that the bug was fixed or that the feature works as expected.
 4. Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to CONTRIBUTORS.txt
