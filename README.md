@@ -1,7 +1,10 @@
 # Hype Commerce
-Modern Commerce
+
+A hyper-fast, modern eCommerce platform
 
 ## Installation
+
+Hype Commerce is very easy to install for new developers. Simply follow the steps below to get started.
 
 ### Requirements
 
@@ -36,12 +39,16 @@ You can find full documentation, code examples, support, and more on the officia
 
 We're shaping the next-generation of eCommerce. We made Hype Commerce to be scalable, adaptable, and affordable for any business to get up and running. We hold our code to the highest standards. We value clean, well-documented, and high performing code.
 
+[https://github.com/hypecommerce/hypecommerce/wiki/Philosophy](https://github.com/hypecommerce/hypecommerce/wiki/Philosophy)
+
 ## Contributing
 
 1. Check for open issues or open a fresh issue to start a discussion around a feature idea or a bug. There is a "beginner friendly" tag for issues that should be ideal for people who are not very familiar with the codebase yet.
 2. Fork the hypecommerce repository on Github to start making your changes.
 3. Write a test which shows that the bug was fixed or that the feature works as expected.
 4. Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to CONTRIBUTORS.txt
+
+[https://github.com/hypecommerce/hypecommerce/wiki/Pull-Requests-and-Contributions](https://github.com/hypecommerce/hypecommerce/wiki/Pull-Requests-and-Contributions)
 
 ## License 
 
