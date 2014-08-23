@@ -2,8 +2,8 @@
  * Hype Commerce
  *
  * @package		Hype
- * @module		Category
- * @version		0.0.1.0
+ * @module		Cms
+ * @version		1.0.0
  * @author		Hype Commerce Team <team@hypejs.com>
  * @copyright	Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license		http://www.hypejs.com/license
@@ -12,13 +12,13 @@
 module.exports = {
 
     /**
-     * CMS Block
+     * CmsBlock
      *
-     * @var String name; The name of the static block
+     * @var String name; The name of the CmsBlock
      * @var String code; The unique identifing code
      * @var String description; A short and sweet description for your admin users
      * @var String content; A combination of text and HTML content
-     * @var Boolean enabled; A disabled block will not render
+     * @var Boolean enabled; A disabled CmsBlock will not render
      * @var Store store; The store association (if any, can cross all stores)
      * @var Date createdAt
      * @var Date updatedAt
@@ -42,14 +42,14 @@ module.exports = {
     /**
      * Page
      *
-     * @var String title; The <head> title of the page 
+     * @var String title; The <head> title of the Page 
      * @var String code; The unique identifing code
      * @var String content; A combination of text and HTML
-     * @var String metaDescription: The meta description of the page
-     * @var Array metaKeywords: The meta tags of the page
+     * @var String metaDescription: The meta description of the Page
+     * @var Array metaKeywords: The meta tags of the Page
      * @var Boolean published; Unpublished pages will not render or return 404 when called
      * @var Store store; The store association (if any, can cross all stores)
-     * @var Media ogImage; The image to load when sharing with Facebook (optional)
+     * @var String ogImage; The image to load when sharing with Facebook (optional)
      * @var Date createdAt
      * @var Date updatedAt
      */
@@ -62,17 +62,26 @@ module.exports = {
             metaKeywords: [String],
             published: Boolean,
             publishedAt: Date,
+            ogImage: String,
             createdAt: Date,
             updatedAt: Date
         },
         deps: {
             hasOne: {
-                ogImage: 'Media', // for facebook og:image tag
                 store: 'Store'
             }
         }
     },
 
+    /**
+     * Slider
+     *
+     * @var String name; Name of the Slider
+     * @var String code; The unique identifing code
+     * @var Slide slides; The collection of Slide documents
+     * @var Date createdAt
+     * @var Date updatedAt
+     */
     Slider: {
         schema: {
             name: String,
@@ -87,16 +96,32 @@ module.exports = {
         }
     },
 
+    /**
+     * Slide
+     *
+     * @var String name; Name of the Slider
+     * @var String content; A combination of text and HTML content
+     * @var Number position; Position of the Slide in the Slider
+     * @var String metaDescription: The meta description of the Slide
+     * @var Array metaKeywords: The meta tags of the Slide
+     * @var Media image; The media file associated with the Slide (if any)
+     * @var Date createdAt
+     * @var Date updatedAt
+     */
     Slide: {
         schema: {
             name: String,
-            filepath: String,
             content: String,
-            order: Number,
+            position: Number,
             metaDescription: String,
-            metaTags: String,
+            metaKeywords: [String],
             createdAt: Date,
             updatedAt: Date
+        },
+        deps: {
+            hasOne: {
+                image: 'Media'
+            }
         }
     }
 };
