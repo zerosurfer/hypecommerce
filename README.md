@@ -37,7 +37,7 @@ You can find full documentation, code examples, support, and more on the officia
 
 ## Organization & Philosophy
 
-We're shaping the next-generation of eCommerce. We made Hype Commerce to be scalable, adaptable, and affordable for any business to get up and running. We hold our code to the highest standards. We value clean, well-documented, and high performing code.
+We're shaping the next-generation of eCommerce. We made Hype Commerce to be scalable, adaptable, and affordable for any business to get up and running.
 
 [https://github.com/hypecommerce/hypecommerce/wiki/Philosophy](https://github.com/hypecommerce/hypecommerce/wiki/Philosophy)
 
