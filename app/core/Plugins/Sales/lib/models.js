@@ -24,13 +24,19 @@ module.exports = {
         schema: {
             baseGrandTotal: Number,
             baseSubTotal: Number,
+            baseDiscountAmount: Number,
+            baseShippingAmount: Number,
             baseItemTax: Number,
             baseShippingTax: Number,
+            baseTaxAmount: Number,
             baseTaxTotal: Number,
             grandTotal: Number,
             subTotal: Number,
+            discountAmount: Number,
+            shippingAmount: Number,
             itemTax: Number,
             shippingTax: Number,
+            taxAmount: Number,
             taxTotal: Number,
             status: String,
             createdAt: Date,
@@ -41,10 +47,26 @@ module.exports = {
                 store: 'Store',
                 customer: 'Customer',
                 shippingAddress: 'Address',
-                billingAddress: 'Address'
+                billingAddress: 'Address',
+                cart: 'Cart'
             },
             hasMany: {
-                items: 'Item'
+                items: 'Item',
+                invoices: 'Invoice',
+                shipments: 'Shipment'
+            }
+        }
+    },
+
+    Shipment: {
+        schema: {
+            trackingNumber: String,
+            createdAt: Date,
+            updatedAt: Date
+        },
+        deps: {
+            hasOne: {
+                address: 'Address'
             }
         }
     },
@@ -64,11 +86,6 @@ module.exports = {
             totalPaid: Number,
             createdAt: Date,
             updatedAt: Date
-        },
-        deps: {
-            hasOne: {
-                order: 'Order'
-            }
         }
     }
 };

@@ -24,8 +24,12 @@ module.exports = {
      */
     Customer: {
         schema: {
+            prefix: String,
             firstname: String,
+            middlename: String,
             lastname: String,
+            suffix: String,
+            dob: Date,
             gender: String,
             email: String,
             password: String,
@@ -67,13 +71,20 @@ module.exports = {
      */
     Address: {
         schema: {
+            prefix: String,
             firstname: String,
+            middlename: String,
             lastname: String,
+            suffix: String,
             address1: String,
             address2: String,
+            address3: String,
             city: String,
             state: String,
-            zip: String, // leading zeros
+            zip: String, // for leading zeros
+            country: String,
+            phoneNumber: String,
+            faxNumber: String,
             defaultShipping: Boolean,
             defaultBilling: Boolean,
             createdAt: Date,
