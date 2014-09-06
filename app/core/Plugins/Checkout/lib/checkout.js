@@ -11,17 +11,36 @@
 
 module.exports = function(Checkout, Hype, _) {
 
-    Checkout.setBilling = function(billingObject) {
-    };
+    var Cart = Hype.require('Cart');
 
-    Checkout.setShipping = function(shippingObject) {
-    };
+    Checkout.setBillingAddress = function(billingObject) {
+    },
+
+    Checkout.setShippingAddress = function(shippingObject) {
+    },
+
+    Checkout.setPaymentMethod = function(paymentObject) {
+    },
+
+    Checkout.setShippingMethod = function(shippingObject) {
+    },
 
     Checkout.place = function() {
-    };
+        // Calculate the totals
+        this.calculateTotals();
+
+        // Charge the payment method
+
+        // 
+    },
 
     Checkout.calculateTotals = function() {
     	var Tax = Hype.require('Tax');
+
+        // Calculate the taxes on each of the items in the cart
+        var items = Cart.getItems();
+
+        console.log(items);
     };
 
 

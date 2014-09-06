@@ -2,7 +2,8 @@ var path = require('path'),
 	fs = require('fs'),
     crypto = require('crypto'),
 	express = require('express'),
-	app = express();
+	app = express(),
+	RedisStore = require('connect-redis')(express);
 
 module.exports = function(Hype) {
 	var Express = function() {
@@ -22,12 +23,21 @@ module.exports = function(Hype) {
 			app.use(express.urlencoded());
 
 			if (!install) {
+				app.use(express.session({
+					store: new RedisStore({
+						host: Config.session[Config.session.storage].host,
+						port: Config.session[Config.session.storage].port,
+						db: 1,
+						pass: Config.session[Config.session.storage].pass
+					}),
+					secret: Config.session[Config.session.storage].secret
+				}));
+
 				app.set('views', path.resolve('./app/themes/' + Config.express.theme));
 				app.use(Config.admin + '/static/', express.static(path.resolve(__dirname + '/../../../admin/static')));
 				app.use(Config.admin + '/scripts/', express.static(path.resolve(__dirname + '/../../../admin/scripts')));
 				// @kurt - these should be something like Auth.init() and it will call both of them
 				//app.use(passport.initialize());
-				//app.use(passport.session());
 
 				// Render the theme path
 				app.get('/', function (req, res) {
