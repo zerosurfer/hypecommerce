@@ -3,15 +3,8 @@ var Tests;
 module.exports = function(Hype) {
 	Tests = function() {
 		Hype.debug("Running some really silly tests");
-		// var Product = Hype.require('Product');
+		var HypeTax = Hype.require('Tax');
 
-		// // Create a product
-		// Product.create({
-		// 	name: 'My test product',
-		// 	shortDescription: 'Quick test',
-		// 	description: 'I cannot believe this works!',
-		// 	price: 10.00
-		// });
 	};
 
 	return new Tests();

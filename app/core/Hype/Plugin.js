@@ -2,7 +2,7 @@
  * Hype Commerce
  *
  * @package     Hype
- * @version     0.0.1.0
+ * @version     1.0.0
  * @author      Hype Commerce Team <team@hypejs.com>
  * @copyright   Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license     http://www.hypejs.com/license
@@ -15,21 +15,46 @@ var _ = require('underscore'),
 module.exports = function(Hype) {
     "use strict";
 
-    var HypePlugin = function() {};
+    var HypePlugin = function() {
+    };
 
     HypePlugin.prototype.extend = function(obj) {
         this = _.extend(this, obj);
         return this;
     };
 
-    HypePlugin.prototype.listen = function(event, callback) {
-        emitter.on(event, callback);
+    HypePlugin.prototype.create = function(Model, options) {
+        var lcModelName = Model.modelName.toLowerCase(),
+            model = new Model(options);
+
+        model.save(function(err) {
+            if (!err) {
+                Hype.notify('hype.' + lcModelName + '.created', Model);
+            }
+        });
     };
 
+    HypePlugin.prototype.destroy = function(Model, options) {
+        var lcModelName = Model.modelName.toLowerCase(),
+            model = new Model(options);
 
-    HypePlugin.prototype.notify = function(event, arg) {
-        emitter.emit(event, arg);
-    }
+        model.remove(function(err) {
+            if (!err) {
+                Hype.notify('hype.' + lcModelName + '.created', Model);
+            }
+        });
+    };
+
+    HypePlugin.prototype.save = function(Model, options) {
+        var lcModelName = Model.modelName.toLowerCase(),
+            model = new Model(options);
+
+        model.save(function(err) {
+            if (!err) {
+                Hype.notify('hype.' + lcModelName + '.saved', Model);
+            }
+        });
+    };
 
     return HypePlugin;
 };

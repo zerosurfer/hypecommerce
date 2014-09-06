@@ -1,11 +1,12 @@
-module.exports = function(Example, Hype, _) {
+module.exports = function(Sales, Hype, _) {
     var privateFunc = function() {
         return 'is real';
     };
 
-    Example.publicFunc = function() {
+    Sales.publicFunc = function() {
         return 'The Hype ' + privateFunc();
     };
+    
 
-    return Example;
+    return Sales;
 };

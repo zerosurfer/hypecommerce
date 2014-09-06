@@ -11,8 +11,19 @@
 
 module.exports = function(Checkout, Hype, _) {
 
-    Checkout.nextStep = function() {
+    Checkout.setBilling = function(billingObject) {
     };
+
+    Checkout.setShipping = function(shippingObject) {
+    };
+
+    Checkout.place = function() {
+    };
+
+    Checkout.calculateTotals = function() {
+    	var Tax = Hype.require('Tax');
+    };
+
 
     return Checkout;
 };

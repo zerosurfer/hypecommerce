@@ -59,8 +59,8 @@ module.exports = function(Hype) {
         }
 
         this.loadPlugins = function(filepath) {
-            var HypePlugin = require('./Plugin')(),
-                HypeModule = require('./Module')(),
+            var HypePlugin = require('./Plugin')(Hype),
+                HypeModule = require('./Module')(Hype),
                 self = this;
 
             Hype.debug('Reading plugins from ' + filepath);
@@ -376,11 +376,4 @@ module.exports = function(Hype) {
     };
 
     return new Initializer();
-    // return {
-    //     init: function(modules, Hype, app) {
-    //         initModels(modules, Hype);
-    //         initScripts(modules, Hype);
-    //         initRoutes(modules, Hype, app);
-    //     }
-    // };
 };
