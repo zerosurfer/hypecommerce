@@ -5,7 +5,7 @@ module.exports = function(Hype) {
 		Hype.debug("Running some really silly tests");
 		var Checkout = Hype.require('Checkout');
 
-		Checkout.place();
+		//Checkout.place();
 
 	};
 

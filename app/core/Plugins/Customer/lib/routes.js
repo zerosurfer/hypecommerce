@@ -13,6 +13,7 @@ module.exports = function(Hype) {
 	return {
 
 		'/customer': {
+
 			/**
 			 * Gets the current customer information
 			 *
@@ -27,6 +28,7 @@ module.exports = function(Hype) {
 		},
 
 		'/customer/edit': {
+
 			/**
 			 * Edit information for the current customer
 			 *
@@ -41,6 +43,7 @@ module.exports = function(Hype) {
 		},
 
 		'/customer/register': {
+
 			/**
 			 * Register a customer
 			 *
@@ -55,6 +58,7 @@ module.exports = function(Hype) {
 		},
 
 		'/customer/login': {
+
 			/**
 			 * Login a customer
 			 *
@@ -69,6 +73,7 @@ module.exports = function(Hype) {
 		},
 
 		'/customer/logout': {
+			
 			/**
 			 * Logout a customer
 			 *
@@ -87,6 +92,7 @@ module.exports = function(Hype) {
 		},
 
 		'/customer/address': {
+
 			/**
 			 * Get the addresses for the current customer
 			 *
@@ -98,6 +104,7 @@ module.exports = function(Hype) {
 			get: function(req, res) {
 
 			},
+
 			/**
 			 * Create a new address for the current customer
 			 *
@@ -112,6 +119,7 @@ module.exports = function(Hype) {
 		},
 
 		'/customer/address/*': {
+
 			/**
 			 * Get a specific address for the current customer
 			 *

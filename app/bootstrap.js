@@ -47,7 +47,7 @@ module.exports = (function() {
 		// Start Hype (installs modules and starts server)
 		Hype.start();
 		// Silly tests
-		Hype.listen('hype:start', function() {
+		Hype.listen('hype.start', function() {
 			require('./super-cool-tests')(Hype);
 		});
 	} else {
