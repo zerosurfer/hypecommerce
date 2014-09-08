@@ -21,6 +21,7 @@ module.exports = {
      */
     Cart: {
         schema: {
+            session: String,
             createdAt: Date,
             updatedAt: Date
         },

@@ -10,9 +10,21 @@
  */
 
 module.exports = function(Cart, Hype, _) {
+	var self = this;
+
     var privateFunc = function() {
         return 'is real';
     };
+
+    var _createCart = function(sessionId) {
+    	var Cart = Hype.Db.getModel('Cart'),
+    		cart = new Cart({ session: sessionId });
+
+    	cart.save(function(err) {
+    		console.log('Cart created');
+    	})
+
+    }
 
     Cart.getItems = function() {
     	
@@ -22,6 +34,19 @@ module.exports = function(Cart, Hype, _) {
     Cart.addItem = function(id) {
     	
     	var CartModel = Hype.Db.getModel('Item');
+    }
+
+    Cart.getCart = function(sessionId) {
+    	var Cart = Hype.Db.getModel('Cart');
+
+    	Cart.find({ session: sessionId }, function(err, docs) {
+    		// Create a cart if we don't have one
+    		if (docs.length === 0) {
+    			_createCart(sessionId);
+    		} else {
+
+    		}
+    	});
     }
 
     return Cart;
