@@ -9,6 +9,8 @@
  * @license     http://www.hypejs.com/license
  */
 
+var _ = require('underscore');
+
 module.exports = function(Hype) {
 	return {
 		'/cart/*' : {
@@ -26,9 +28,13 @@ module.exports = function(Hype) {
 				if (req.session.id) {
 					console.log('Session: ' + req.session.id);
 				}
-
 				Cart.getCart(req.session.id);
-
+				Hype.listen('hype.cart.get', function(cart) {
+					console.log(cart.items);
+					// _.each(cart.items, function(item) {
+					// 	console.log(item);
+					// });
+				});
 				res.send(200);
 			},
 			/**
@@ -41,8 +47,7 @@ module.exports = function(Hype) {
 				if (req.session.id) {
 					console.log('Session: ' + req.session.id);
 				}
-
-				Cart.addItem('53ddb7103dc55d0000eb8e3f', req.session.id);
+				Cart.addItem('53ddb7103dc55d0000eb8e3f', req.session.id, { quantity: 1 });
 				res.send(200);
 			}
 		}

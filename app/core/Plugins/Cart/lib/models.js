@@ -39,7 +39,7 @@ module.exports = {
     /**
      * Cart item
      *
-     * @var Number qty
+     * @var Number quantity
      * @var Date createdAt
      * @var Date updatedAt
      * @var Product parent
@@ -47,7 +47,8 @@ module.exports = {
      */
     Item: {
         schema: {
-            qty: Number,
+            name: String,
+            quantity: Number,
             createdAt: Date,
             updatedAt: Date
         },

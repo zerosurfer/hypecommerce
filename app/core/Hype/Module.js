@@ -42,7 +42,7 @@ module.exports = function(Hype) {
     };
 
     HypeModule.prototype.init = function(Hype) {
-        return this.creator(this.plugin, Hype);
+        return this.creator(this.plugin, Hype, _);
     }
 
     HypeModule.prototype.stop = function() {

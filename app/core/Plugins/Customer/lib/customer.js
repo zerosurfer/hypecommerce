@@ -18,5 +18,9 @@ module.exports = function(Customer, Hype, _) {
 
     };
 
+    Customer.isLoggedIn = function(sessionId) {
+
+    };
+
     return Customer;
 };

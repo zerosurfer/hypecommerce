@@ -32,30 +32,38 @@ module.exports = function(Cart, Hype, _) {
     	return this;
     };
 
+    /**
+	 * Finds or creates a new cart for the session id
+	 *
+	 * @var {String} sessionId
+	 * @return Cart;
+	 * @private
+	 */
     var _getCart = function(sessionId) {
-    	var CartModel = Hype.Db.getModel('Cart');
+    	var CartModel = Hype.Db.getModel('Cart'),
+    		ItemModel = Hype.Db.getModel('Item');
+    	// Find the cart
+    	// We need a way to get deep copies 
+    	CartModel.findOne({ session: sessionId })
+    		.populate('items')
+    		.exec(function(err, cart) {
 
-    	CartModel.findOne({ session: sessionId }, function(err, cart) {
     		// Create a cart if we don't have one
     		if (cart === null) {
     			_createCart(sessionId);
     		} else {
+    			ItemModel.find()
+    				.populate('parent')
+    				.exec(function(err, items) {
+    					console.log(items);
+    				});
+
     			Hype.notify('hype.cart.get', cart);
     		}
     	});
 
     	return Cart;
     }
-
-    /** 
-     * Finds or creates a new cart for the session id
-     *
-     * @var {String} sessionId
-     * @return Cart
-     */
-    Cart.getCart = function(sessionId) {
-    	return _getCart(sessionId);
-    };
 
     /**
      * Adds an item to the cart based on the session id
@@ -64,7 +72,7 @@ module.exports = function(Cart, Hype, _) {
      * @var {String} productId
      * @return Cart
      */
-    Cart.addItem = function(productId, sessionId, options) {
+    var _addItem = function(productId, sessionId, options) {
     	var ItemModel = Hype.Db.getModel('Item'),
     		ProductModel = Hype.Db.getModel('Product'),
     		Cart = _getCart(sessionId),
@@ -73,13 +81,16 @@ module.exports = function(Cart, Hype, _) {
     	// Find the product
     	Hype.listen('hype.cart.get', function(cart) {
 	    	ProductModel.findById(productId, function(err, product) {
-	    		//console.log(product);
+	    		var itemOptions = {
+	    			name: product.name,
+	    			parent: product,
+	    			quantity: (options.quantity) ? options.quantity : 1
+	    		};
 	    		// Add an item
-	    		item = new ItemModel({ parent: product });
+	    		item = new ItemModel(itemOptions);
 	    		item.save(function(err, item) {
 	    			var cartItems = cart.items;
 	    			cartItems.push(item);
-	    			console.log(cartItems);
 	    			// Add it to the cart
 	    			cart.update({ items: cartItems }, function(err, numAffected, raw) {
 						if (err) console.log(err);
@@ -93,9 +104,25 @@ module.exports = function(Cart, Hype, _) {
     	return this;
     };
 
-    Cart.getItems = function() {
-    	
-        return 'Getting cart items';
+    /** 
+     * Get a session cart
+     *
+     * @var {String} sessionId
+     * @return Cart
+     */
+    Cart.getCart = function(sessionId) {
+    	return _getCart(sessionId);
+    };
+
+    /**
+     * Add an item to the cart
+     *
+     * @var {String} sessionId
+     * @var {String} productId
+     * @return Cart
+     */
+    Cart.addItem = function(productId, sessionId, options) {
+    	return _addItem(productId, sessionId, options);
     };
 
     return Cart;
