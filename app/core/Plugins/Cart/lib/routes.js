@@ -43,6 +43,7 @@ module.exports = function(Hype) {
 				}
 
 				Cart.addItem('53ddb7103dc55d0000eb8e3f', req.session.id);
+				res.send(200);
 			}
 		}
 	}
