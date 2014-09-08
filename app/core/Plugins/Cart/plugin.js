@@ -24,6 +24,6 @@ module.exports = {
     },
     main: require('./lib/cart'),
     models: require('./lib/models'),
-    // routes: require('./lib/routes'),
+    routes: require('./lib/routes'),
     scripts: './lib/install'
 };

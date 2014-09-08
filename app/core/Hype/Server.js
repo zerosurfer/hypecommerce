@@ -16,11 +16,12 @@ var Server,
 module.exports = function(Hype) {
 
 	Server = function() {
-		var self = this;
+		var self = this,
+			server = undefined;
 
 		this.init = function(Config, install) {
 			if (!install) {
-				Hype.listen('hype:db:complete', function() {
+				Hype.listen('hype.db.complete', function() {
 					self._init(Config);
 				});
 			} else {
@@ -28,25 +29,29 @@ module.exports = function(Hype) {
 			}
 		},
 
-		this._init = function(Config, install) {
-			var server;
+		this.addRoute = function(route, type, action) {
+			if (self.server) {
+				self.server.addRoute(route, type, action);
+			}
+		}
 
+		this._init = function(Config, install) {
 			Hype.debug('Determining server adapter');
 
 			switch (Config.type) {
 				case 'express':
 					Hype.debug('Loading adapter for express.js');
-					server = require('./Server/Express')(Hype);
+					self.server = require('./Server/Express')(Hype);
 					break;
 				case 'sails':
 					break;
 			}
 
-			Hype.listen('hype:start', function() {
-				server.connect(Config);
+			Hype.listen('hype.start', function() {
+				self.server.connect(Config);
 			});
 			
-			server.init(Config, Auth(Hype), Admin(Hype), install);
+			self.server.init(Config, Auth(Hype), Admin(Hype), install);
 		}
 	}
 

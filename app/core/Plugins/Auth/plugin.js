@@ -23,6 +23,6 @@ module.exports = {
     },
     main: require('./lib/auth'),
     // models: require('./lib/models'),
-    routes: require('./lib/routes'),
+    // routes: require('./lib/routes'),
     // scripts: './lib/install'
 };

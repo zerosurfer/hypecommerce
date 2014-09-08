@@ -34,13 +34,13 @@ module.exports = function(Hype) {
         });
     };
 
-    HypePlugin.prototype.destroy = function(Model, options) {
+    HypePlugin.prototype.remove = function(Model, options) {
         var lcModelName = Model.modelName.toLowerCase(),
             model = new Model(options);
 
         model.remove(function(err) {
             if (!err) {
-                Hype.notify('hype.' + lcModelName + '.created', Model);
+                Hype.notify('hype.' + lcModelName + '.removed');
             }
         });
     };

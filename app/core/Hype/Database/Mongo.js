@@ -1,3 +1,4 @@
+
 /**
  * Hype Commerce
  *
@@ -55,7 +56,7 @@ module.exports = function(Hype) {
 		this.connection = mongoose.connect('mongodb://' + host + '/' + dbname, function(error) {
 			if (error) throw error;
 			Hype.log("Successfully connected to the database", 'success');
-			Hype.notify('hype:db:complete');
+			Hype.notify('hype.db.complete');
 			self.db = mongoose.connection.db;
 		});
 

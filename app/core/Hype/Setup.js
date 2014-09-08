@@ -13,7 +13,7 @@ module.exports = function(Hype) {
 
 	Setup = function() {
 		this.init = function(Server) {
-			Hype.notify('hype:start');
+			Hype.notify('hype.start');
 		}
 	}
 

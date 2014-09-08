@@ -24,7 +24,7 @@ module.exports = function(Hype) {
         this.Admin = require('./Admin')(Hype);
         this.Db;
         this.init = function(Server, Db) {
-            Hype.listen('hype:server:complete', function() {
+            Hype.listen('hype.server.complete', function() {
                 self._init(Server, Db);
             })
         }
@@ -43,18 +43,18 @@ module.exports = function(Hype) {
             this.Server = Server;
 
             // // Init models
-            this.initModels(Db);
+            this.initModels();
             // // Init routes
-            // this.initRoutes();
-            this.install(Db);
+            this.initRoutes();
+            // Install
+            this.install();
 
-            Hype.notify('hype:initializer:complete');
+            Hype.notify('hype.initializer.complete');
         },
 
-        this.install = function(Db) {
-            var self = this;
+        this.install = function() {
             Hype.listen('hype.init.complete', function() {
-                self._initScripts(Db);
+                self._initScripts(self.Db);
             });
         }
 
@@ -124,7 +124,7 @@ module.exports = function(Hype) {
             return Modules[module].init(Hype);
         },
 
-        this.initModels = function(Db) {
+        this.initModels = function() {
             var supermodels = {},
                 supermenu = {
                     menu: {}
@@ -140,7 +140,7 @@ module.exports = function(Hype) {
                     //console.log(module);
                     if (module.models) {
                         _(module.models).each(function(model, modelName) {
-                            Db.addRawModel(modelName, model);
+                            self.Db.addRawModel(modelName, model);
                         });
                     }
                 }
@@ -209,17 +209,17 @@ module.exports = function(Hype) {
                 }
             });
 
-            Hype.notify('hype:admin:menuLoaded', supermenu);
+            Hype.notify('hype.admin.menuLoaded', supermenu);
 
             // Recursively load all the models
             _(supermodels).each(function(model, modelName) {
-                Db.loadModel(modelName, model);
+                self.Db.loadModel(modelName, model);
             });
 
-            Hype.notify('hype:initializer:loaded');
+            Hype.notify('hype.initializer.models.loaded');
         };
 
-        this._initScripts = function(Db) {
+        this._initScripts = function() {
             var self = this,
                 count = 0,
                 installed = 0,
@@ -240,7 +240,7 @@ module.exports = function(Hype) {
                 count++;
             }
 
-            Hype.listen('hype:module:install', function(module) {
+            Hype.listen('hype.module.install', function(module) {
                 installed++;
                 if (installed == count) {
                     Hype.notify('hype.initializer.install.complete');
@@ -337,41 +337,41 @@ module.exports = function(Hype) {
 
         }
 
-        this.initRoutes = function(modules, Hype, app) {
+        this.initRoutes = function() {
+            var routes = undefined;
+
             _(Modules).each(function(module) {
-                if (module.is('started')) {
-                    // Add the regular routes
-                    if (module.routes) {
-                        var routes = module.routes(Hype);
-                        // console.log(routes);
-                        _(routes).each(function(methods, route) {
-
-                            _(methods).each(function(method, methodType) {
-                                // log the route addition
-                                Hype.debug('Adding ' + methodType.toUpperCase() + ' route: ' + route);
-
-                                // using array notation to call the appropriate method
-                                app[methodType.toLowerCase()](route, method);
-                            });
+                // Add the regular routes
+                if (module.routes) {
+                    routes = module.routes(Hype);
+                    _(routes).each(function(methods, route) {
+                        _(methods).each(function(method, methodType) {
+                            // log the route addition
+                            Hype.debug('Adding ' + methodType.toUpperCase() + ' route: ' + route);
+                            // using array notation to call the appropriate method
+                            self.Server.addRoute(route, methodType, method);
                         });
-                    }
-                    // Add the admin routes
-                    if (module.admin && module.admin.routes) {
-                        var routes = module.admin.routes(Hype);
-                        // console.log(routes);
-                        _(routes).each(function(methods, route) {
-
-                            _(methods).each(function(method, methodType) {
-                                // log the route addition
-                                Hype.debug('Adding ' + methodType.toUpperCase() + ' route: ' + route);
-
-                                // using array notation to call the appropriate method
-                                app[methodType.toLowerCase()](route, method);
-                            });
-                        });
-                    }
+                    });
                 }
+                // Add the admin routes
+                // if (module.admin && module.admin.routes) {
+                //     var routes = module.admin.routes(Hype);
+                //     // console.log(routes);
+                //     _(routes).each(function(methods, route) {
+
+                //         _(methods).each(function(method, methodType) {
+                //             // log the route addition
+                //             Hype.debug('Adding ' + methodType.toUpperCase() + ' route: ' + route);
+
+                //             // using array notation to call the appropriate method
+                //             app[methodType.toLowerCase()](route, method);
+                //         });
+                //     });
+                // }
             });
+
+
+            Hype.notify('hype.initializer.loaded');
         }
     };
 

@@ -11,7 +11,8 @@ module.exports = function(Hype) {
 			r,
 			route,
 			routeMethod,
-			routeCallback;
+			routeCallback,
+			md5Hash = crypto.createHash('md5');
 
 		this.init = function(Config, Auth, Admin, install) {
 			// Setup express
@@ -41,8 +42,12 @@ module.exports = function(Hype) {
 
 				// Render the theme path
 				app.get('/', function (req, res) {
+					if (req.session.id) {
+						console.log('Session: ' + req.session.id);
+					}
 					res.render('index.html');
 				});
+				app.use('/', express.static(path.resolve('./app/themes/' + Config.express.theme)));
 
 				// Setup to use the admin
 				app.get(Config.admin, function (req, res) {
@@ -72,7 +77,7 @@ module.exports = function(Hype) {
 				app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
 				Hype.debug("Starting server");
 				
-				Hype.listen('hype:admin:menuLoaded', function(supermenu) {
+				Hype.listen('hype.admin.menuLoaded', function(supermenu) {
 					Admin.addMenu(supermenu.menu);
 				});
 			} else {
@@ -141,8 +146,12 @@ module.exports = function(Hype) {
 				});
 			}
 
-			Hype.notify('hype:server:complete');
+			Hype.notify('hype.server.complete');
 		},
+
+		this.addRoute = function(route, type, action) {
+			app[type.toLowerCase()](route, action);
+		}
 
 		this.connect = function(Config) {
 			var port = process.env.PORT || Config.express.port;

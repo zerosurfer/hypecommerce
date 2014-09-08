@@ -25,6 +25,7 @@ module.exports = function(Hype) {
         this._started = false;
         this._enabled = config.enabled || false;
         this.creator = config.main;
+        this.routes = config.routes;
         this.version = config.version;
         this.filepath = filepath;
         this.plugin = plugin;
@@ -103,7 +104,7 @@ module.exports = function(Hype) {
             var installFile;
             if (dbVersion == configVersion) {
                 Hype.debug("Nothing to install for " + self.name);
-                Hype.notify('hype:module:install');
+                Hype.notify('hype.module.install');
             }
 
             // Install if the dbVersion is less than our configVersion
@@ -149,7 +150,7 @@ module.exports = function(Hype) {
                      { 'version': self.version },
                      { 'upsert': true },
                      function(err, doc) {
-                        Hype.notify('hype:module:install', doc);
+                        Hype.notify('hype.module.install', doc);
                          // executed query
                      }
                  );
@@ -176,7 +177,19 @@ module.exports = function(Hype) {
                 determineInstallAction(fileVersion, dbVersion, configVersion);
             });
         } else {
-            Hype.notify('hype:module:install');
+            Hype.notify('hype.module.install');
+        }
+    }
+
+    HypeModule.prototype.addRoute = function(Hype, Server) {
+        var route,
+            action;
+        for (route in this.routes) {
+            
+            // We have our route, let's add all the necessary events
+            for (action in this.routes[route]) {
+                Hype.log('Adding route ' + action.toUpperCase() + ' ' + route);
+            }
         }
     }
 

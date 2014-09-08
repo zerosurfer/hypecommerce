@@ -51,6 +51,7 @@ module.exports = function(Config) {
 	 * @param mixed arg
 	 */
     Hype.prototype.notify = function(event, arg) {
+    	this.debug('Event ' + event + ' sent');
         emitter.emit(event, arg);
     };
 
@@ -60,7 +61,7 @@ module.exports = function(Config) {
      */
     Hype.prototype.init = function(Initializer) {
     	var self = this;
-    	this.listen('hype:initializer:complete', function() {
+    	this.listen('hype.initializer.complete', function() {
     		self.log("Initializing Hype Commerce v" + Config.version, 'success');
 
     		// Bootstrap all the modules with the Hype object
@@ -79,7 +80,7 @@ module.exports = function(Config) {
     Hype.prototype.start = function() {
     	var self = this;
     	this.listen('hype.initializer.install.complete', function() {
-    		self.notify('hype:start');
+    		self.notify('hype.start');
     	});
     }
 
