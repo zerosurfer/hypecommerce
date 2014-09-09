@@ -154,5 +154,18 @@ module.exports = {
             path: String,
             createdAt: Date
         }
+    },
+
+    // looks for cron.js
+    CronTask: {
+        schema: {
+            name: String,
+            description: String,
+            expr: String, // * * * * *
+            plugin: String,
+            task: String,
+            createdAt: Date,
+            updatedAt: Date
+        }
     }
 };

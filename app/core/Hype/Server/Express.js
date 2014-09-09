@@ -12,7 +12,8 @@ module.exports = function(Hype) {
 			route,
 			routeMethod,
 			routeCallback,
-			md5Hash = crypto.createHash('md5');
+			md5Hash = crypto.createHash('md5'),
+			routePrefix = '/api';
 
 		this.init = function(Config, Auth, Admin, install) {
 			// Setup express
@@ -150,7 +151,8 @@ module.exports = function(Hype) {
 		},
 
 		this.addRoute = function(route, type, action) {
-			app[type.toLowerCase()](route, action);
+            Hype.debug('Adding ' + type.toUpperCase() + ' route: ' + routePrefix + route);
+			app[type.toLowerCase()](routePrefix + route, action);
 		}
 
 		this.connect = function(Config) {

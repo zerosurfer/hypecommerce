@@ -29,7 +29,8 @@ var	fs = require('fs'),
 	Server = require('./core/Hype/Server')(Hype),
 	Db = require('./core/Hype/Database')(Hype),
 	Initializer = require('./core/Hype/Initializer')(Hype),
-	Setup = require('./core/Hype/Setup')(Hype);
+	Setup = require('./core/Hype/Setup')(Hype),
+	Cron = require('./core/Hype/Cron')(Hype);
 
 module.exports = (function() {
 	"use strict";
@@ -41,7 +42,7 @@ module.exports = (function() {
 		// Start the server
 		Server.init(Config[Config.environment].server);
 		// Load the modules
-		Initializer.init(Server, Db);
+		Initializer.init(Server, Db, Cron);
 		// Boostrap Hype and blast off
 		Hype.init(Initializer);
 		// Start Hype (installs modules and starts server)

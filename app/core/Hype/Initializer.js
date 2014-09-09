@@ -20,16 +20,19 @@ module.exports = function(Hype) {
         var self = this;
         var Modules = {};
 
-        this.Server;
         this.Admin = require('./Admin')(Hype);
-        this.Db;
-        this.init = function(Server, Db) {
+
+        this.Server = null;
+        this.Cron = null;
+        this.Db = null;
+
+        this.init = function(Server, Db, Cron) {
             Hype.listen('hype.server.complete', function() {
-                self._init(Server, Db);
+                self._init(Server, Db, Cron);
             })
         }
 
-        this._init = function(Server, Db) {
+        this._init = function(Server, Db, Cron) {
             // Load the necessary core plugin files
             Hype.debug("Preparing to load core modules");
             this.loadPlugins(path.resolve('./app/core/Plugins'));
@@ -41,12 +44,15 @@ module.exports = function(Hype) {
 
             this.Db = Db;
             this.Server = Server;
+            this.Cron = Cron;
 
-            // // Init models
+            // Init models
             this.initModels();
-            // // Init routes
+            // Init routes
             this.initRoutes();
-            // Install
+            // Init cronjobs
+            this.initCrons();
+            // Install scripts
             this.install();
 
             Hype.notify('hype.initializer.complete');
@@ -72,7 +78,8 @@ module.exports = function(Hype) {
                     name,
                     hypePlugin,
                     admin,
-                    adminName;
+                    adminName,
+                    cron;
 
                 // Skip hidden folders and files
                 if (file.indexOf('.') !== 0) {
@@ -87,7 +94,7 @@ module.exports = function(Hype) {
                             }
                             // Configure the admin
                             if(fs.existsSync(pluginPath + '/admin.js')) {
-                                admin = require(pluginPath + '/admin.js'),
+                                admin = require(pluginPath + '/admin'),
                                 adminName = admin.name;
                                 if (typeof admin === 'function') {
                                     admin = admin();
@@ -95,6 +102,13 @@ module.exports = function(Hype) {
                                 // Add the admin to config
                                 config.admin = admin;
                             }
+                            // Configure the cronjobs
+                            if(fs.existsSync(pluginPath + '/cron.js')) {
+                                cron = require(pluginPath + '/cron')(Hype),
+                                // Add the admin to config
+                                config.cron = cron;
+                            }
+
                             Hype.debug("Adding plugin " + name + " v" + config.version);
                             // Instantiate the plugin
                             hypePlugin = new HypePlugin();
@@ -331,14 +345,20 @@ module.exports = function(Hype) {
                         break;
                 }
             }
-        }
+        };
 
-        var installModuleScripts = function(module) {
-
-        }
+        this.initCrons = function() {
+            var crons = null;
+            _(Modules).each(function(module) {
+                crons = module.cron;
+                _(crons).each(function(cron, name) {
+                    self.Cron.add(cron.expression, module, name);
+                })
+            });
+        };
 
         this.initRoutes = function() {
-            var routes = undefined;
+            var routes = null;
 
             _(Modules).each(function(module) {
                 // Add the regular routes
@@ -346,8 +366,6 @@ module.exports = function(Hype) {
                     routes = module.routes(Hype);
                     _(routes).each(function(methods, route) {
                         _(methods).each(function(method, methodType) {
-                            // log the route addition
-                            Hype.debug('Adding ' + methodType.toUpperCase() + ' route: ' + route);
                             // using array notation to call the appropriate method
                             self.Server.addRoute(route, methodType, method);
                         });

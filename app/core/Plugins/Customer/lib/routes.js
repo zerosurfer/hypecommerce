@@ -3,7 +3,7 @@
  *
  * @package     Hype
  * @module      Customer
- * @version     0.0.1.0
+ * @version     1.0.0
  * @author      Hype Commerce Team <team@hypejs.com>
  * @copyright   Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license     http://www.hypejs.com/license
@@ -73,7 +73,7 @@ module.exports = function(Hype) {
 		},
 
 		'/customer/logout': {
-			
+
 			/**
 			 * Logout a customer
 			 *
@@ -129,6 +129,18 @@ module.exports = function(Hype) {
 			 * @param {Object} res
 			 */
 			get: function(req, res) {
+
+			},
+
+			/**
+			 * Edit a specific address for the current customer
+			 *
+			 * @route /customer/address/*
+			 * @method POST
+			 * @param {Object} req
+			 * @param {Object} res
+			 */
+			post: function(req, res) {
 
 			}
 		},

@@ -29,12 +29,7 @@ module.exports = function(Hype) {
 					console.log('Session: ' + req.session.id);
 				}
 				Cart.getCart(req.session.id);
-				Hype.listen('hype.cart.get', function(cart) {
-					console.log(cart.items);
-					// _.each(cart.items, function(item) {
-					// 	console.log(item);
-					// });
-				});
+				
 				res.send(200);
 			},
 			/**

@@ -21,7 +21,10 @@ module.exports = function(Config) {
 	 * @return
 	 */
 	Hype = function() {
-		this.initializer;
+		this.Initializer = null;
+		this.Db = null;
+		this.Server = null;
+		this.Cron = null;
 	};
 
 	/**
@@ -31,7 +34,7 @@ module.exports = function(Config) {
 	 * @return	Boolean|undefined
 	 */
 	Hype.prototype.require = function(name) {
-		return (this.initializer.getModule(name)) ? this.initializer.requireModule(name, this) : undefined;
+		return (this.Initializer.getModule(name)) ? this.Initializer.requireModule(name, this) : undefined;
 	};
 
 	/**
@@ -65,9 +68,10 @@ module.exports = function(Config) {
     		self.log("Initializing Hype Commerce v" + Config.version, 'success');
 
     		// Bootstrap all the modules with the Hype object
-    		self.initializer = Initializer;
+    		self.Initializer = Initializer;
     		self.Db = Initializer.Db;
     		self.Server = Initializer.Server;
+    		self.Cron = Initializer.Cron;
 
     		self.notify('hype.init.complete');
     	});
@@ -80,6 +84,9 @@ module.exports = function(Config) {
     Hype.prototype.start = function() {
     	var self = this;
     	this.listen('hype.initializer.install.complete', function() {
+    		// Begin the cronjobs 
+    		self.Cron.start();
+
     		self.notify('hype.start');
     	});
     }

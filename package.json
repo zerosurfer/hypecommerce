@@ -45,6 +45,7 @@
     "connect-mongo": "~0.4.1",
     "passport-local": "~1.0.0",
     "i18next": "*",
+    "node-schedule": "*",
     "chalk": "*"
   },
   "devDependencies": {
