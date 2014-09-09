@@ -45,7 +45,11 @@ module.exports = function(Hype) {
 			for (i; i < this.crons.length; i++) {
 				job = this.crons[i];
 				module = this.modules[job.module];
-				schedule.scheduleJob(job.expr, module[job.task].action);
+				schedule.scheduleJob(job.expr, function() {
+					// Execute the job
+					Hype.log("Executing cron " + job.module + "::" + job.task);
+					module[job.task].action();
+				});
 			}
 		};
 
