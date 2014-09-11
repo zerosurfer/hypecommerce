@@ -11,10 +11,18 @@
 
 module.exports = function(Hype) {
 	return {
+
 		'testCron' : {
 			expression: '* * * * *',
 			action: function() {
 				Hype.log("Hype is (still) running");
+			}
+		},
+
+		'testCron2' : {
+			expression: '*/5 * * * *',
+			action: function() {
+				Hype.log("Hype has been running for 5 minutes");
 			}
 		}
 	}

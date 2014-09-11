@@ -54,7 +54,7 @@ module.exports = function(Config) {
 	 * @param mixed arg
 	 */
     Hype.prototype.notify = function(event, arg) {
-    	this.debug('Event ' + event + ' sent');
+    	//this.debug('Event ' + event + ' sent');
         emitter.emit(event, arg);
     };
 

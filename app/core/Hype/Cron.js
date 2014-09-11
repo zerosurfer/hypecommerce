@@ -8,16 +8,21 @@
  * @license		http://www.hypejs.com/license
  */
 
-var schedule = require('node-schedule'),
+var crontab = require('node-crontab'),
+	_ = require('underscore'),
 	Cron;
 
 module.exports = function(Hype) {
 
 	Cron = function() {
+		var self = this;
 		this.crons = [];
 		this.modules = {};
+		this.jobs = {};
 
 		this.add = function(expression, module, task) {
+			var rule = null;
+
 			Hype.debug('Adding cron ' + module.name + '::' + task + ' (' + expression + ')');
 
 			// Load each module's cron once
@@ -25,12 +30,29 @@ module.exports = function(Hype) {
 				this.modules[module.name] = module.cron;
 			}
 
-			// Add the cron
-			this.crons.push({
-				expr: expression,
-				module: module.name,
-				task: task
-			});
+
+			if (typeof expression === 'object') {
+				rule = new crontab.RecurrenceRule();
+				_(expression).each(function(v, k) {
+					rule[k] = v;
+				});
+			} else {
+				rule = expression;
+			}
+
+			// Push the cron
+			if (!this.jobs[module.name]) {
+				this.jobs[module.name] = {};
+			}
+			if (!this.jobs[module.name][task]) {
+				
+				this.jobs[module.name][task] = crontab.scheduleJob(rule, function() {
+				
+					// Execute the job
+					Hype.log("Executing cron " + module.name + "::" + task);
+					self.modules[module.name][task].action();
+				});
+			}
 		},
 
 		this.remove = function(module, task) {
@@ -38,19 +60,7 @@ module.exports = function(Hype) {
 		};
 
 		this.start = function() {
-			var i = 0,
-				job = null,
-				module = null;
-
-			for (i; i < this.crons.length; i++) {
-				job = this.crons[i];
-				module = this.modules[job.module];
-				schedule.scheduleJob(job.expr, function() {
-					// Execute the job
-					Hype.log("Executing cron " + job.module + "::" + job.task);
-					module[job.task].action();
-				});
-			}
+			return true;
 		};
 
 		return this;
