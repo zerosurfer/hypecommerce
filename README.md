@@ -46,9 +46,15 @@ We're shaping the next-generation of eCommerce. We made Hype Commerce to be scal
 1. Check for open issues or open a fresh issue to start a discussion around a feature idea or a bug. There is a "beginner friendly" tag for issues that should be ideal for people who are not very familiar with the codebase yet.
 2. Fork the hypecommerce repository on Github to start making your changes.
 3. Write a test which shows that the bug was fixed or that the feature works as expected.
-4. Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to CONTRIBUTORS.txt
+4. Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to CONTRIBUTORS.md
 
 [https://github.com/hypecommerce/hypecommerce/wiki/Pull-Requests-and-Contributions](https://github.com/hypecommerce/hypecommerce/wiki/Pull-Requests-and-Contributions)
+
+## Feedback
+
+Join our Google Group for discussions, questions, and announcements from the people who are building Hype Commerce. We welcome everyone to join the discussion!
+
+[https://groups.google.com/forum/#!forum/hype-commerce](https://groups.google.com/forum/#!forum/hype-commerce)
 
 ## License 
 
