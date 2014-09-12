@@ -2,7 +2,7 @@
  * Hype Commerce
  *
  * @package     Hype
- * @version     1.0.0
+ * @version     0.0.1
  * @author      Hype Commerce Team <team@hypejs.com>
  * @copyright   Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license     http://www.hypejs.com/license
@@ -270,7 +270,7 @@ module.exports = function(Hype) {
          * Determines if we have the right version loaded
          *
          * @param   String  module;     Name of the module
-         * @param   String  version;    Version number (1.0.0)
+         * @param   String  version;    Version number (0.0.1)
          * @param   Array   modules;    The list of loaded modules
          * @return  Boolean
          */
@@ -318,10 +318,10 @@ module.exports = function(Hype) {
         }
 
         /**
-         * Determines if versions are greater than (equals), less than (equals), or the same (1.0.0 == 1.0.0.0)
+         * Determines if versions are greater than (equals), less than (equals), or the same (0.0.1 == 0.0.1)
          *
-         * @param   String  version;        Version number (1.0.0)
-         * @param   String  compareVersion; Version number (1.0.0)
+         * @param   String  version;        Version number (0.0.1)
+         * @param   String  compareVersion; Version number (0.0.1)
          * @param   String  comparison
          */
         var compareVersions = function(version, compareVersion, comparison) {

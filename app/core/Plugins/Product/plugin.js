@@ -3,7 +3,7 @@
  *
  * @package     Hype
  * @module      Product
- * @version     1.0.0
+ * @version     0.0.1
  * @author      Hype Commerce Team <team@hypejs.com>
  * @copyright   Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license     http://www.hypejs.com/license
@@ -12,18 +12,18 @@
 module.exports = {
     name: 'Product',
     enabled: true,
-    version: '1.0.0',
+    version: '0.0.1',
     description: 'Simple, combined (grouped), virtual, and configurable products',
     author: 'Thomas Lackemann',
     copyright: '2014',
     image: __dirname + '/lib/icon.jpg',
     license: 'MIT',
     depends: {
-        'System': '>=1.0.0',
-        'Store': '>=1.0.0',
-        'Media': '>=1.0.0',
-        'Customer': '>=1.0.0',
-        'Category': '>=1.0.0'
+        'System': '>=0.0.1',
+        'Store': '>=0.0.1',
+        'Media': '>=0.0.1',
+        'Customer': '>=0.0.1',
+        'Category': '>=0.0.1'
     },
     main: require('./lib/product'),
     models: require('./lib/models'),

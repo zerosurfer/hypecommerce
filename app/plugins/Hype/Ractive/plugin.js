@@ -3,7 +3,7 @@
  *
  * @package     Hype
  * @module      Ractive
- * @version     0.0.1.0
+ * @version     0.0.1
  * @author      Hype Commerce Team <team@hypejs.com>
  * @copyright   Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license     http://www.hypejs.com/license
@@ -18,7 +18,7 @@ module.exports = {
     license: 'MIT',
     enabled: true,
     depends: {
-        'System': '>=1.0.0.0'
+        'System': '>=0.0.1'
     },
     main: require('./lib/ractive'),
     version: '0.0.0.1'
