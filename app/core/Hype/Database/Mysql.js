@@ -72,7 +72,73 @@ module.exports = function(Hype) {
 	// After the schemas are built, we're going to need to create the tables
 	// This is an extra step to comply with businesses that need ACID databases
 	// and cannot risk using something like MongoDB or other NoSQL databases
+	// Recursively load the models into mongoose
 	MysqlDba.prototype.loadModel = function(name, model) {
+		var self = this;
+		// Check to make sure we haven't built this model yet
+	    if (!this.hasModel(name)) {
+	        Hype.debug("Adding model " + name);
+	        // Set that we're processing the model
+	        self.startProcessing(name);
+	        // if model has dependencies
+	        // we're going to need to build the structure of the model here
+	        if (model.deps) {
+
+	            if (model.deps.hasOne) {
+	                _(model.deps.hasOne).each(function(dep, localName) {
+	                    if (!self.hasModel(dep) && !self.isProcessing(dep)) {
+	                        self.loadModel(dep, self.getRawModel(dep));
+	                    }
+	                    model.schema[localName] = { type : Schema.Types.ObjectId, ref : dep };
+	                    // model.schema[localName] = [self.getModel(dep)];
+	                });
+	            }
+
+	            if (model.deps.hasMany) {
+	                _(model.deps.hasMany).each(function(dep, localName) {
+	                    if (!self.hasModel(dep) && !self.isProcessing(dep)) {
+	                    	//console.log(self.getRawModel(dep));
+	                        self.loadModel(dep, self.getRawModel(dep));
+	                    }
+	                    model.schema[localName] = [{ type : Schema.Types.ObjectId, ref : dep }];
+	                    // model.schema[localName] = self.getModel(dep)];
+	                });
+	            }
+	        }
+
+	        self.addModel(name, model);
+
+	        self.stopProcessing(name);
+	    }
+	};
+
+	MysqlDba.prototype.addModel = function (modelName, model) {
+
+		var mSchema = model.schema;
+
+		// add extra methods
+		if (model.methods) {
+			mSchema.methods = model.methods;
+		}
+
+		// add virtual properties
+		// if (model.virtuals) {
+		// 	_(model.virtuals).each(function(virtual, key) {
+		// 		if (virtual.get) {
+		// 			mSchema.virtual(key).get(virtual.get);
+		// 		}
+
+		// 		if (virtual.set) {
+		// 			mSchema.virtual(key).set(virtual.set);
+		// 		}
+		// 	});
+		// }
+
+		//var mModel = mongoose.model(modelName, mSchema);
+		SchemaCollection[modelName] = mSchema;
+		//ModelCollection[modelName] = mModel;
+
+		return mSchema;
 	}
 
 	MysqlDba.prototype.addRawModel = function(modelName, model) {
