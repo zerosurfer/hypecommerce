@@ -1,16 +1,17 @@
 var vows = require('vows'),
     assert = require('assert'),
-    Hype = require('../core/Hype');
+    Config = require('../config');
+    Hype = require('../core/Hype')(Config);
 
 // Create a Test Suite
 vows.describe('Initial Hype object').addBatch({
     'when logging statically': {
         topic: function () {
-            return true;
+            return Hype.log('This is a log message');
         },
 
-        'we get a log message': function (topic) {
-            assert.equal(topic, true);
+        'we get a Hype object': function (topic) {
+            assert.equal(topic, Hype);
         }
     }
 }).exportTo(module); // Run it

@@ -27,6 +27,7 @@ module.exports = {
         schema: {
             name: String,
             description: String,
+            code: String,
             content: String,
             enabled: Boolean,
             createdAt: Date,
@@ -35,6 +36,21 @@ module.exports = {
         deps: {
             hasOne: {
                 store: 'Store'
+            }
+        },
+        methods: {
+            generateCodeFromName: function(name) {
+                // Simply replace all spaces with underscores
+                // @todo: Need to strip all non-unicode characters
+                return name.replace(/ /g, '_');
+            },
+        },
+        authenticate: {
+            name: function() {
+                if (!!this.name || typeof this.name !== String) {
+                    return false;
+                }
+                return true;
             }
         }
     },

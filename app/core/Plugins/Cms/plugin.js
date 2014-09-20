@@ -23,6 +23,6 @@ module.exports = {
     },
     main: require('./lib/cms'),
     models: require('./lib/models'),
-    // routes: require('./lib/routes'),
+    routes: require('./lib/routes'),
     // scripts: './lib/install'
 };
