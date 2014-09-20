@@ -48,12 +48,12 @@ module.exports = function(Hype) {
 		return this.connection.connection.db;
 	}
 
-	MongoDba.prototype.start = function(host, username, password, dbname) {
+	MongoDba.prototype.start = function(host, username, password, dbname, port) {
 		var self = this;
 
-		Hype.debug("Connecting to the database on " + host + "/" + dbname);
+		Hype.debug("Connecting to the database on " + host + ":" + port + "/" + dbname);
 
-		this.connection = mongoose.connect('mongodb://' + host + '/' + dbname, function(error) {
+		this.connection = mongoose.connect('mongodb://' + host + ':' + port + '/' + dbname, function(error) {
 			if (error) throw error;
 			Hype.log("Successfully connected to the database", 'success');
 			Hype.notify('hype.db.complete');

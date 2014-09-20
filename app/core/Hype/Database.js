@@ -28,14 +28,18 @@ module.exports = function(Hype) {
 			case 'couchdb':
 				// @todo? CouchDb
 				break;
-
+			case 'mysql':
+				Hype.debug("Loading adapter for MySQL");
+				this.adapter = require('./Database/Mysql')(Hype);
+				break;
 		}
 
 		this.adapter.start(
-			Config[Config.type].host + ':' + Config[Config.type].port,
+			Config[Config.type].host,
 			Config[Config.type].username,
 			Config[Config.type].password,
-			Config[Config.type].dbname
+			Config[Config.type].dbname,
+			Config[Config.type].port
 		);
 
 		return this;
