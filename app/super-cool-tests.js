@@ -3,7 +3,9 @@ var Tests;
 module.exports = function(Hype) {
 	Tests = function() {
 		Hype.debug("Running some really silly tests");
-		var Checkout = Hype.require('Checkout');
+		
+		//throw "Fail";
+		// var Checkout = Hype.Db.
 
 		//Checkout.place();
 

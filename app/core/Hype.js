@@ -25,6 +25,7 @@ module.exports = function(Config) {
 		this.Db = null;
 		this.Server = null;
 		this.Cron = null;
+		this.version = null;
 	};
 
 	/**
@@ -68,6 +69,7 @@ module.exports = function(Config) {
     		self.log("Initializing Hype Commerce v" + Config.version, 'success');
 
     		// Bootstrap all the modules with the Hype object
+    		self.version = Config.version;
     		self.Initializer = Initializer;
     		self.Db = Initializer.Db;
     		self.Server = Initializer.Server;

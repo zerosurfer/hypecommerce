@@ -82,7 +82,7 @@ module.exports = function(Cart, Hype, _) {
     	Hype.listen('hype.cart.get', function(cart) {
 	    	ProductModel.findById(productId, function(err, product) {
 	    		var itemOptions = {
-	    			name: product.name,
+	    			//name: product.name,
 	    			parent: product,
 	    			quantity: (options.quantity) ? options.quantity : 1
 	    		};

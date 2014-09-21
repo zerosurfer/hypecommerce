@@ -9,26 +9,12 @@
  * @license		http://www.hypejs.com/license
  */
 
-module.exports = function() {
+module.exports = function(Hype) {
 	return {
 		'': {
-			/**
-			 * Redirect a direct call to /api to the homepage
-			 *
-			 * @route /system
-			 * @method GET
-			 * @param {Object} req
-			 * @param {Object} res
-			 */
-			get: function (req, res) {
-				res.redirect('/');
-			}
-		},
-		
-		'/': {
 
 			/**
-			 * Redirect a direct call to /api to the homepage
+			 * Ensure a blank call to /api does nothing
 			 *
 			 * @route /system
 			 * @method GET
@@ -36,7 +22,8 @@ module.exports = function() {
 			 * @param {Object} res
 			 */
 			get: function (req, res) {
-				res.redirect('/');
+				// @todo remove the version, this is just to prove a point
+				res.send("Hype Commerce " + Hype.version + " is running!")
 			}
 		}
 	}
