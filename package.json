@@ -38,6 +38,7 @@
     "mongodb": "~1.2.14",
     "mongoose": "~3.8",
     "mysql": "2.5.0",
+    "pg": "*",
     "when": "*",
     "connect-redis": "1.4.7",
     "passport": "*",

@@ -18,6 +18,12 @@ module.exports = function(Hype) {
  	Database.prototype.init = function(Config) {
 		Hype.debug("Determining the database adapter");
 		switch (Config.type) {
+			/**
+			 * Experimental databases
+			 * While they work, they may not be unsuitable for major ecommerce businesses
+			 *
+			 * Recommended: MongoDb
+			 */
 			case 'mongo':
 			case 'mongodb':
 				Hype.debug("Loading adapter for MongoDb");
@@ -28,6 +34,17 @@ module.exports = function(Hype) {
 				break;
 			case 'couchdb':
 				// @todo? CouchDb
+				break;
+			/**
+			 * ACID-compliant databases, suitable for major ecommerce transactions
+			 * and business logic that cannot afford to be mis-managed
+			 * 
+			 * Recommended: Postgres
+			 */
+			case 'postgres':
+			case 'postgresql':
+				Hype.debug("Loading adapter for PostgreSQL");
+				this.adapter = require('./Database/Postgres')(Hype);
 				break;
 			case 'mysql':
 				Hype.debug("Loading adapter for MySQL");
