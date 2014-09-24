@@ -1,0 +1,125 @@
+/**
+ * Hype Commerce
+ *
+ * @package    Hype
+ * @version    0.0.1
+ * @author     Hype Commerce Team <team@hypejs.com>
+ * @copyright  Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
+ * @license    http://www.hypejs.com/license
+ */
+
+module.exports={  
+   "version":"0.0.1",
+   "install":"2014-08-13T00:55:16.720Z",
+   "secret":"eb1b58cc4d60e8c37f94bda1e438d780",
+   "environment":"hype",
+   "debug":true,
+   "log":true,
+   /**
+    * Default environment
+    *
+    */
+   "hype":{  
+      "db":{  
+         "type":"mongo",
+         "mongo":{  
+            "host":"127.0.0.1",
+            "port":27017,
+            "username":"",
+            "password":"",
+            "dbname":"hype_development"
+         },
+         "mysql": {
+            "host": "localhost",
+            "port": "3306",
+            "username": "root",
+            "password": "root",
+            "dbname": "hype_development"
+         }
+      },
+      "server":{  
+         "type":"express",
+         "admin":"/admin",
+         "api": "/api",
+         "express":{  
+            "url":"http://localhost",
+            "port":4973,
+            "nodes":2,
+            "theme":"homepage"
+         },
+         "https":{  
+            "admin":"admin.{url}",
+            "port":4443
+         },
+         "session":{  
+            "storage":"redis",
+            "redis":{  
+               "host":"localhost",
+               "port":6379,
+               "db":"hype_development",
+               "pass":"",
+               "secret":"",
+               "cookie":{  
+                  "path":"/",
+                  "maxAge":3600000
+               }
+            }
+         }
+      }
+   },
+   /**
+    * Test environment
+    * Should be different credentials than your normal environment, upon testing Hype
+    * will boot a second instance of itself. In order to not conflict and to keep your
+    * website data seperate, it's *highly recommended* this information is different
+    * from any other credentials you may have used
+    */
+   "test":{  
+      "db":{  
+         "type":"mongo",
+         "mongo":{  
+            "host":"127.0.0.1",
+            "port":27017,
+            "username":"",
+            "password":"",
+            "dbname":"hype_test"
+         },
+         "mysql": {
+            "host": "localhost",
+            "port": "3306",
+            "username": "root",
+            "password": "root",
+            "dbname": "hype_test"
+         }
+      },
+      "server":{  
+         "type":"express",
+         "admin":"/admin",
+         "api": "/api",
+         "express":{  
+            "url":"http://localhost",
+            "port":9001,
+            "nodes":1,
+            "theme":"homepage"
+         },
+         "https":{  
+            "admin":"admin.{url}",
+            "port":4443
+         },
+         "session":{  
+            "storage":"redis",
+            "redis":{  
+               "host":"localhost",
+               "port":6379,
+               "db":"hype_test",
+               "pass":"",
+               "secret":"",
+               "cookie":{  
+                  "path":"/",
+                  "maxAge":3600000
+               }
+            }
+         }
+      }
+   }
+}

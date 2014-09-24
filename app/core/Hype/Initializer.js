@@ -325,6 +325,9 @@ module.exports = function(Hype) {
          * @param   String  comparison
          */
         var compareVersions = function(version, compareVersion, comparison) {
+            /**
+             * @todo comparisons and version comparing
+             */
             if (comparison) {
                 switch (comparison) {
                     case '>=' :
