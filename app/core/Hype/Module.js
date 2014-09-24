@@ -77,6 +77,8 @@ module.exports = function(Hype) {
             installModel = Db.getModel('Install'),
             configVersion;
 
+            console.log(installModel);
+
         var getLatestVersion = function(arr) {
             var version,
                 versions = [];
@@ -100,7 +102,11 @@ module.exports = function(Hype) {
 
             return versions[0];
         }
-
+        /**
+         * @todo -  The below needs to be majorly refactored, it's currently heavily based on MongoDb
+         *          We need a sane way to handle the installing of modules and their "tables". This 
+         *          should mostly be handled by the Database adapter (./Database.js)
+         */
         var determineInstallAction = function(fileVersion, dbVersion, configVersion) {
             var installFile;
             if (dbVersion == configVersion) {
@@ -170,10 +176,9 @@ module.exports = function(Hype) {
             // Config version
             configVersion = getLatestVersion([this.version]);
 
-            // @todo - Running into an async problem right here, will need to fix
+            // @todo - This is mongo right now, we need it to be universal to the Db
             installModel.find({ 'module': this.name }, function(err, settings) {
                 dbVersion = (settings[0]) ? getLatestVersion([settings[0].version]) : 0;
-
                 // Attempt to install the module based on the fileVersion, dbVersion, and configVersion
                 determineInstallAction(fileVersion, dbVersion, configVersion);
             });

@@ -8,7 +8,8 @@
  * @license		http://www.hypejs.com/license
  */
 
-var Database;
+var _ = require('underscore'),
+	Database;
 
 module.exports = function(Hype) {
  	Database = function() {

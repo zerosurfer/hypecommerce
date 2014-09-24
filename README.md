@@ -9,7 +9,7 @@ Hype Commerce is very easy to install for new developers. Simply follow the step
 ### Requirements
 
 * node.js
-* MongoDB
+* MongoDB (at the moment, porting for a MySQL adapter)
 
 ### Setup
 
