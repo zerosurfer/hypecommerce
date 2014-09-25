@@ -8,7 +8,8 @@
  * @license		http://www.hypejs.com/license
  */
 
-var	pg = require('pg'),
+var	bookshelf,
+	knex,
 	inst = false,
 	ModelCollection = {},
 	SchemaCollection = {},
@@ -47,30 +48,44 @@ module.exports = function(Hype) {
 	}
 
 	PostgresDba.prototype.start = function(host, username, password, dbname, port) {
-		var self = this,
-			connectStr = 'postgres://';
+		var self = this;
 
-		if (username) {
-			connectStr += username;
-			if (password) {
-				connectStr += ':' + password;
+		Hype.debug("Connecting to the database");
+		knex = require('knex')({
+			client: 'pg',
+			connection: {
+				host     : host,
+				user     : username,
+				password : password,
+				database : dbname,
+				charset  : 'utf8'
 			}
-			connectStr += "@";
-		}
-		connectStr += host;
-		if (port) {
-			connectStr += ':' + port;
-		}
-		connectStr += '/' + dbname;
+		});
 
-		Hype.debug("Connecting to the database on " + connectStr);
+		bookshelf = require('bookshelf')(knex);
 
-		this.connection = pg.connect(connectStr, function(error,  client, done) {
-			if (error) return error;
+		// Check if we have a bootstrap table, if not then create it
+		knex.schema.hasTable('hype').then(function(exists) {
+			console.log(exists);
+			if (!exists) {
+				Hype.log("Created the 'hype' table", 'success');
+				return knex.schema.createTable('hype', function(t) {
+					t.increments('id').primary();
+					t.string('event', 100);
+					t.timestamp('created_at');
+				});
+			}
+		}).then(function() {
 			Hype.log("Successfully connected to the database", 'success');
 			Hype.notify('hype.db.complete');
-			self.db = client;
 		});
+
+		// this.connection = pg.connect(connectStr, function(error,  client, done) {
+		// 	if (error) return error;
+		// 	Hype.log("Successfully connected to the database", 'success');
+		// 	Hype.notify('hype.db.complete');
+		// 	self.db = client;
+		// });
 		
 	};
 
