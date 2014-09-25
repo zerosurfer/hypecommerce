@@ -16,7 +16,7 @@ module.exports = function(Hype) {
 		'/cart/*' : {
 			get: function(req, res) {
 				if (req.session.id) {
-					console.log('Session: ' + req.session.id);
+					Hype.debug('Serving session ' + req.session.id);
 				}
 				res.send(200);
 			}
@@ -26,7 +26,7 @@ module.exports = function(Hype) {
 				// return the items
 				var Cart = Hype.require('Cart');
 				if (req.session.id) {
-					console.log('Session: ' + req.session.id);
+					Hype.debug('Serving session ' + req.session.id);
 				}
 				Cart.getCart(req.session.id);
 				
@@ -40,7 +40,7 @@ module.exports = function(Hype) {
 			post: function(req, res) {
 				var Cart = Hype.require('Cart');
 				if (req.session.id) {
-					console.log('Session: ' + req.session.id);
+					Hype.debug('Serving session ' + req.session.id);
 				}
 				Cart.addItem('53ddb7103dc55d0000eb8e3f', req.session.id, { quantity: 1 });
 				res.send(200);

@@ -39,8 +39,6 @@ module.exports = function(Checkout, Hype, _) {
 
         // Calculate the taxes on each of the items in the cart
         var items = Cart.getItems();
-
-        console.log(items);
     };
 
 

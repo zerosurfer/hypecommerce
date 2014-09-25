@@ -69,7 +69,7 @@ module.exports = function(Hype) {
 			// Render the theme path
 			app.get('/', function (req, res) {
 				if (req.session.id) {
-					console.log('Session: ' + req.session.id);
+					Hype.debug('Serving session ' + req.session.id);
 				}
 				res.render('index.html');
 			});

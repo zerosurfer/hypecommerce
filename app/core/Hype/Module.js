@@ -87,8 +87,6 @@ module.exports = function(Hype) {
             installModel = Db.getModel('Install'),
             configVersion;
 
-            console.log(installModel);
-
         var getLatestVersion = function(arr) {
             var version,
                 versions = [];

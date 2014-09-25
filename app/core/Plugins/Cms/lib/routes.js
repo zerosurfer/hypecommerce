@@ -25,7 +25,7 @@ module.exports = function(Hype) {
 			get: function (req, res) {
 				var CmsBlock = Hype.Db.getModel('CmsBlock'),
 					block = new CmsBlock();
-				console.log(block.generateCodeFromName('this is a string'));
+				
 				res.send(200);
 			}
 		}

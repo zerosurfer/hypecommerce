@@ -55,7 +55,7 @@ module.exports = function(Cart, Hype, _) {
     			ItemModel.find()
     				.populate('parent')
     				.exec(function(err, items) {
-    					console.log(items);
+    					Hype.debug(items);
     				});
 
     			Hype.notify('hype.cart.get', cart);
@@ -93,9 +93,9 @@ module.exports = function(Cart, Hype, _) {
 	    			cartItems.push(item);
 	    			// Add it to the cart
 	    			cart.update({ items: cartItems }, function(err, numAffected, raw) {
-						if (err) console.log(err);
-						console.log('The number of updated documents was %d', numAffected);
-						console.log('The raw response from Mongo was ', raw);
+						if (err) Hype.log(err, 'error');
+						Hype.debug('The number of updated documents was %d', numAffected);
+						Hype.debug('The raw response from Mongo was ', raw);
 	    			});
 	    		});
 	    	});

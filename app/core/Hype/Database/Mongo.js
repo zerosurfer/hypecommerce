@@ -91,7 +91,6 @@ module.exports = function(Hype) {
 	            if (model.deps.hasMany) {
 	                _(model.deps.hasMany).each(function(dep, localName) {
 	                    if (!self.hasModel(dep) && !self.isProcessing(dep)) {
-	                    	//console.log(self.getRawModel(dep));
 	                        self.loadModel(dep, self.getRawModel(dep));
 	                    }
 	                    model.schema[localName] = [{ type : Schema.Types.ObjectId, ref : dep }];

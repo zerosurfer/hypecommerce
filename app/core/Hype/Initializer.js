@@ -157,7 +157,6 @@ module.exports = function(Hype) {
             _(Modules).each(function(module) {
                 // Have an instance of each raw model
                 if (module.is('started')) {
-                    //console.log(module);
                     if (module.models) {
                         _(module.models).each(function(model, modelName) {
                             self.Db.addRawModel(modelName, model);
@@ -196,9 +195,6 @@ module.exports = function(Hype) {
                                         });
                                     }
                                 }
-
-                                // @kurt - Check it out, extending our models for schema
-                                //if (modelName === 'Order') console.log(supermodels[modelName]);
                             } else {
                                 supermodels[modelName] = model;
                             }
@@ -383,7 +379,6 @@ module.exports = function(Hype) {
                 // Add the admin routes
                 // if (module.admin && module.admin.routes) {
                 //     var routes = module.admin.routes(Hype);
-                //     // console.log(routes);
                 //     _(routes).each(function(methods, route) {
 
                 //         _(methods).each(function(method, methodType) {

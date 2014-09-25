@@ -14,7 +14,7 @@ module.exports = function(Hype) {
 		'/checkout': {
 			get: function (req, res) {
 				if (req.session.id) {
-					console.log('Session: ' + req.session.id);
+					Hype.debug('Serving session ' + req.session.id);
 				}
 				res.send(200);
 			},
@@ -33,7 +33,7 @@ module.exports = function(Hype) {
 		'/checkout/setBilling': {
 			post: function(req, res) {
 				if (req.session.id) {
-					console.log('Session: ' + req.session.id);
+					Hype.debug('Serving session ' + req.session.id);
 				}
 				res.send(200);
 			}
@@ -42,7 +42,7 @@ module.exports = function(Hype) {
 		'/checkout/setShipping': {
 			post: function(req, res) {
 				if (req.session.id) {
-					console.log('Session: ' + req.session.id);
+					Hype.debug('Serving session ' + req.session.id);
 				}
 				res.send(200);
 			}
@@ -51,7 +51,7 @@ module.exports = function(Hype) {
 		'/checkout/setShippingMethod': {
 			post: function(req, res) {
 				if (req.session.id) {
-					console.log('Session: ' + req.session.id);
+					Hype.debug('Serving session ' + req.session.id);
 				}
 				res.send(200);
 			}
@@ -60,7 +60,7 @@ module.exports = function(Hype) {
 		'/checkout/setPaymentMethod': {
 			post: function(req, res) {
 				if (req.session.id) {
-					console.log('Session: ' + req.session.id);
+					Hype.debug('Serving session ' + req.session.id);
 				}
 				res.send(200);
 			}
@@ -69,7 +69,7 @@ module.exports = function(Hype) {
 		'/checkout/review': {
 			get: function(req, res) {
 				if (req.session.id) {
-					console.log('Session: ' + req.session.id);
+					Hype.debug('Serving session ' + req.session.id);
 				}
 				res.send(200);
 			}
@@ -78,7 +78,7 @@ module.exports = function(Hype) {
 		'/checkout/place': {
 			post: function(req, res) {
 				if (req.session.id) {
-					console.log('Session: ' + req.session.id);
+					Hype.debug('Serving session ' + req.session.id);
 				}
 				res.send(200);
 			}

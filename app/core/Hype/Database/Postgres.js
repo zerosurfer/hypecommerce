@@ -66,7 +66,6 @@ module.exports = function(Hype) {
 
 		// Check if we have a bootstrap table, if not then create it
 		knex.schema.hasTable('hype').then(function(exists) {
-			console.log(exists);
 			if (!exists) {
 				Hype.log("Created the 'hype' table", 'success');
 				return knex.schema.createTable('hype', function(t) {
