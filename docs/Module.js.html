@@ -1,9 +1,36 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Hype/Module.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Hype/Module.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * Hype Commerce
  *
  * @package     Hype
  * @version     0.0.1
- * @author      Hype Commerce Team <team@hypejs.com>
+ * @author      Hype Commerce Team &lt;team@hypejs.com>
  * @copyright   Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license     http://www.hypejs.com/license
  */
@@ -93,13 +120,13 @@ module.exports = function(Hype) {
             var version,
                 versions = [];
             if (arr.length > 0) {
-                for(var i = 0; i < arr.length; i++) {
+                for(var i = 0; i &lt; arr.length; i++) {
                     // format version
                     versions.push(arr[i].replace(/\./g, '').replace('js', ''));
                 }
 
                 versions = versions.sort(function compare(a, b) {
-                    if (a < b)
+                    if (a &lt; b)
                         return 1;
                     if (a >= b)
                         return -1;
@@ -125,7 +152,7 @@ module.exports = function(Hype) {
             }
 
             // Install if the dbVersion is less than our configVersion
-            if (dbVersion < configVersion || dbVersion > configVersion) {
+            if (dbVersion &lt; configVersion || dbVersion > configVersion) {
 
                 fs.readdir(folderPath, function(err, files) {
                     var scriptFileVersion,
@@ -138,7 +165,7 @@ module.exports = function(Hype) {
                         scriptFileVersion = getLatestVersion([files[f]]);
 
                         // Check for an upgrade
-                        if (dbVersion < configVersion && scriptFileVersion <= configVersion && scriptFileVersion > dbVersion) {
+                        if (dbVersion &lt; configVersion &amp;&amp; scriptFileVersion &lt;= configVersion &amp;&amp; scriptFileVersion > dbVersion) {
                             Hype.debug("Installing file " + files[f]);
                             installFile = require(folderPath + '/' + files[f])(Hype);
                             installFile.up();
@@ -153,7 +180,7 @@ module.exports = function(Hype) {
                             scriptFileVersion = getLatestVersion([files[f]]);
 
                             // Check for a downgrade
-                            if (dbVersion > configVersion && scriptFileVersion > configVersion) {
+                            if (dbVersion > configVersion &amp;&amp; scriptFileVersion > configVersion) {
                                 Hype.debug("Uninstalling file " + files[f]);
                                 installFile = require(folderPath + '/' + files[f])(Hype);
                                 installFile.down();
@@ -214,4 +241,26 @@ module.exports = function(Hype) {
     };
 
     return HypeModule;
-};
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="module.exports-Auth.html">Auth</a></li><li><a href="module.exports-Cron.html">Cron</a></li><li><a href="module.exports-Database.html">Database</a></li><li><a href="module.exports-Hype.html">Hype</a></li><li><a href="module.exports-HypeAdmin.html">HypeAdmin</a></li><li><a href="module.exports-HypeError.html">HypeError</a></li><li><a href="module.exports-HypeModule.html">HypeModule</a></li><li><a href="module.exports-HypePlugin.html">HypePlugin</a></li><li><a href="module.exports-Hyperion.html">Hyperion</a></li><li><a href="module.exports-Initializer.html">Initializer</a></li><li><a href="module.exports-Locale.html">Locale</a></li><li><a href="module.exports-Server.html">Server</a></li><li><a href="module.exports-Setup.html">Setup</a></li><li><a href="module.exports-TestUtil.html">TestUtil</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_">_</a></li><li><a href="global.html#crontab">crontab</a></li><li><a href="global.html#events">events</a></li><li><a href="global.html#HypeAdmin">HypeAdmin</a></li><li><a href="global.html#HypeError">HypeError</a></li><li><a href="global.html#Hyperion">Hyperion</a></li><li><a href="global.html#Locale">Locale</a></li><li><a href="global.html#LocalStrategy">LocalStrategy</a></li><li><a href="global.html#passport">passport</a></li><li><a href="global.html#requireDir">requireDir</a></li><li><a href="global.html#Server">Server</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Thu Sep 25 2014 17:09:05 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -12,6 +12,13 @@ var HypeAdmin,
 	path = require('path');
 
  module.exports = function(Hype) {
+
+    /**
+     * Core Admin class
+     *
+     * @constructor
+     * @return {HypeAdmin}
+     */
  	HypeAdmin = function() {
  		var _menu = {};
 

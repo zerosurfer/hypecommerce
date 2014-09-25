@@ -21,6 +21,12 @@ var	requireDir = require('require-dir'),
 // Require any scripts from active modules
 module.exports = function() {
 
+	/**
+     * Core Test class
+     *
+     * @constructor
+     * @return {TestUtil}
+     */
 	TestUtil = function() {
 
 		this.run = function() {
@@ -43,7 +49,9 @@ module.exports = function() {
 			// Hype.listen('hype.start', function() {
 			// 	requireDir('../Plugins/System/tests')
 			// });
-		}
+		};
+
+		return this;
 	}
 
 	return new TestUtil();

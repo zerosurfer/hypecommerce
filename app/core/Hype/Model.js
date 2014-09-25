@@ -9,5 +9,5 @@
  */
 
 module.exports = function(Hype) {
-	
+	"use strict";
 }

@@ -14,7 +14,14 @@ var Server,
 	_ = require('underscore');
 
 module.exports = function(Hype) {
-
+	"use strict";
+	
+	/**
+     * Core Abstract Server class
+     *
+     * @constructor
+     * @return {Server}
+     */
 	Server = function() {
 		var self = this,
 			server = undefined;
@@ -52,7 +59,9 @@ module.exports = function(Hype) {
 			});
 			
 			self.server.init(Config, Auth(Hype), Admin(Hype), install);
-		}
+		};
+
+		return this;
 	}
 
 	return new Server();

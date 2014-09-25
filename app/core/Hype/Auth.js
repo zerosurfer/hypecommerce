@@ -11,6 +11,14 @@
 var passport = require('passport');
 
 module.exports = function(Hype) {
+	"use strict";
+    
+    /**
+     * Core Authentication class
+     *
+     * @constructor
+     * @return {Auth}
+     */
 	var Auth = function() {
 
 	}

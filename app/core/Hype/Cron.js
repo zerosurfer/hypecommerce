@@ -13,7 +13,14 @@ var crontab = require('node-crontab'),
 	Cron;
 
 module.exports = function(Hype) {
-
+	"use strict"; 
+    
+	/**
+     * Core Cron class
+     *
+     * @constructor
+     * @return {Cron}
+     */
 	Cron = function() {
 		var self = this;
 		this.crons = [];

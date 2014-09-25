@@ -8,16 +8,23 @@
  * @license		http://www.hypejs.com/license
  */
 
-var Error;
+var HypeError;
 
 module.exports = function() {
-
-	Error = function(err) {
+	"use strict";
+	
+	/**
+     * Core HypeError class
+     *
+     * @constructor
+     * @return {HypeError}
+     */
+	HypeError = function(err) {
 
 		this.message = err;
 
 		return this.message;
 	}
 
-	return Error;
+	return HypeError;
 }

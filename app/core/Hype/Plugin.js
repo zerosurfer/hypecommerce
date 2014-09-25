@@ -15,11 +15,19 @@ var _ = require('underscore'),
 module.exports = function(Hype) {
     "use strict";
 
+    /**
+     * Core HypePlugin class
+     *
+     * @constructor
+     * @return {HypePlugin}
+     */
     var HypePlugin = function() {
+
+        return this;
     };
 
     HypePlugin.prototype.extend = function(obj) {
-        this = _.extend(this, obj);
+        //this = _.extend(this, obj);
         return this;
     };
 

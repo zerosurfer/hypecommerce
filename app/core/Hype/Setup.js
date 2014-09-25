@@ -11,10 +11,18 @@
 module.exports = function(Hype) {
 	var Setup;
 
+	/**
+     * Core Setup class
+     *
+     * @constructor
+     * @return {Setup}
+     */
 	Setup = function() {
 		this.init = function(Server) {
 			Hype.notify('hype.start');
-		}
+		};
+
+		return this;
 	}
 
 	return new Setup();
