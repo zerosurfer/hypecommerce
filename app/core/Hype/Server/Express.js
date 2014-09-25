@@ -11,10 +11,18 @@
 var path = require('path'),
 	fs = require('fs'),
     crypto = require('crypto'),
+    logger = require('morgan'),
 	express = require('express'),
+	session = require('express-session'),
+	RedisStore = require('connect-redis')(session),
+	favicon = require('serve-favicon'),
+	methodOverride = require('method-override'),
+	session = require('express-session'),
+	bodyParser = require('body-parser'),
+	cookieParser = require('cookie-parser')
+	errorHandler = require('errorhandler'),
 	app = express(),
-	RedisStore = require('connect-redis')(express),
-	Express;
+	Express = undefined;
 
 module.exports = function(Hype) {
 	"use strict"
@@ -29,16 +37,19 @@ module.exports = function(Hype) {
 		this.apiPrefix = '',
 
 		this.init = function(Config, Auth, Admin, install) {
+			var faviconPath = path.resolve('./app/themes/' + Config.express.theme + '/favicon.ico');
 			// Set the API prefix (if setup)
 			this.apiPrefix = (Config.api) ? Config.api : '';
 
 			// Setup express
-			app.use(express.cookieParser());
-			app.use(express.favicon());
-			app.use(express.logger("dev"));
+			app.use(cookieParser());
+			if (fs.existsSync(faviconPath)) {
+				app.use(favicon(faviconPath));
+			}
+			app.use(logger("dev"));
 			app.engine('html', require('ejs').renderFile);
-			app.use(express.json());
-			app.use(express.urlencoded());
+			app.use(bodyParser.json());
+			app.use(bodyParser.urlencoded({ extended: true }));
 
 			if (!install) {
 				this._init(Config, Auth, Admin);
@@ -50,7 +61,9 @@ module.exports = function(Hype) {
 		},
 
 		this._init = function(Config, Auth, Admin) {
-			app.use(express.session({
+			app.use(session({
+				resave: true,
+				saveUninitialized: true,
 				store: new RedisStore({
 					host: Config.session[Config.session.storage].host,
 					port: Config.session[Config.session.storage].port,
@@ -100,7 +113,7 @@ module.exports = function(Hype) {
 					return;
 				}
 			});
-			app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
+			app.use(errorHandler({ dumpExceptions: true, showStack: true }));
 			Hype.debug("Starting server");
 			
 			Hype.listen('hype.admin.menuLoaded', function(supermenu) {

@@ -45,7 +45,7 @@ module.exports={
             "url":"http://localhost",
             "port":4973,
             "nodes":2,
-            "theme":"homepage"
+            "theme":"ractive"
          },
          "https":{  
             "admin":"admin.{url}",
@@ -58,7 +58,7 @@ module.exports={
                "port":6379,
                "db":"hype_development",
                "pass":"",
-               "secret":"",
+               "secret":"change-this-secret",
                "cookie":{  
                   "path":"/",
                   "maxAge":3600000
@@ -113,7 +113,7 @@ module.exports={
                "port":6379,
                "db":"hype_test",
                "pass":"",
-               "secret":"",
+               "secret":"change-this-secret",
                "cookie":{  
                   "path":"/",
                   "maxAge":3600000
