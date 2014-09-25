@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Plugins/Admin/lib/models.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Plugins/Admin/lib/models.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var crypto = require('crypto');
+
+module.exports = {
+    /**
+     * Admin User
+     *
+     * @var String username
+     * @var String password
+     * @var String firstname
+     * @var String lastname
+     * @var Date createdAt
+     * @var Date updatedAt
+     */
+    AdminUser: {
+        schema: {
+            username: String,
+            _password: {
+
+            },
+            firstname: String,
+            lastname: String,
+            createdAt: Date,
+            updatedAt: Date
+        },
+        deps: {
+            hasOne: {
+                group: 'AdminGroup',
+                dashboard: 'Dashboard'
+            },
+            hasMany: {
+                attributes: 'Attribute'
+            }
+        },
+        methods: {
+            authenticate: function(plainText) {
+                return this.encryptPassword(plainText) === this._password.hashed;
+            },
+            makeSalt: function() {
+                return Math.round((new Date().valueOf() * Math.random())) + '';
+            },
+            encryptPassword: function(password) {
+                if (!password) {return '';}
+                return crypto.createHmac('sha1', this._password.salt).update(password).digest( 'hex' );
+            }
+        },
+        virtuals: {
+            'password': {
+                get: function() {
+                    return this._password.plain
+                },
+                set: function(password) {
+                    this._password.plain = password;
+                    this._password.salt = this.makeSalt();
+                    this._password.hashed = this.encryptPassword(password);
+                }
+            }
+        }
+    },
+
+    /**
+     * Admin Group
+     *
+     * @var String label
+     * @var Permission permissions
+     * @var Date createdAt
+     * @var Date updatedAt
+     */
+    AdminGroup: {
+        schema: {
+            label: String,
+            createdAt: Date,
+            updatedAt: Date
+        },
+        deps: {
+            hasMany: {
+                permissions: 'Permission'
+            }
+        }
+    },
+
+    /**
+     * Admin Dashboard
+     *
+     * @var Boolean developer
+     * @var String workspace
+     * @var Widget widgets
+     * @var Date createdAt
+     * @var Date updatedAt
+     */
+    Dashboard: {
+        schema: {
+            developer: Boolean,
+            workspace: String, // json encoded layout of widgets (including sizes, position, etc)
+            createdAt: Date,
+            updatedAt: Date
+        }
+    },
+
+    /**
+     * Admin Event Message
+     *
+     * @var String title
+     * @var String message
+     * @var Number priority
+     * @var String code
+     * @var Boolean read
+     * @var Boolean archived
+     * @var Date readAt
+     * @var Date createdAt
+     * @var AdminUser user
+     */
+     AdminMessage: {
+        schema: {
+            title: String,
+            message: String,
+            priority: Number, // 0 = low, 1 = medium, 2 = high, default: 1
+            code: String, // will be a font-awesome class for icons (if desired)
+            read: Boolean,
+            archived: Boolean,
+            readAt: Date,
+            createdAt: Date,
+        },
+        deps: {
+            hasOne: {
+                user: 'AdminUser'
+            }
+        }
+     }
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-Admin.html">Admin</a></li><li><a href="module-Auth.html">Auth</a></li><li><a href="module-Cart.html">Cart</a></li><li><a href="module-Category.html">Category</a></li><li><a href="module-Checkout.html">Checkout</a></li><li><a href="module-Cms.html">Cms</a></li><li><a href="module-Customer.html">Customer</a></li><li><a href="module-Email.html">Email</a></li><li><a href="module-Media.html">Media</a></li><li><a href="module-Product.html">Product</a></li><li><a href="module-Review.html">Review</a></li><li><a href="module-Sales.html">Sales</a></li><li><a href="module-Store.html">Store</a></li><li><a href="module-System.html">System</a></li><li><a href="module-Tax.html">Tax</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports-Auth.html">Auth</a></li><li><a href="module.exports-Cron.html">Cron</a></li><li><a href="module.exports-Database.html">Database</a></li><li><a href="module.exports-Express.html">Express</a></li><li><a href="module.exports-Hype.html">Hype</a></li><li><a href="module.exports-HypeAdmin.html">HypeAdmin</a></li><li><a href="module.exports-HypeError.html">HypeError</a></li><li><a href="module.exports-HypeModule.html">HypeModule</a></li><li><a href="module.exports-HypePlugin.html">HypePlugin</a></li><li><a href="module.exports-Hyperion.html">Hyperion</a></li><li><a href="module.exports-Initializer.html">Initializer</a></li><li><a href="module.exports-Locale.html">Locale</a></li><li><a href="module.exports-Server.html">Server</a></li><li><a href="module.exports-Setup.html">Setup</a></li><li><a href="module.exports-TestUtil.html">TestUtil</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_">_</a></li><li><a href="global.html#AdminUser">AdminUser</a></li><li><a href="global.html#bookshelf">bookshelf</a></li><li><a href="global.html#crontab">crontab</a></li><li><a href="global.html#Date">Date</a></li><li><a href="global.html#events">events</a></li><li><a href="global.html#HypeAdmin">HypeAdmin</a></li><li><a href="global.html#HypeError">HypeError</a></li><li><a href="global.html#Hyperion">Hyperion</a></li><li><a href="global.html#Locale">Locale</a></li><li><a href="global.html#LocalStrategy">LocalStrategy</a></li><li><a href="global.html#Mediatype">Mediatype</a></li><li><a href="global.html#mongoose">mongoose</a></li><li><a href="global.html#MysqlDba">MysqlDba</a></li><li><a href="global.html#passport">passport</a></li><li><a href="global.html#path">path</a></li><li><a href="global.html#requireDir">requireDir</a></li><li><a href="global.html#Server">Server</a></li><li><a href="global.html#String">String</a></li><li><a href="global.html#View">View</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Thu Sep 25 2014 18:44:18 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

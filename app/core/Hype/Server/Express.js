@@ -25,8 +25,16 @@ var path = require('path'),
 	Express = undefined;
 
 module.exports = function(Hype) {
-	"use strict"
+	"use strict";
 
+	/**
+	 * Core Express class
+	 *
+	 * @title Handles the servers calls for the application
+	 *
+	 * @constructor
+	 * @return {Express}
+	 */
 	Express = function() {
 		var self = this;
 
@@ -202,6 +210,7 @@ module.exports = function(Hype) {
 			});
 		}
 
+		return this;
 	}
 
 	return new Express();

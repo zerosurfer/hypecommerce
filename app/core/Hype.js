@@ -33,7 +33,7 @@ module.exports = function(Config) {
 	/**
 	 * Returns a fully-initialized module
 	 *
-	 * @param {string} name Name of the module
+	 * @param {string} name - Name of the module
 	 * @return {object|undefined}
 	 */
 	Hype.prototype.require = function(name) {
@@ -43,8 +43,8 @@ module.exports = function(Config) {
 	/**
 	 * Event emit
 	 *
-	 * @param {string} event Name of the event
-	 * @param {function} callback Function to run when event is called
+	 * @param {string} event - Name of the event
+	 * @param {function} callback - Function to run when event is called
 	 * @return {Hype}
 	 */
 	Hype.prototype.listen = function(event, callback) {
@@ -55,8 +55,8 @@ module.exports = function(Config) {
     /**
 	 * Notified of an emit
 	 *
-	 * @param {string} event Name of the event to notify
-	 * @param {mixed} arg (optional) Pass the observing listeners a callback object, function, or value
+	 * @param {string} event - Name of the event to notify
+	 * @param {mixed} arg - (optional) Pass the observing listeners a callback object, function, or value
 	 * @return {Hype}
 	 */
     Hype.prototype.notify = function(event, arg) {
@@ -107,8 +107,8 @@ module.exports = function(Config) {
 	/**
 	 * Log
 	 *
-	 * @param {string} message	Message to log
-	 * @param {string} priority debug|info|warn|error|log
+	 * @param {string} message - Message to log
+	 * @param {string} priority - debug|info|warn|error|log
 	 * @return {Hype}
 	 */
 	Hype.prototype.log = function(message, priority) {
@@ -153,7 +153,7 @@ module.exports = function(Config) {
 	/**
 	 * More intrusive logging
 	 *
-	 * @param {string} message	Message to debug log
+	 * @param {string} message - Message to debug log
 	 * @return {Hype}
 	 */
 	Hype.prototype.debug = function(message) {
