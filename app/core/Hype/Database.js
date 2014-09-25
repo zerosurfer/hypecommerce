@@ -12,9 +12,18 @@ var _ = require('underscore'),
 	Database;
 
 module.exports = function(Hype) {
+	"use strict"
+
  	Database = function() {
  		this.adapter;
- 	}
+ 	};
+
+ 	/**
+	 * Select a database adapter and secure a connection to the database
+	 *
+	 * @param {Object} config
+	 * @return {Database}
+	 */
  	Database.prototype.init = function(Config) {
 		Hype.debug("Determining the database adapter");
 		switch (Config.type) {
@@ -63,26 +72,46 @@ module.exports = function(Hype) {
 		return this;
 	}
 
+	/**
+	 * Adds the raw context definition from the models file
+	 *
+	 * @param {String} name
+	 * @param {Object} model
+	 * @return {Object}
+	 */
 	Database.prototype.addRawModel = function(name, model) {
 		if (!this.adapter) {
 			throw "Database adapter not properly instanstiated";
 		}
-		return this.adapter.addRawModel(name, model)
+		return this.adapter.addRawModel(name, model);
 	}
 
-	Database.prototype.getModel = function(model) {
-		if (!this.adapter) {
-			throw "Database adapter not properly instanstiated";
-		}
-		return this.adapter.getModel(model);
-	}
-
+	/**
+	 * Define and setup the model in the database for use in the system
+	 *
+	 * @param {String} name
+	 * @param {Object} model
+	 * @return {Object}
+	 */
 	Database.prototype.loadModel = function(name, model) {
 		if (!this.adapter) {
 			throw "Database adapter not properly instanstiated";
 		}
 		return this.adapter.loadModel(name, model)
 	}
+
+	/**
+	 * Get the loaded version of a model
+	 *
+	 * @param {String} model
+	 * @return {Object}
+	 */
+	Database.prototype.getModel = function(model) {
+		if (!this.adapter) {
+			throw "Database adapter not properly instanstiated";
+		}
+		return this.adapter.getModel(model);
+	};
 
  	return new Database();
  }

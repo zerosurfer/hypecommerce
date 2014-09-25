@@ -24,6 +24,7 @@ module.exports = function() {
 	TestUtil = function() {
 
 		this.run = function() {
+			
 			requireDir('../Plugins/System/tests');
 			// // Artificially start Hype in a test environment
 			// Hype.log("Preparing test environment for Hype Commerce v" + Config.version, 'info');

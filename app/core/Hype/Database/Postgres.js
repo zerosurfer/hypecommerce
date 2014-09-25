@@ -1,4 +1,3 @@
-
 /**
  * Hype Commerce
  *
@@ -48,28 +47,44 @@ module.exports = function(Hype) {
 	}
 
 	PostgresDba.prototype.start = function(host, username, password, dbname, port) {
-		var self = this;
+		var self = this,
+			connectStr = 'postgres://';
 
-		Hype.debug("Connecting to the database on " + host + ":" + port + "/" + dbname);
+		if (username) {
+			connectStr += username;
+			if (password) {
+				connectStr += ':' + password;
+			}
+			connectStr += "@";
+		}
+		connectStr += host;
+		if (port) {
+			connectStr += ':' + port;
+		}
+		connectStr += '/' + dbname;
 
-		this.connection = new pg.connect('postgres://' + username + ':' + password + '@' + host + ':' + port + '/' + dbname, function(error,  client, done) {
-			console.log(error);
-			if (error) throw error;
+		Hype.debug("Connecting to the database on " + connectStr);
+
+		this.connection = pg.connect(connectStr, function(error,  client, done) {
+			if (error) return error;
 			Hype.log("Successfully connected to the database", 'success');
 			Hype.notify('hype.db.complete');
 			self.db = client;
 		});
-
+		
 	};
 
 	// Recursively load the models into mongoose
 	PostgresDba.prototype.loadModel = function(name, model) {
+		Hype.debug('Loading model ' + name);
 	};
 
 	PostgresDba.prototype.addModel = function (modelName, model) {
 	}
 
 	PostgresDba.prototype.addRawModel = function(modelName, model) {
+		Hype.debug('Adding raw model ' + modelName);
+		return this._rawModels[modelName] = model;
 	}
 
 	PostgresDba.prototype.getRawModel = function(modelName) {
