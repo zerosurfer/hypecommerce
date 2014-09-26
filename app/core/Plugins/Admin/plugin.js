@@ -1,5 +1,7 @@
 /**
  * Hype Commerce
+ * - 
+ * The Admin module
  *
  * @package     Hype
  * @module      Admin

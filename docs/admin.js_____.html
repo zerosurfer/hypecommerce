@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: Plugins/Product/admin.js</title>
+    <title>JSDoc: Source: Plugins/Email/admin.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: Plugins/Product/admin.js</h1>
+    <h1 class="page-title">Source: Plugins/Email/admin.js</h1>
 
     
 
@@ -29,31 +29,35 @@
  * Hype Commerce
  *
  * @package     Hype
- * @module      Product
+ * @module      Email
  * @version     0.0.1
  * @author      Hype Commerce Team &lt;team@hypejs.com>
  * @copyright   Copyright (c) 2014, Hype Commerce, Inc. (http://www.hypejs.com/)
  * @license     http://www.hypejs.com/license
  */
 
-module.exports = {
+ module.exports = {
     menu: {
-    	product: {
-    		label: "Products",
-            sort: 40,
-    		icon: "\f069",
-    		url: "/products"
+    	customer: {
+    		label: "Customers",
+            sort: 30,
+            tags: [
+                "manage", "customers", "attributes"
+            ],
+    		icon: "\f118", // fa-smile-o (could also be an image)
+    		url: "/customers",
     	},
-
-        // Extending the configuration menu
         configuration: {
             children: {
-                productAttributes: {
-                    label: "Product Attributes",
-                    sort: 120,
-                    icon: "\f02c",
-                    url: "/product/attributes"
-                },
+                email: {
+                    label: "Email Templates",
+                    tags: [
+                        "email", "transactional", "templates"
+                    ],
+                    sort: 200,
+                    icon: "\f0e3",
+                    url: "/configuration/email"
+                }
             }
         }
     }
@@ -67,13 +71,13 @@ module.exports = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-Admin.html">Admin</a></li><li><a href="module-Auth.html">Auth</a></li><li><a href="module-Cart.html">Cart</a></li><li><a href="module-Category.html">Category</a></li><li><a href="module-Checkout.html">Checkout</a></li><li><a href="module-Cms.html">Cms</a></li><li><a href="module-Customer.html">Customer</a></li><li><a href="module-Email.html">Email</a></li><li><a href="module-Media.html">Media</a></li><li><a href="module-Product.html">Product</a></li><li><a href="module-Review.html">Review</a></li><li><a href="module-Sales.html">Sales</a></li><li><a href="module-Store.html">Store</a></li><li><a href="module-System.html">System</a></li><li><a href="module-Tax.html">Tax</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports-Auth.html">Auth</a></li><li><a href="module.exports-Cron.html">Cron</a></li><li><a href="module.exports-Database.html">Database</a></li><li><a href="module.exports-Express.html">Express</a></li><li><a href="module.exports-Hype.html">Hype</a></li><li><a href="module.exports-HypeAdmin.html">HypeAdmin</a></li><li><a href="module.exports-HypeError.html">HypeError</a></li><li><a href="module.exports-HypeModule.html">HypeModule</a></li><li><a href="module.exports-HypePlugin.html">HypePlugin</a></li><li><a href="module.exports-Hyperion.html">Hyperion</a></li><li><a href="module.exports-Initializer.html">Initializer</a></li><li><a href="module.exports-Locale.html">Locale</a></li><li><a href="module.exports-Server.html">Server</a></li><li><a href="module.exports-Setup.html">Setup</a></li><li><a href="module.exports-TestUtil.html">TestUtil</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_">_</a></li><li><a href="global.html#AdminUser">AdminUser</a></li><li><a href="global.html#bookshelf">bookshelf</a></li><li><a href="global.html#crontab">crontab</a></li><li><a href="global.html#Date">Date</a></li><li><a href="global.html#events">events</a></li><li><a href="global.html#HypeAdmin">HypeAdmin</a></li><li><a href="global.html#HypeError">HypeError</a></li><li><a href="global.html#Hyperion">Hyperion</a></li><li><a href="global.html#Locale">Locale</a></li><li><a href="global.html#LocalStrategy">LocalStrategy</a></li><li><a href="global.html#Mediatype">Mediatype</a></li><li><a href="global.html#mongoose">mongoose</a></li><li><a href="global.html#MysqlDba">MysqlDba</a></li><li><a href="global.html#passport">passport</a></li><li><a href="global.html#path">path</a></li><li><a href="global.html#requireDir">requireDir</a></li><li><a href="global.html#Server">Server</a></li><li><a href="global.html#String">String</a></li><li><a href="global.html#View">View</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-Admin.html">Admin</a></li><li><a href="module-Auth.html">Auth</a></li><li><a href="module-Cart.html">Cart</a></li><li><a href="module-Category.html">Category</a></li><li><a href="module-Checkout.html">Checkout</a></li><li><a href="module-Cms.html">Cms</a></li><li><a href="module-Customer.html">Customer</a></li><li><a href="module-Email.html">Email</a></li><li><a href="module-Media.html">Media</a></li><li><a href="module-Product.html">Product</a></li><li><a href="module-Sales.html">Sales</a></li><li><a href="module-Store.html">Store</a></li><li><a href="module-System.html">System</a></li><li><a href="module-Tax.html">Tax</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports-Auth.html">Auth</a></li><li><a href="module.exports-Cron.html">Cron</a></li><li><a href="module.exports-Database.html">Database</a></li><li><a href="module.exports-Express.html">Express</a></li><li><a href="module.exports-Hype.html">Hype</a></li><li><a href="module.exports-HypeAdmin.html">HypeAdmin</a></li><li><a href="module.exports-HypeError.html">HypeError</a></li><li><a href="module.exports-HypeModule.html">HypeModule</a></li><li><a href="module.exports-HypePlugin.html">HypePlugin</a></li><li><a href="module.exports-Hyperion.html">Hyperion</a></li><li><a href="module.exports-Initializer.html">Initializer</a></li><li><a href="module.exports-Locale.html">Locale</a></li><li><a href="module.exports-Server.html">Server</a></li><li><a href="module.exports-Setup.html">Setup</a></li><li><a href="module.exports-TestUtil.html">TestUtil</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_">_</a></li><li><a href="global.html#AdminUser">AdminUser</a></li><li><a href="global.html#bookshelf">bookshelf</a></li><li><a href="global.html#crontab">crontab</a></li><li><a href="global.html#Date">Date</a></li><li><a href="global.html#events">events</a></li><li><a href="global.html#HypeAdmin">HypeAdmin</a></li><li><a href="global.html#HypeError">HypeError</a></li><li><a href="global.html#Hyperion">Hyperion</a></li><li><a href="global.html#Locale">Locale</a></li><li><a href="global.html#LocalStrategy">LocalStrategy</a></li><li><a href="global.html#Mediatype">Mediatype</a></li><li><a href="global.html#mongoose">mongoose</a></li><li><a href="global.html#MysqlDba">MysqlDba</a></li><li><a href="global.html#passport">passport</a></li><li><a href="global.html#path">path</a></li><li><a href="global.html#requireDir">requireDir</a></li><li><a href="global.html#Server">Server</a></li><li><a href="global.html#String">String</a></li><li><a href="global.html#View">View</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Thu Sep 25 2014 18:44:18 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Thu Sep 25 2014 19:28:48 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

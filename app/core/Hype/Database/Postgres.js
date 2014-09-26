@@ -90,18 +90,70 @@ module.exports = function(Hype) {
 
 	// Recursively load the models into mongoose
 	PostgresDba.prototype.loadModel = function(name, model) {
+		var self = this,
+			rawModel;
+
 		Hype.debug('Loading model ' + name);
+
+		// First we're going to need to collect any hasOne or hasMany relationships
+		// These referenced relations are going to be also updated with belongsTo
+		// and belongsToMany attributes
+		if (model.deps) {
+			// Has one dependencies
+			if (model.deps.hasOne) {
+				_(model.deps.hasOne).each(function(ref, attr) {
+					// Get a reference of the model and add that we belong to this model
+					if (self.getRawModel(ref)) {
+						rawModel = self.getRawModel(ref);
+						// Create a deps attribute if one doesn't already exist
+						if (!rawModel.deps) {
+							rawModel.deps = {};
+						}
+						// Create the belongsTo attribute if we don't already have it
+						if (!rawModel.deps.belongsTo) {
+							rawModel.deps.belongsTo = [];
+						}
+						// Now add the attribute 
+						rawModel.deps.belongsTo.push(name);
+						// Reset the raw model
+						self.addRawModel(ref, rawModel);
+					}
+				});
+			}
+			// Has many dependencies
+			if (model.deps.hasMany) {
+				_(model.deps.hasMany).each(function(ref, attr) {
+					// Get a reference of the model and add that we belong to this model
+					if (self.getRawModel(ref)) {
+						rawModel = self.getRawModel(ref);
+						// Create a deps attribute if one doesn't already exist
+						if (!rawModel.deps) {
+							rawModel.deps = {};
+						}
+						// Create the belongsToMany attribute if we don't already have it
+						if (!rawModel.deps.belongsToMany) {
+							rawModel.deps.belongsToMany = [];
+						}
+						// Now add the attribute 
+						rawModel.deps.belongsToMany.push(name);
+						// Reset the raw model
+						self.addRawModel(ref, rawModel);
+					}
+				});
+			}
+		}
+		console.log(model);
 	};
 
 	PostgresDba.prototype.addModel = function (modelName, model) {
 	}
 
 	PostgresDba.prototype.addRawModel = function(modelName, model) {
-		Hype.debug('Adding raw model ' + modelName);
 		return this._rawModels[modelName] = model;
 	}
 
 	PostgresDba.prototype.getRawModel = function(modelName) {
+		return this._rawModels[modelName];
 	}
 
 	PostgresDba.prototype.hasModel = function(model) {
