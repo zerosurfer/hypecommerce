@@ -82,9 +82,11 @@ module.exports = function(Hype) {
 			}));
 
 			app.set('views', path.resolve('./app/themes/' + Config.express.theme));
-			app.use(Config.admin + '/static/', express.static(path.resolve(__dirname + '/../../../admin/static')));
-			app.use(Config.admin + '/scripts/', express.static(path.resolve(__dirname + '/../../../admin/scripts')));
-			// @kurt - these should be something like Auth.init() and it will call both of them
+			
+			// Render the admin path
+			app.use(Config.admin, express.static(path.resolve('./app/admin/')));
+
+			// these should be something like Auth.init() and it will call both of them
 			//app.use(passport.initialize());
 
 			// Render the theme path
