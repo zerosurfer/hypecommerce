@@ -1,0 +1,3 @@
+[submodule "app/admin"]
+	path = app/admin
+	url = https://github.com/hypecommerce/admin.git
